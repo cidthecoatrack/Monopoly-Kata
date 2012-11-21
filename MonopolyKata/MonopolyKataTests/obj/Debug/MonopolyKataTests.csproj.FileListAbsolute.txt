@@ -1,0 +1,7 @@
+C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKataTests.dll
+C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKataTests.pdb
+C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKata.dll
+C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKata.pdb
+C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.csprojResolveAssemblyReference.cache
+C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.dll
+C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.pdb

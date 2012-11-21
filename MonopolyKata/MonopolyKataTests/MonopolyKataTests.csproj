@@ -50,8 +50,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DiceTests.cs" />
     <Compile Include="MonopolyTests.cs" />
+    <Compile Include="PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MonopolyKata\MonopolyKata.csproj">
+      <Project>{3ca994db-c7c4-4ecd-a5c0-66322304d31a}</Project>
+      <Name>MonopolyKata</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
