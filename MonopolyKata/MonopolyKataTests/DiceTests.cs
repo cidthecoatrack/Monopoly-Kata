@@ -16,11 +16,12 @@ namespace MonopolyKataTests
         {
             dice = new Dice();
         }
-        
+
         [TestMethod]
-        public void CanMakeDice()
+        public void MultipleDiceClasses_ShouldRollDifferent()
         {
-            Assert.IsNotNull(dice);
+            for (Int32 i = 0; i < 100; i++)
+                Assert.AreNotEqual(new Dice().RollUnboundedRandomNumber(), new Dice().RollUnboundedRandomNumber());
         }
 
         [TestMethod]
@@ -38,13 +39,6 @@ namespace MonopolyKataTests
             Int32 roll = dice.RollTwoDice();
             Assert.IsTrue(0 < roll);
             Assert.IsTrue(roll <= 12);
-        }
-
-        [TestMethod]
-        public void MultipleDiceClasses_ShouldRollDifferent()
-        {
-            for (Int32 i = 0; i < 100; i++)
-                Assert.AreNotEqual(new Dice().RollUnboundedRandomNumber(), new Dice().RollUnboundedRandomNumber());
         }
     }
 }

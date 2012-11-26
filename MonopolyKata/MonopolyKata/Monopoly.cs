@@ -9,122 +9,210 @@ namespace MonopolyKata
 {
     public class Monopoly
     {
-        private const Int32 BOARD_SIZE = 40;
-        private const Int32 ROUND_LIMIT = 20;
-
-        private Int32[] Board = new int[BOARD_SIZE];
-        private LinkedList<Player> Players;
-        private LinkedListNode<Player> CurrentPlayer;
+        private const Int16 ROUND_LIMIT = 20;
+        
+        private LinkedList<Player> players;
+        private LinkedListNode<Player> currentPlayerPointer;
         private Dice dice;
-        private Int32 CurrentRound;
-        private Boolean GameOver;
+        private Int16 currentRound;
 
-        public Monopoly(params String[] playerNames)
+        private Player currentPlayer
         {
+            get { return currentPlayerPointer.Value; }
+            set { currentPlayerPointer.Value = value; }
+        }
+
+        public Boolean GameOver
+        {
+            get { return (currentRound > ROUND_LIMIT || Winner != null); }
+        }
+
+        public Int16 CurrentRound
+        {
+            get { return currentRound; }
+        }
+
+        public LinkedList<Player> Players
+        {
+            get { return players; }
+        }
+
+        public Player CurrentPlayer
+        {
+            get { return currentPlayerPointer.Value; }
+        }
+
+        public LinkedListNode<Player> CurrentPlayerNode
+        {
+            get { return currentPlayerPointer; }
+        }
+
+        public Int32 NumberOfActivePlayers
+        {
+            get { return players.Count; }
+        }
+
+        public Player Winner
+        {
+            get
+            {
+                if (players.Count == 1)
+                    return players.First.Value;
+                return null;
+            }
+        }
+
+        public Monopoly(IEnumerable<Player> NewPlayers)
+        {
+            if (InvalidNumberOfPlayers(NewPlayers))
+                throw new ArgumentOutOfRangeException();
+            
             InitializeClassVariables();
-            SetPlayers(playerNames);
-            CurrentPlayer = Players.First;
+            SetPlayers(NewPlayers);
+            currentPlayerPointer = players.First;
+        }
+
+        private static bool InvalidNumberOfPlayers(IEnumerable<Player> NewPlayers)
+        {
+            return NewPlayers.Count<Player>() < 2 || NewPlayers.Count<Player>() > 8;
         }
 
         private void InitializeClassVariables()
         {
-            Players = new LinkedList<Player>();
+            players = new LinkedList<Player>();
             dice = new Dice();
-            CurrentRound = 1;
-            GameOver = false;
+            currentRound = 1;
         }
 
-        private void SetPlayers(IEnumerable<String> playerNames)
+        private void SetPlayers(IEnumerable<Player> NewPlayers)
         {
-            foreach (String playerName in RandomizePlayerOrder(playerNames))
-                Players.AddLast(new Player(playerName));
+            foreach (Player player in RandomizePlayerOrder(NewPlayers))
+                players.AddLast(player);
         }
 
-        private IEnumerable<String> RandomizePlayerOrder(IEnumerable<String> playerNames)
+        private IEnumerable<Player> RandomizePlayerOrder(IEnumerable<Player> NewPlayers)
         {
-            return playerNames.OrderBy(x => dice.RollSingleDie());
+            return NewPlayers.OrderBy(player => dice.RollSingleDie());
+        }
+
+        public void PlayFullGame()
+        {
+            TakeRounds(ROUND_LIMIT);
         }
 
         public void TakeRounds(Int32 rounds)
         {
-            for (Int32 i = 0; i < rounds; i++)
+            for (Int16 i = 0; i < rounds; i++)
                 TakeRound();
         }
 
         public void TakeRound()
         {
-            TakeTurns(Players.Count);
+            TakeTurns(players.Count);
         }
 
         public void TakeTurns(Int32 turns)
         {
-            for (Int32 i = 0; i < turns; i++)
+            for (Int16 i = 0; i < turns; i++)
                 TakeTurn();
         }
 
         public void TakeTurn()
         {
-            RollNewPositionForCurrentPlayer();
+            RollForCurrentPlayer();
             NextPlayerTurn();
+            CheckForLosers();
         }
 
         private void NextPlayerTurn()
         {
             if (CurrentPlayerIsNotLastPlayer())
-                CurrentPlayer = CurrentPlayer.Next;
+            {
+                currentPlayerPointer = currentPlayerPointer.Next;
+            }
             else
             {
-                CurrentPlayer = Players.First;
-                AdjustRound();
+                currentPlayerPointer = players.First;
+                currentRound++;
             }
         }
 
         private Boolean CurrentPlayerIsNotLastPlayer()
         {
-            return CurrentPlayer != Players.Last;
+            return currentPlayerPointer != players.Last;
         }
 
-        private void AdjustRound()
+        private void RollForCurrentPlayer()
         {
-            CurrentRound++;
-
-            if (CurrentRound > ROUND_LIMIT)
-                GameOver = true;
+            MoveCurrentPlayerSetAmount(dice.RollTwoDice());
         }
 
-        private void RollNewPositionForCurrentPlayer()
+        public void MoveCurrentPlayerSetAmount(Int32 AmountToMove)
         {
-            CurrentPlayer.Value.Position = (CurrentPlayer.Value.Position + dice.RollTwoDice()) % BOARD_SIZE;
+            if (!GameOver)
+            {
+                currentPlayer.Move(AmountToMove);
+                CheckIfCurrentPlayerPassedGo();
+                CheckForSpecialSpaces();
+            }
         }
 
-        public Int32 GetRound()
+        private void CheckForSpecialSpaces()
         {
-            return CurrentRound;
+            switch (currentPlayer.Position)
+            {
+                case MonopolyBoard.GO_TO_JAIL: currentPlayer.SetPosition(MonopolyBoard.JAIL_OR_JUST_VISITING); break;
+                case MonopolyBoard.INCOME_TAX: DeductIncomeTaxFromCurrentPlayer(); break;
+                case MonopolyBoard.LUXURY_TAX: currentPlayer.Pay(75); break;
+                default: break;
+            }
         }
 
-        public Boolean IsGameOver()
+        private void DeductIncomeTaxFromCurrentPlayer()
         {
-            return GameOver;
+            if (currentPlayer.Money / 10 < 200)
+                currentPlayer.Pay(currentPlayer.Money / 10);
+            else
+                currentPlayer.Pay(200);
         }
 
-        public Int32[] GetBoard()
+        private void CheckIfCurrentPlayerPassedGo()
         {
-            return Board;
+            while(CurrentPlayerHasPassedGo())
+            {
+                currentPlayer.SetPosition(currentPlayer.Position - MonopolyBoard.BOARD_SIZE);
+                currentPlayer.ReceiveMoney(200);
+            }
         }
 
-        public LinkedList<Player> GetPlayers()
+        private Boolean CurrentPlayerHasPassedGo()
         {
-            return Players;
+            return (currentPlayer.Position >= MonopolyBoard.BOARD_SIZE);
         }
 
-        public Player GetCurrentPlayer()
+        private void CheckForLosers()
         {
-            return CurrentPlayer.Value;
+            CheckForLosers(players.First);
         }
 
-        public LinkedListNode<Player> GetCurrentPlayerNode()
+        private void CheckForLosers(LinkedListNode<Player> playerNode)
         {
-            return CurrentPlayer;
+            if (playerNode.Value.LostTheGame)
+            {
+                RemovePlayer(playerNode);
+                CheckForLosers();
+            }
+            else if (playerNode.Next != null)
+            {
+                CheckForLosers(playerNode.Next);
+            }
+        }
+
+        private void RemovePlayer(LinkedListNode<Player> playerNode)
+        {
+            Player tempCurrentPlayer = currentPlayerPointer.Value;
+            players.Remove(playerNode.Value);
+            currentPlayerPointer = players.Find(tempCurrentPlayer);
         }
     }
 }

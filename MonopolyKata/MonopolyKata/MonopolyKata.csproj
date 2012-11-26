@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Dice.cs" />
     <Compile Include="Monopoly.cs" />
+    <Compile Include="MonopolyBoard.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
