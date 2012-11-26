@@ -45,8 +45,8 @@ local.properties
 [Dd]ebug/
 [Rr]elease/
 TestResults/
-*/bin/
-*/obj/
+bin/
+obj/
 *_i.c
 *_p.c
 *.ilk
