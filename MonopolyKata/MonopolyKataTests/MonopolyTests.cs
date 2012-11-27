@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MonopolyKata;
 
@@ -86,22 +87,22 @@ namespace MonopolyKataTests
             AssertContent(NonRandomizedPlayers, monopolyGame.Players);
         }
 
-        private static void AssertContent(LinkedList<Player> expected, LinkedList<Player> actual)
+        private static void AssertContent(IEnumerable<Player> expected, IEnumerable<Player> actual)
         {
-            Assert.AreEqual(expected.Count, actual.Count);
-
-            foreach (Player expectedPlayer in expected)
-                Assert.IsTrue(expectedPlayer.IsContainedIn(actual));
+            Assert.AreEqual(expected.Count(), actual.Count());
+            AssertTwoSidedUnion(expected, actual);
         }
 
-        private static LinkedList<String> GetListOfNamesFromPlayerList(IEnumerable<Player> playerList)
+        private static void AssertTwoSidedUnion(IEnumerable<Player> left, IEnumerable<Player> right)
         {
-            LinkedList<String> Names = new LinkedList<String>();
+            AssertOneSidedUnion(left, right);
+            AssertOneSidedUnion(right, left);
+        }
 
-            foreach (Player player in playerList)
-                Names.AddLast(player.Name);
-            
-            return Names;
+        private static void AssertOneSidedUnion(IEnumerable<Player> left, IEnumerable<Player> right)
+        {
+            foreach (Player player in left)
+                Assert.IsTrue(player.IsContainedIn(right));
         }
 
         private static bool AssertRandomization(LinkedList<Player> expected, LinkedList<Player> actual)
@@ -119,14 +120,14 @@ namespace MonopolyKataTests
                 return RecursiveRandomizationAssert(expectedNode.Next, actualNode.Next);
         }
 
-        private static bool NamesAreDifferent(LinkedListNode<Player> expectedNode, LinkedListNode<Player> actualNode)
-        {
-            return expectedNode.Value.Name != actualNode.Value.Name;
-        }
-
         private static bool AtEndOfList(LinkedListNode<Player> expectedNode, LinkedListNode<Player> actualNode)
         {
             return expectedNode == null || actualNode == null;
+        }
+
+        private static bool NamesAreDifferent(LinkedListNode<Player> expectedNode, LinkedListNode<Player> actualNode)
+        {
+            return expectedNode.Value.Name != actualNode.Value.Name;
         }
 
         [TestMethod]
@@ -175,56 +176,8 @@ namespace MonopolyKataTests
         [TestMethod]
         public void AfterTwentyRounds_GameEnds()
         {
-            GiveAllPlayersOodlesOfMoney();
             monopolyGame.PlayFullGame();
-
             Assert.IsTrue(monopolyGame.GameOver);
-        }
-
-        private void GiveAllPlayersOodlesOfMoney()
-        {
-            foreach (Player player in monopolyGame.Players)
-                player.ReceiveMoney(1000000);
-        }
-
-        [TestMethod]
-        public void CannotTakeTurnAfterGameIsOver()
-        {
-            GiveAllPlayersOodlesOfMoney();
-            monopolyGame.PlayFullGame();
-            monopolyGame.TakeTurn();
-        }
-
-        [TestMethod]
-        public void CannotTakeTurnsAfterGameIsOver()
-        {
-            GiveAllPlayersOodlesOfMoney();
-            monopolyGame.PlayFullGame();
-            monopolyGame.TakeTurns(2);
-        }
-
-        [TestMethod]
-        public void CannotTakeRoundAfterGameIsOver()
-        {
-            GiveAllPlayersOodlesOfMoney();
-            monopolyGame.PlayFullGame();
-            monopolyGame.TakeRound();
-        }
-
-        [TestMethod]
-        public void CannotTakeRoundsAfterGameIsOver()
-        {
-            GiveAllPlayersOodlesOfMoney();
-            monopolyGame.PlayFullGame();
-            monopolyGame.TakeRounds(2);
-        }
-
-        [TestMethod]
-        public void CannotMoveToNewPositionAfterGameIsOver()
-        {
-            GiveAllPlayersOodlesOfMoney();
-            monopolyGame.PlayFullGame();
-            monopolyGame.MoveCurrentPlayerSetAmount(1);
         }
 
         [TestMethod]
@@ -233,18 +186,44 @@ namespace MonopolyKataTests
             Player[] PlayerVerificationArray = new Player[monopolyGame.NumberOfActivePlayers];
             monopolyGame.Players.CopyTo(PlayerVerificationArray, 0);
             int verificationIndex = 0;
-            GiveAllPlayersOodlesOfMoney();
-            
+
             while (!monopolyGame.GameOver)
             {
-                verificationIndex++;
+                if (PlayerVerificationArray.Length != monopolyGame.NumberOfActivePlayers)
+                {
+                    PlayerVerificationArray = CheckForRemovedPlayers(PlayerVerificationArray, monopolyGame.Players);
+                    if (verificationIndex == 0)
+                        verificationIndex++;
+                }
+                else
+                {
+                    verificationIndex++;
+                }
+
                 if (monopolyGame.CurrentPlayerNode.Next != null)
-                    Assert.AreEqual(PlayerVerificationArray[verificationIndex], monopolyGame.CurrentPlayerNode.Next.Value);
+                    Assert.IsTrue(PlayerVerificationArray[verificationIndex].Equals(monopolyGame.CurrentPlayerNode.Next.Value));
                 else
                     verificationIndex = 0;
-                
+
                 monopolyGame.TakeTurn();
             }
+        }
+
+        private Player[] CheckForRemovedPlayers(Player[] PlayerVerificationArray, LinkedList<Player> ActivePlayers)
+        {
+            Player[] temp = new Player[ActivePlayers.Count];
+
+            int tempIndex = 0;
+            for (int i = 0; i < PlayerVerificationArray.Length; i++)
+            {
+                if (PlayerVerificationArray[i].IsContainedIn(ActivePlayers))
+                {
+                    temp[tempIndex] = PlayerVerificationArray[i];
+                    tempIndex++;
+                }
+            }
+
+            return temp;
         }
 
         [TestMethod]
@@ -287,14 +266,14 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void PassingGoMultipleTimes_PlayerGetsMultipleTwoHundredPayments()
+        public void PassGoMultipleTimes_PlayerGetsMultiplePaymentsOfTwoHundred()
         {
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.BOARD_SIZE * 2);
             Assert.AreEqual(400, monopolyGame.CurrentPlayer.Money);
         }
 
         [TestMethod]
-        public void IfPlayerDoesNotLandOnGoToJail_DoesNotGoToJail()
+        public void PlayerDoesNotLandOnGoToJail_DoesNotGoToJail()
         {
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.GO_TO_JAIL - 1);
             Assert.AreEqual(MonopolyBoard.GO_TO_JAIL - 1, monopolyGame.CurrentPlayer.Position);
@@ -305,7 +284,7 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void IfPlayerDoesNotLandOnGoToJail_MoneyUnaffected()
+        public void PlayerDoesNotLandOnGoToJail_MoneyUnaffected()
         {
             monopolyGame.CurrentPlayer.ReceiveMoney(500);
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.GO_TO_JAIL - 1);
@@ -319,14 +298,14 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void IfPlayerLandsOnGoToJail_PlayerGoesToJustVisiting()
+        public void PlayerLandsOnGoToJail_PlayerGoesToJustVisiting()
         {
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.GO_TO_JAIL);
             Assert.AreEqual(MonopolyBoard.JAIL_OR_JUST_VISITING, monopolyGame.CurrentPlayer.Position);
         }
 
         [TestMethod]
-        public void IfPlayerGoesToJail_MoneyUnaffected()
+        public void PlayerGoesToJail_MoneyUnaffected()
         {
             monopolyGame.CurrentPlayer.ReceiveMoney(500);
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.GO_TO_JAIL);
@@ -334,14 +313,14 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void IfPlayerGoesToJail_PlayerDoesNotReceivePassGoMoney()
+        public void PlayerGoesToJail_PlayerDoesNotReceivePassGoMoney()
         {
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.GO_TO_JAIL);
             Assert.AreEqual(0, monopolyGame.CurrentPlayer.Money);
         }
 
         [TestMethod]
-        public void IfPlayerLandsOnIncomeTaxWith1800_PlayerPays180()
+        public void PlayerLandsOnIncomeTaxWith1800_PlayerPays180()
         {
             monopolyGame.CurrentPlayer.ReceiveMoney(1800);
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.INCOME_TAX);
@@ -349,7 +328,7 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void IfPlayerLandsOnIncomeTaxWith2200_PlayerPays200()
+        public void PlayerLandsOnIncomeTaxWith2200_PlayerPays200()
         {
             monopolyGame.CurrentPlayer.ReceiveMoney(2200);
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.INCOME_TAX);
@@ -357,14 +336,14 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void IfPlayerLandsOnIncomeTaxWith0_PlayerPays0()
+        public void PlayerLandsOnIncomeTaxWith0_PlayerPays0()
         {
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.INCOME_TAX);
             Assert.AreEqual(0, monopolyGame.CurrentPlayer.Money);
         }
 
         [TestMethod]
-        public void IfPlayerLandsOnIncomeTaxWith2000_PlayerPays200()
+        public void PlayerLandsOnIncomeTaxWith2000_PlayerPays200()
         {
             monopolyGame.CurrentPlayer.ReceiveMoney(2000);
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.INCOME_TAX);
@@ -372,7 +351,7 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void IfPlayerPassesOverIncomeTax_MoneyUnaffected()
+        public void PlayerPassesOverIncomeTax_MoneyUnaffected()
         {
             monopolyGame.CurrentPlayer.ReceiveMoney(500);
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.INCOME_TAX + 1);
@@ -380,28 +359,21 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void IfPlayerLandsOnLuxuryTax_PlayerPays75()
+        public void PlayerLandsOnLuxuryTax_PlayerPays75()
         {
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.BOARD_SIZE + MonopolyBoard.LUXURY_TAX);
             Assert.AreEqual(125, monopolyGame.CurrentPlayer.Money);
         }
 
         [TestMethod]
-        public void IfPlayerPassesOverLuxuryTax_MoneyUnchanged()
+        public void PlayerPassesOverLuxuryTax_MoneyUnchanged()
         {
             monopolyGame.MoveCurrentPlayerSetAmount(MonopolyBoard.BOARD_SIZE + MonopolyBoard.LUXURY_TAX + 1);
             Assert.AreEqual(200, monopolyGame.CurrentPlayer.Money);
         }
 
         [TestMethod]
-        public void IfPlayerHasNegativeMoney_PlayerLoses()
-        {
-            ForceCurrentPlayerToGoBroke();
-            Assert.IsTrue(monopolyGame.CurrentPlayer.LostTheGame);
-        }
-
-        [TestMethod]
-        public void InTwoPlayerGameIfOnePlayerLoses_OtherPlayerWins()
+        public void OnePlayerLosesInTwoPlayerGame_OtherPlayerWins()
         {
             CreateGameWithSpecifiedNumberOfPlayers(2);
             Player[] players = new Player[2];
@@ -412,7 +384,7 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void InThreePlayerGameOnePlayerLoses_OtherTwoKeepPlaying()
+        public void OnePlayerLosesInThreePlayerGame_OtherTwoKeepPlaying()
         {
             CreateGameWithSpecifiedNumberOfPlayers(3);
             ForceCurrentPlayerToGoBroke();

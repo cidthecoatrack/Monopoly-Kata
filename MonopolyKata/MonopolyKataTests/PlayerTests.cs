@@ -58,11 +58,18 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void TellPlayerToPayUnaffordableAmount_PlayerDoesNotPay()
+        public void PlayerHasNegativeMoney_PlayerLoses()
+        {
+            player.ReceiveMoney(-1);
+            Assert.IsTrue(player.LostTheGame);
+        }
+
+        [TestMethod]
+        public void PlayerPaysUnaffordableAmount_PlayerLoses()
         {
             player.ReceiveMoney(200);
             player.Pay(9266);
-            Assert.AreEqual(200, player.Money);
+            Assert.IsTrue(player.LostTheGame);
         }
 
         [TestMethod]
@@ -83,8 +90,30 @@ namespace MonopolyKataTests
         public void UnequalPlayers_AreAssessedAsUnequal()
         {
             Player differentPlayer = new Player("Other Name");
-            Assert.IsFalse(differentPlayer.Equals(player));
-            Assert.IsFalse(player.Equals(differentPlayer));
+            AssertPlayersAreDifferent(player, differentPlayer);
+
+            differentPlayer = new Player(player.Name);
+            differentPlayer.ReceiveMoney(1);
+            AssertPlayersAreDifferent(player, differentPlayer);
+
+            differentPlayer = new Player(player.Name);
+            differentPlayer.SetPosition(1);
+            AssertPlayersAreDifferent(player, differentPlayer);
+
+            differentPlayer = new Player(player.Name);
+            player.ReceiveMoney(1);
+            AssertPlayersAreDifferent(player, differentPlayer);
+
+            player.Pay(1);
+            Assert.IsTrue(player.Equals(differentPlayer));
+            player.SetPosition(1);
+            AssertPlayersAreDifferent(player, differentPlayer);
+        }
+
+        private void AssertPlayersAreDifferent(Player basePlayer, Player comparePlayer)
+        {
+            Assert.IsFalse(basePlayer.Equals(comparePlayer));
+            Assert.IsFalse(comparePlayer.Equals(basePlayer));
         }
 
         [TestMethod]

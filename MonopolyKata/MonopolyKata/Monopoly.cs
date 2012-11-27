@@ -103,7 +103,11 @@ namespace MonopolyKata
         public void TakeRounds(Int32 rounds)
         {
             for (Int16 i = 0; i < rounds; i++)
+            {
+                if (GameOver)
+                    return;
                 TakeRound();
+            }
         }
 
         public void TakeRound()
@@ -114,7 +118,11 @@ namespace MonopolyKata
         public void TakeTurns(Int32 turns)
         {
             for (Int16 i = 0; i < turns; i++)
+            {
+                if (GameOver)
+                    return;
                 TakeTurn();
+            }
         }
 
         public void TakeTurn()

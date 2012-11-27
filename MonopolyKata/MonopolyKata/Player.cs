@@ -11,7 +11,6 @@ namespace MonopolyKata
         private Int32 position;
         private String name;
         private Int32 money;
-        private Boolean lostTheGame;
 
         public Int32 Position
         {
@@ -30,7 +29,7 @@ namespace MonopolyKata
 
         public Boolean LostTheGame
         {
-            get { return lostTheGame; }
+            get { return (money < 0); }
         }
 
         public Player(String Name)
@@ -52,10 +51,7 @@ namespace MonopolyKata
 
         public void Pay(Int32 AmountToPay)
         {
-            if (CanAfford(AmountToPay))
-                money -= AmountToPay;
-            else
-                lostTheGame = true;
+            money -= AmountToPay;
         }
 
         public Boolean CanAfford(Int32 AmountToPay)
@@ -75,8 +71,6 @@ namespace MonopolyKata
             if (this.name != PlayerToCompare.Name)
                 return false;
             if (this.money != PlayerToCompare.Money)
-                return false;
-            if (this.lostTheGame != PlayerToCompare.LostTheGame)
                 return false;
 
             return true;
