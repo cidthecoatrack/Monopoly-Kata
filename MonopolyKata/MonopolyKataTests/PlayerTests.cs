@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MonopolyKata.MonopolyBoard;
+using MonopolyKata.MonopolyPlayer;
+using MonopolyKataTests.MortgageStrategies;
 
 namespace MonopolyKataTests
 {
@@ -14,7 +13,7 @@ namespace MonopolyKataTests
         [TestInitialize]
         public void Setup()
         {
-            player = new Player("Name");
+            player = new Player("Name", new RandomlyMortgage());
         }
 
         [TestMethod]
@@ -89,18 +88,18 @@ namespace MonopolyKataTests
         [TestMethod]
         public void UnequalPlayers_AreAssessedAsUnequal()
         {
-            Player differentPlayer = new Player("Other Name");
+            Player differentPlayer = new Player("Other Name", new RandomlyMortgage());
             AssertPlayersAreDifferent(player, differentPlayer);
 
-            differentPlayer = new Player(player.Name);
+            differentPlayer = new Player(player.Name, new RandomlyMortgage());
             differentPlayer.ReceiveMoney(1);
             AssertPlayersAreDifferent(player, differentPlayer);
 
-            differentPlayer = new Player(player.Name);
+            differentPlayer = new Player(player.Name, new RandomlyMortgage());
             differentPlayer.SetPosition(1);
             AssertPlayersAreDifferent(player, differentPlayer);
 
-            differentPlayer = new Player(player.Name);
+            differentPlayer = new Player(player.Name, new RandomlyMortgage());
             player.ReceiveMoney(1);
             AssertPlayersAreDifferent(player, differentPlayer);
 
@@ -117,21 +116,98 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void ListContainsPlayer_PlayerSaysSoWhenAsked()
+        public void PlayerCanBuyProperty()
         {
-            List<Player> playerList = new List<Player>();
-            playerList.Add(player);
+            var property = new Property("property", 5, 1, GROUPING.DARK_BLUE);
+            player.ReceiveMoney(5);
+            property.LandOn(player);
 
-            Assert.IsTrue(player.IsContainedIn(playerList));
+            Assert.AreEqual(0, player.Money);
+            Assert.IsTrue(player.Owns(property));
+            Assert.IsTrue(property.Owned);
+            Assert.IsTrue(property.Owner.Equals(player));
         }
 
         [TestMethod]
-        public void ListDoesNotContainPlayer_PlayerSaysSoWhenAsked()
+        public void PlayerImplementsMortgageStrategy()
         {
-            List<Player> playerList = new List<Player>();
-            playerList.Add(new Player("Other Name"));
+            PlayerAlwaysMortgages();
+            PlayerNeverMortgages();
+            PlayerMortgagesWhenSheHasLessThan500();
+        }
 
-            Assert.IsFalse(player.IsContainedIn(playerList));
+        private void PlayerNeverMortgages()
+        {
+            player = new Player("name", new NeverMortgage());
+            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW);
+            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW);
+            var thirdProperty = new Property("third", 50, 5, GROUPING.RED);
+
+            player.ReceiveMoney(150);
+            firstProperty.LandOn(player);
+            secondProperty.LandOn(player);
+            thirdProperty.LandOn(player);
+            player.HandleMortgages();
+
+            Assert.IsFalse(firstProperty.Mortgaged);
+            Assert.IsFalse(secondProperty.Mortgaged);
+            Assert.IsFalse(thirdProperty.Mortgaged);
+
+            firstProperty.Mortgage();
+            player.ReceiveMoney(50);
+            player.HandleMortgages();
+
+            Assert.IsFalse(firstProperty.Mortgaged);
+            Assert.IsFalse(secondProperty.Mortgaged);
+            Assert.IsFalse(thirdProperty.Mortgaged);
+        }
+
+        private void PlayerMortgagesWhenSheHasLessThan500()
+        {
+            player = new Player("name", new MortgageIfMoneyLessThanFiveHundred());
+            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW);
+            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW);
+            var thirdProperty = new Property("third", 50, 5, GROUPING.RED);
+
+            player.ReceiveMoney(600);
+            firstProperty.LandOn(player);
+            secondProperty.LandOn(player);
+            thirdProperty.LandOn(player);
+            player.HandleMortgages();
+
+            Assert.IsTrue(firstProperty.Mortgaged);
+            Assert.IsTrue(secondProperty.Mortgaged);
+            Assert.IsFalse(thirdProperty.Mortgaged);
+            player.ReceiveMoney(10);
+            player.HandleMortgages();
+
+            Assert.IsFalse(firstProperty.Mortgaged);
+            Assert.IsTrue(secondProperty.Mortgaged);
+            Assert.IsFalse(thirdProperty.Mortgaged);
+        }
+
+        private void PlayerAlwaysMortgages()
+        {
+            player = new Player("name", new AlwaysMortgage());
+            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW);
+            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW);
+            var thirdProperty = new Property("third", 50, 5, GROUPING.RED);
+
+            player.ReceiveMoney(150);
+            firstProperty.LandOn(player);
+            secondProperty.LandOn(player);
+            thirdProperty.LandOn(player);
+            player.HandleMortgages();
+
+            Assert.IsTrue(firstProperty.Mortgaged);
+            Assert.IsTrue(secondProperty.Mortgaged);
+            Assert.IsTrue(thirdProperty.Mortgaged);
+            
+            player.HandleMortgages();
+
+            Assert.IsTrue(firstProperty.Mortgaged);
+            Assert.IsTrue(secondProperty.Mortgaged);
+            Assert.IsTrue(thirdProperty.Mortgaged);
         }
     }
 }

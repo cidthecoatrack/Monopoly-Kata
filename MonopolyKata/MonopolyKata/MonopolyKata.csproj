@@ -39,12 +39,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dice.cs" />
-    <Compile Include="Monopoly.cs" />
-    <Compile Include="MonopolyBoard.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="MonopolyBoard\GoToJail.cs" />
+    <Compile Include="MonopolyBoard\IncomeTax.cs" />
+    <Compile Include="MonopolyBoard\LuxuryTax.cs" />
+    <Compile Include="MonopolyDice\Dice.cs" />
+    <Compile Include="MonopolyDice\IDice.cs" />
+    <Compile Include="MonopolyPlayer\IMortgageStrategy.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="MonopolyBoard\Board.cs" />
+    <Compile Include="MonopolyBoard\Railroad.cs" />
+    <Compile Include="MonopolyBoard\NormalSpace.cs" />
+    <Compile Include="MonopolyBoard\Utility.cs" />
+    <Compile Include="MonopolyPlayer\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MonopolyBoard\ISpace.cs" />
+    <Compile Include="MonopolyBoard\Property.cs" />
+    <Compile Include="PlayerOrderRandomizer.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

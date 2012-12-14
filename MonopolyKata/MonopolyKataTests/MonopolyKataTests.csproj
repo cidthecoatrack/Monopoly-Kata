@@ -50,11 +50,24 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="DiceTests.cs" />
-    <Compile Include="MonopolyBoardTests.cs" />
-    <Compile Include="MonopolyTests.cs" />
+    <Compile Include="BoardTests\BoardTests.cs" />
+    <Compile Include="BoardTests\GoToJailTests.cs" />
+    <Compile Include="BoardTests\IncomeTaxTests.cs" />
+    <Compile Include="BoardTests\LuxuryTaxTests.cs" />
+    <Compile Include="BoardTests\PropertyTests.cs" />
+    <Compile Include="BoardTests\RailroadTests.cs" />
+    <Compile Include="BoardTests\UtilityTests.cs" />
+    <Compile Include="MortgageStrategies\AlwaysMortgage.cs" />
+    <Compile Include="TestDice\ControlledDice.cs" />
+    <Compile Include="TestDice\DiceForTesting.cs" />
+    <Compile Include="TestDice\DiceTests.cs" />
+    <Compile Include="GameTests.cs" />
+    <Compile Include="MortgageStrategies\MortgageIfMoneyLessThanFiveHundred.cs" />
+    <Compile Include="MortgageStrategies\NeverMortgage.cs" />
+    <Compile Include="MortgageStrategies\RandomlyMortgage.cs" />
     <Compile Include="PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PlayerOrderRandomizerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonopolyKata\MonopolyKata.csproj">
@@ -62,6 +75,10 @@
       <Name>MonopolyKata</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
