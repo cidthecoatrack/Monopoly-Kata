@@ -1,7 +1,7 @@
 ﻿using System;
 using MonopolyKata.MonopolyPlayer;
 
-namespace MonopolyKata.MonopolyBoard
+namespace MonopolyKata.MonopolyBoard.Spaces
 {
     public class GoToJail : ISpace
     {
@@ -14,7 +14,7 @@ namespace MonopolyKata.MonopolyBoard
 
         public void LandOn(Player player)
         {
-            player.SetPosition(Board.JAIL_OR_JUST_VISITING);
+            player.GoToJail();
         }
     }
 }

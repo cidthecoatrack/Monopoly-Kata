@@ -1,17 +1,17 @@
 ﻿using System;
-using MonopolyKata.MonopolyBoard;
-using MonopolyKata.MonopolyPlayer;
+using MonopolyKata.MonopolyBoard.Spaces;
+using MonopolyKata.Strategies;
 
-namespace MonopolyKataTests.MortgageStrategies
+namespace MonopolyKataTests.Strategies.MortgageStrategies
 {
     public class RandomlyMortgage : IMortgageStrategy
     {
-        public Boolean SaysIShouldMortgage(Int32 moneyOnHand)
+        public Boolean ShouldMortgage(Int32 moneyOnHand)
         {
             return Convert.ToBoolean(new DiceForTesting().RollUnboundedRandomNumber());
         }
 
-        public Boolean SaysIShouldPayOffMortgage(Int32 moneyOnHand, Property property)
+        public Boolean ShouldPayOffMortgage(Int32 moneyOnHand, RealEstate property)
         {
             return Convert.ToBoolean(new DiceForTesting().RollUnboundedRandomNumber());
         }

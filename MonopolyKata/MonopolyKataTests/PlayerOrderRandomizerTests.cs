@@ -3,56 +3,43 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MonopolyKata;
 using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.MortgageStrategies;
+using MonopolyKataTests.Strategies.JailStrategies;
+using MonopolyKataTests.Strategies.MortgageStrategies;
 
 namespace MonopolyKataTests
 {
     [TestClass]
     public class PlayerOrderRandomizerTests
     {
-        List<Player> nonRandomizedPlayers;
+        private List<Player> nonRandomizedPlayers;
+        private IEnumerable<Player> randomizedPlayers;
         
         [TestInitialize]
         public void Setup()
         {
             nonRandomizedPlayers = new List<Player>();
             for (var i = 0; i < 8; i++)
-                nonRandomizedPlayers.Add(new Player(i.ToString(), new RandomlyMortgage()));
+                nonRandomizedPlayers.Add(new Player(i.ToString(), new RandomlyMortgage(), new RandomlyPay()));
+
+            var randomizer = new PlayerOrderRandomizer();
+            randomizedPlayers = randomizer.Execute(nonRandomizedPlayers);
         }
         
         [TestMethod]
         public void PlayerOrderIsRandomized()
         {
-            var randomizedPlayers = PlayerOrderRandomizer.Execute(nonRandomizedPlayers);
             Assert.AreEqual(randomizedPlayers.Count(), nonRandomizedPlayers.Count());
 
-            var randomized = false;
-            for (var i = 0; i < randomizedPlayers.Count(); i++)
-                if (!randomizedPlayers.ElementAt(i).Equals(nonRandomizedPlayers.ElementAt(i)))
-                    randomized = true;
-
-            Assert.IsTrue(randomized);
+            var notRandomized = randomizedPlayers.Where((x, i) => x.Equals(nonRandomizedPlayers[i]));
+            Assert.AreNotEqual(nonRandomizedPlayers.Count(), notRandomized.Count());
         }
 
         [TestMethod]
         public void RandomizingPlayerOrderMaintainsPlayerIntegrity()
         {
-            var randomized = PlayerOrderRandomizer.Execute(nonRandomizedPlayers);
-            var nonrandomized = nonRandomizedPlayers;
-            Assert.AreEqual(randomized.Count(), nonrandomized.Count());
-            TwoSidedUnion(randomized, nonrandomized);
-        }
-
-        private void TwoSidedUnion(IEnumerable<Player> firstCollection, IEnumerable<Player> secondCollection)
-        {
-            OneSidedUnion(firstCollection, secondCollection);
-            OneSidedUnion(secondCollection, firstCollection);
-        }
-
-        private void OneSidedUnion(IEnumerable<Player> left, IEnumerable<Player> right)
-        {
-            foreach (var element in left)
-                Assert.IsTrue(left.Contains(element));
+            Assert.AreEqual(randomizedPlayers.Count(), nonRandomizedPlayers.Count());
+            Assert.IsTrue(randomizedPlayers.All(x => nonRandomizedPlayers.Contains(x)));
+            Assert.IsTrue(nonRandomizedPlayers.All(x => randomizedPlayers.Contains(x)));
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonopolyKata.MonopolyBoard;
+using MonopolyKata.Handlers;
+using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyDice;
 using MonopolyKata.MonopolyPlayer;
 
@@ -9,179 +10,88 @@ namespace MonopolyKata
 {
     public class Game
     {
-        private const Int16 ROUND_LIMIT = 20;
-        
-        private LinkedListNode<Player> currentPointer;
+        private LinkedListNode<Player> currentPlayerPointer;
         private LinkedList<Player> players;
-        private IDice dice;
-        private ISpace[] board;
+        private TurnHandler turnHandler;
 
-        public Int16 CurrentRound { get; private set; }
-        public Boolean GameOver { get { return (CurrentRound > ROUND_LIMIT || Winner != null); } }
+        public Int16 Round { get; private set; }
+        public Boolean Finished { get { return (Round > GameConstants.ROUND_LIMIT || NumberOfActivePlayers == 1); } }
         public Int32 NumberOfActivePlayers { get { return players.Count; } }
 
-        private LinkedListNode<Player> currentPlayerPointer
-        {
-            get { return currentPointer; }
-            set
-            {
-                if (value == players.First)
-                    CurrentRound++;
-                currentPointer = value;
-            }
-        }
         public Player CurrentPlayer
         {
             get { return currentPlayerPointer.Value; }
             private set { currentPlayerPointer.Value = value; }
         }
+
         public Player Winner
         {
             get
             {
-                if (players.Count == 1)
-                    return CurrentPlayer;
-                else if (CurrentRound > ROUND_LIMIT)
-                    return playerWithMostMoney();
+                if (Finished)
+                    return players.OrderByDescending(x => x.Money).First();
                 return null;
             }
         }
 
-        private Player playerWithMostMoney()
+        public Game(IEnumerable<Player> newPlayers, IDice dice, List<ISpace> board)
         {
-            var playerWithMostMoney = CurrentPlayer;
-            var maxCash = playerWithMostMoney.Money;
+            CheckNumberOfPlayers(newPlayers);
 
-            foreach (var player in players)
-            {
-                if (player.Money > maxCash)
-                {
-                    playerWithMostMoney = player;
-                    maxCash = playerWithMostMoney.Money;
-                }
-            }
+            var randomizer = new PlayerOrderRandomizer();
+            var randomizedPlayers = randomizer.Execute(newPlayers);
+            players = new LinkedList<Player>(randomizedPlayers);
 
-            return playerWithMostMoney;
-        }
-
-        public Game(IEnumerable<Player> newPlayers, IDice dice)
-        {
-            if (InvalidNumberOfPlayers(newPlayers))
-                throw new ArgumentOutOfRangeException();
-
-            this.dice = dice;
-            InitializeClassVariables();
-            SetPlayers(newPlayers);
+            turnHandler = new TurnHandler(dice, board);
             currentPlayerPointer = players.First;
+            Round = 1;
         }
 
-        private static Boolean InvalidNumberOfPlayers(IEnumerable<Player> newPlayers)
+        private void CheckNumberOfPlayers(IEnumerable<Player> newPlayers)
         {
-            return newPlayers.Count() < 2 || newPlayers.Count() > 8;
+            if (newPlayers.Count() < GameConstants.MINIMUM_NUMBER_OF_PLAYERS || newPlayers.Count() > GameConstants.MAXIMUM_NUMBER_OF_PLAYERS)
+                throw new ArgumentOutOfRangeException();
         }
 
-        private void InitializeClassVariables()
+        public void Play()
         {
-            players = new LinkedList<Player>();
-            CurrentRound = 0;
-            board = Board.GetMonopolyBoard();
-        }
-
-        private void SetPlayers(IEnumerable<Player> newPlayers)
-        {
-            foreach (var player in PlayerOrderRandomizer.Execute(newPlayers))
-                players.AddLast(player);
-        }
-
-        public void PlayFullGame()
-        {
-            while (!GameOver)
+            while (!Finished)
                 TakeRound();
         }
 
         public void TakeRound()
         {
             var turnCount = 0;
-            while (!GameOver && turnCount++ < players.Count)
+            while (!Finished && turnCount++ < players.Count)
                 TakeTurn();
         }
 
         public void TakeTurn()
         {
-            CurrentPlayer.HandleMortgages();
-            TakeCurrentPlayerTurn();
-            CurrentPlayer.HandleMortgages();
+            turnHandler.TakeTurn(CurrentPlayer);
+            EndTurn();
+        }
 
+        private void EndTurn()
+        {
             if (CurrentPlayer.LostTheGame)
-                RemoveCurrentPlayer();
+                RemovePlayer();
             else
-                NextPlayerTurn();
+                ShiftToNextPlayer();
         }
 
-        private void TakeCurrentPlayerTurn()
-        {
-            do RollForCurrentPlayer();
-            while (CurrentPlayerCanGoAgain());
-        }
-
-        private Boolean CurrentPlayerCanGoAgain()
-        {
-            return dice.Doubles && dice.DoublesCount < 3 && !CurrentPlayer.LostTheGame;
-        }
-
-        private void NextPlayerTurn()
+        private void ShiftToNextPlayer()
         {
             currentPlayerPointer = currentPlayerPointer.Next ?? players.First;
+            if (currentPlayerPointer == players.First)
+                Round++;
         }
 
-        private void RollForCurrentPlayer()
-        {
-            var roll = dice.RollTwoDice();
-
-            if (dice.DoublesCount == 3)
-                CurrentPlayer.SetPosition(10);
-            else
-                MoveCurrentPlayerForward(roll);
-        }
-
-        private void MoveCurrentPlayerForward(Int32 amountToMove)
-        {
-            CurrentPlayer.Move(amountToMove);
-            CheckIfCurrentPlayerPassedGo();
-            board[CurrentPlayer.Position].LandOn(CurrentPlayer);
-        }
-
-        private void CheckIfCurrentPlayerPassedGo()
-        {
-            while(CurrentPlayerHasPassedGo())
-            {
-                CurrentPlayer.SetPosition(CurrentPlayer.Position - Board.BOARD_SIZE);
-                CurrentPlayer.ReceiveMoney(200);
-            }
-        }
-
-        private Boolean CurrentPlayerHasPassedGo()
-        {
-            return CurrentPlayer.Position >= Board.BOARD_SIZE;
-        }
-
-        private void RemoveCurrentPlayer()
+        private void RemovePlayer()
         {
             var newPointer = currentPlayerPointer.Next ?? players.First;
             players.Remove(CurrentPlayer);
             currentPlayerPointer = newPointer;
         }
-
-        #region Just For Testing
-        public Boolean IsAnActivePlayer(Player player)
-        {
-            return players.Contains(player);
-        }
-
-        public ISpace GetSpaceByIndex(Int32 index)
-        {
-            return board[index];
-        }
-        #endregion
     }
 }

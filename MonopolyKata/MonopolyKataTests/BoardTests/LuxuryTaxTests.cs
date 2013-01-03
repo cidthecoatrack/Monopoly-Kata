@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata.MonopolyBoard;
+using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.MortgageStrategies;
+using MonopolyKataTests.Strategies.JailStrategies;
+using MonopolyKataTests.Strategies.MortgageStrategies;
 
 namespace MonopolyKataTests.BoardTests
 {
@@ -12,8 +13,8 @@ namespace MonopolyKataTests.BoardTests
         public void PlayerLandsOnLuxuryTax_PlayerPays75()
         {
             var luxuryTax = new LuxuryTax();
-            var player = new Player("name", new RandomlyMortgage());
-            player.ReceiveMoney(75);
+            var player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
+            player.ReceiveMoney(LuxuryTax.LUXURY_TAX);
             luxuryTax.LandOn(player);
             Assert.AreEqual(0, player.Money);
         }

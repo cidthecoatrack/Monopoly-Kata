@@ -1,7 +1,7 @@
 ﻿using System;
 using MonopolyKata.MonopolyPlayer;
 
-namespace MonopolyKata.MonopolyBoard
+namespace MonopolyKata.MonopolyBoard.Spaces
 {
     public class NormalSpace : ISpace
     {

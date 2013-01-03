@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata.MonopolyBoard;
+using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.MortgageStrategies;
+using MonopolyKataTests.Strategies.JailStrategies;
+using MonopolyKataTests.Strategies.MortgageStrategies;
 
 namespace MonopolyKataTests.BoardTests
 {
@@ -21,44 +20,8 @@ namespace MonopolyKataTests.BoardTests
         public void Setup()
         {
             property = new Property("property", PRICE, RENT, GROUPING.DARK_BLUE);
-            player = new Player("player", new RandomlyMortgage());
+            player = new Player("player", new RandomlyMortgage(), new RandomlyPay());
             SetUpGroup();
-        }
-
-        [TestMethod]
-        public void OwnerLandsOnProperty_NothingHappens()
-        {
-            MakePlayerBuyProperty(player, property);
-            var previousPlayer = player;
-            property.LandOn(player);
-            Assert.IsTrue(player.Equals(previousPlayer));
-        }
-
-        private void MakePlayerBuyProperty(Player purchaser, Property toBuy)
-        {
-            purchaser.ReceiveMoney(toBuy.Price);
-            toBuy.LandOn(purchaser);
-        }
-        
-        [TestMethod]
-        public void PlayerDoesNotBuyUnaffordableProperty()
-        {
-            var previousPlayer = player;
-            property.LandOn(player);
-            Assert.IsTrue(player.Equals(previousPlayer));
-            Assert.IsFalse(player.Owns(property));
-            Assert.IsFalse(property.Owned);
-            Assert.IsNull(property.Owner);
-        }
-
-        [TestMethod]
-        public void PlayerDoesNotOwnAllPropertiesInGroup_RentIsNormal()
-        {
-            MakePlayerBuyProperty(player, property);
-            Assert.AreEqual(RENT, property.GetRent());
-            var otherPlayer = new Player("other name", new RandomlyMortgage());
-            MakePlayerBuyProperty(otherPlayer, otherProperty);
-            Assert.AreEqual(RENT, property.GetRent());
         }
 
         private void SetUpGroup()
@@ -70,73 +33,51 @@ namespace MonopolyKataTests.BoardTests
         }
 
         [TestMethod]
+        public void PlayerDoesNotOwnAllPropertiesInGroup_RentIsNormal()
+        {
+            MakePlayerBuyProperty(player, property);
+            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+            renter.ReceiveMoney(RENT);
+            property.LandOn(renter);
+            Assert.AreEqual(0, renter.Money);
+
+            var otherPlayer = new Player("other name", new RandomlyMortgage(), new RandomlyPay());
+            MakePlayerBuyProperty(otherPlayer, otherProperty);
+            renter.ReceiveMoney(RENT);
+            property.LandOn(renter);
+            Assert.AreEqual(0, renter.Money);
+        }
+
+        private void MakePlayerBuyProperty(Player purchaser, Property toBuy)
+        {
+            purchaser.ReceiveMoney(toBuy.Price);
+            toBuy.LandOn(purchaser);
+        }
+
+        [TestMethod]
         public void PlayerOwnsAllPropertiesInGroup_RentIsDoubled()
         {
             MakePlayerBuyProperty(player, property);
             MakePlayerBuyProperty(player, otherProperty);
-            Assert.AreEqual(RENT * 2, property.GetRent());
-            Assert.AreEqual(RENT * 2, otherProperty.GetRent());
-        }
+            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+            renter.ReceiveMoney(RENT * 2);
+            property.LandOn(renter);
+            Assert.AreEqual(0, renter.Money);
 
-        [TestMethod]
-        public void PlayerMortgagesPropertyFor90PercentPurchasePrice()
-        {
-            MakePlayerBuyProperty(player, property);
-            property.Mortgage();
-            Assert.AreEqual(PRICE * .9, player.Money);
-        }
-
-        [TestMethod]
-        public void CannotMortgageAlreadyMortgagedProperty()
-        {
-            MakePlayerBuyProperty(player, property);
-            property.Mortgage();
-            property.Mortgage();
-            Assert.AreEqual(PRICE * .9, player.Money);
-        }
-
-        [TestMethod]
-        public void PlayerCanPayOffMortgage()
-        {
-            MakePlayerBuyProperty(player, property);
-            property.Mortgage();
-            player.ReceiveMoney(PRICE - player.Money);
-            property.PayOffMortgage();
-            Assert.AreEqual(0, player.Money);
-            Assert.IsFalse(property.Mortgaged);
-        }
-
-        [TestMethod]
-        public void PlayerCantPayOffUnmortgagedProperty()
-        {
-            MakePlayerBuyProperty(player, property);
-            player.ReceiveMoney(PRICE);
-            property.PayOffMortgage();
-            Assert.AreEqual(PRICE, player.Money);
-            Assert.IsFalse(property.Mortgaged);
+            renter.ReceiveMoney(RENT * 2);
+            otherProperty.LandOn(renter);
+            Assert.AreEqual(0, renter.Money);
         }
 
         [TestMethod]
         public void PlayerLandsOnOthersOwnedProperty_PaysRent()
         {
             MakePlayerBuyProperty(player, property);
-            var renter = new Player("renter", new RandomlyMortgage());
+            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
             renter.ReceiveMoney(RENT);
             property.LandOn(renter);
             Assert.AreEqual(0, renter.Money);
             Assert.AreEqual(RENT, player.Money);
-        }
-
-        [TestMethod]
-        public void LosingPlayerDoesNotOwnPropertyAnymore()
-        {
-            var loser = new Player("loser", new RandomlyMortgage());
-            loser.ReceiveMoney(PRICE);
-            property.LandOn(loser);
-            Assert.IsTrue(property.Owned);
-            loser.Pay(loser.Money + 1);
-            Assert.IsTrue(loser.LostTheGame);
-            Assert.IsFalse(property.Owned);
         }
     }
 }

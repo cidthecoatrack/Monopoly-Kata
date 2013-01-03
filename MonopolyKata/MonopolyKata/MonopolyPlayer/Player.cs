@@ -2,40 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using MonopolyKata.MonopolyBoard;
+using MonopolyKata.MonopolyBoard.Spaces;
+using MonopolyKata.Strategies;
 
 namespace MonopolyKata.MonopolyPlayer
 {
     public class Player
     {
-        private List<Property> ownedProperty;
-
-        public Int32 Position {get; private set;}
-        public String Name {get; private set;}
-        public Int32 Money {get; private set;}
-        public Int32 Roll { get; private set; }
+        public Boolean IsInJail { get; set; }
         public Boolean LostTheGame { get { return (Money < 0); } }
+        public Int32 Money { get; private set; }
+        public String Name { get; private set; }
+        public Int32 Position {get; private set;}
+        public Int32 TurnsInJail { get; private set; }
+
+        private IJailStrategy jailStrategy;
         private IMortgageStrategy mortgageStrategy;
+        private List<RealEstate> ownedRealEstate;
 
-        protected Player() { }
-
-        public Player(String name, IMortgageStrategy mortgageStrategy)
+        public Player(String name, IMortgageStrategy mortgageStrategy, IJailStrategy jailStrategy)
         {
             Name = name;
             Position = 0;
             Money = 0;
-            ownedProperty = new List<Property>();
+            ownedRealEstate = new List<RealEstate>();
             this.mortgageStrategy = mortgageStrategy;
+            this.jailStrategy = jailStrategy;
+            IsInJail = false;
         }
 
         public void Move(Int32 amountToMove)
         {
-            Roll = amountToMove;
-            Position += Roll;
-        }
-
-        public void SetPosition(Int32 newPosition)
-        {
-            Position = newPosition;
+            Position += amountToMove;
         }
 
         public void Pay(Int32 amountToPay)
@@ -53,33 +51,15 @@ namespace MonopolyKata.MonopolyPlayer
             Money += AmountToReceive;
         }
 
-        public Boolean Equals(Player playerToCompare)
+        public Boolean Owns(RealEstate realEstate)
         {
-            var theSame = true;
-
-            if (this.Position != playerToCompare.Position)
-                theSame = false;
-            if (this.Name != playerToCompare.Name)
-                theSame = false;
-            if (this.Money != playerToCompare.Money)
-                theSame = false;
-
-            foreach (var property in ownedProperty)
-                if (!playerToCompare.Owns(property))
-                    theSame = false;
-
-            return theSame;
+            return ownedRealEstate.Contains(realEstate);
         }
 
-        public Boolean Owns(Property property)
+        public void Buy(RealEstate realEstate)
         {
-            return ownedProperty.Contains(property);
-        }
-
-        public void Buy(Property property)
-        {
-            Pay(property.Price);
-            ownedProperty.Add(property);
+            Pay(realEstate.Price);
+            ownedRealEstate.Add(realEstate);
         }
 
         public void HandleMortgages()
@@ -88,20 +68,52 @@ namespace MonopolyKata.MonopolyPlayer
             PayOffMortgages();
         }
 
+        private void MortgageProperties()
+        {
+            var propertiesToMortgage = ownedRealEstate.Where(x => !x.Mortgaged);
+            foreach (var property in propertiesToMortgage)
+                if (mortgageStrategy.ShouldMortgage(Money))
+                    property.Mortgage();
+        }
+
         private void PayOffMortgages()
         {
-            var propertiesToPayOff = ownedProperty.Where(x => x.Mortgaged);
+            var propertiesToPayOff = ownedRealEstate.Where(x => x.Mortgaged);
             foreach(var property in propertiesToPayOff)
-                if (mortgageStrategy.SaysIShouldPayOffMortgage(Money, property))
+                if (mortgageStrategy.ShouldPayOffMortgage(Money, property))
                     property.PayOffMortgage();
         }
 
-        private void MortgageProperties()
+        public void GoToJail()
         {
-            var propertiesToMortgage = ownedProperty.Where(x => !x.Mortgaged);
-            foreach(var property in propertiesToMortgage)
-                if (mortgageStrategy.SaysIShouldMortgage(Money))
-                    property.Mortgage();
+            Move(BoardConstants.JAIL_OR_JUST_VISITING - Position);
+            IsInJail = true;
+            TurnsInJail = 0;
+        }
+
+        private void AttemptToGetOutOfJail()
+        {
+            TurnsInJail++;
+            if (jailStrategy.SaysIShouldPayToGetOutOfJail(Money) && CanAfford(GameConstants.COST_TO_GET_OUT_OF_JAIL))
+                PayToGetOutOfJail();
+        }
+
+        public void PayToGetOutOfJail()
+        {
+            Pay(GameConstants.COST_TO_GET_OUT_OF_JAIL);
+            IsInJail = false;
+        }
+
+        public void PreTurnChecks()
+        {
+            if (IsInJail)
+                AttemptToGetOutOfJail();
+            HandleMortgages();
+        }
+
+        public void PostTurnChecks()
+        {
+            HandleMortgages();
         }
     }
 }

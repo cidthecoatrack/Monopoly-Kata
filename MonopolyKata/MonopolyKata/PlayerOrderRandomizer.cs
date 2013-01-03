@@ -5,9 +5,9 @@ using MonopolyKata.MonopolyPlayer;
 
 namespace MonopolyKata
 {
-    public static class PlayerOrderRandomizer
+    public class PlayerOrderRandomizer
     {
-        public static IEnumerable<Player> Execute(IEnumerable<Player> newPlayers)
+        public IEnumerable<Player> Execute(IEnumerable<Player> newPlayers)
         {
             return newPlayers.OrderBy(player => new Dice().RollSingleDie());
         }

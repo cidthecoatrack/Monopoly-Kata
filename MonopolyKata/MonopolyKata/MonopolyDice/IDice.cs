@@ -6,7 +6,10 @@ namespace MonopolyKata.MonopolyDice
     {
         Boolean Doubles { get; }
         Int32 DoublesCount { get; }
+        Int32 Value { get; }
+
         Int32 RollSingleDie();
-        Int32 RollTwoDice();
+        void RollTwoDice();
+        void Reset();
     }
 }

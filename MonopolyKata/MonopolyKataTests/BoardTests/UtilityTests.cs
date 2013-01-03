@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata.MonopolyBoard;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.MortgageStrategies;
+using MonopolyKataTests.Strategies.JailStrategies;
+using MonopolyKataTests.Strategies.MortgageStrategies;
 
 namespace MonopolyKataTests.BoardTests
 {
@@ -13,23 +13,24 @@ namespace MonopolyKataTests.BoardTests
         Utility otherUtility;
         Player owner;
         Player renter;
-        Int32 roll;
 
         [TestInitialize]
         public void Setup()
         {
-            utility = new Utility("utility");
-            otherUtility = new Utility("other utility");
+            var dice = new ControlledDice();
+            dice.SetPredeterminedRollValue(4);
+            utility = new Utility("utility", dice);
+            otherUtility = new Utility("other utility", dice);
             var utilities = new Utility[] { utility, otherUtility };
-            owner = new Player("owner", new RandomlyMortgage());
-            renter = new Player("renter", new RandomlyMortgage());
-            roll = 4;
+            owner = new Player("owner", new RandomlyMortgage(), new RandomlyPay());
+            renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
-            utility.SetPropertiesInGroup(utilities);
-            otherUtility.SetPropertiesInGroup(utilities);
+            dice.RollTwoDice();
+            utility.SetUtilities(utilities);
+            otherUtility.SetUtilities(utilities);
             owner.ReceiveMoney(utility.Price);
             utility.LandOn(owner);
-            renter.Move(roll);
+            renter.Move(dice.Value);
         }
         
         [TestMethod]
@@ -44,7 +45,7 @@ namespace MonopolyKataTests.BoardTests
         [TestMethod]
         public void PlayerLandsOnOwnedUtilityx2_PlayerPays10xDieRoll()
         {
-            var otherOwner = new Player("other owner", new RandomlyMortgage());
+            var otherOwner = new Player("other owner", new RandomlyMortgage(), new RandomlyPay());
             otherOwner.ReceiveMoney(otherUtility.Price);
             otherUtility.LandOn(otherOwner);
             

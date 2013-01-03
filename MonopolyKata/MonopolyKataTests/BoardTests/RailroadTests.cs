@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata.MonopolyBoard;
+using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.MortgageStrategies;
+using MonopolyKataTests.Strategies.JailStrategies;
+using MonopolyKataTests.Strategies.MortgageStrategies;
 
 namespace MonopolyKataTests.BoardTests
 {
@@ -26,10 +27,10 @@ namespace MonopolyKataTests.BoardTests
             var railroads = new Railroad[] { firstRxR, secondRxR, thirdRxR, fourthRxR };
 
             foreach (var railroad in railroads)
-                railroad.SetPropertiesInGroup(railroads);
+                railroad.SetRailroads(railroads);
 
-            owner = new Player("owner", new RandomlyMortgage());
-            renter = new Player("renter", new RandomlyMortgage());
+            owner = new Player("owner", new RandomlyMortgage(), new RandomlyPay());
+            renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
             owner.ReceiveMoney(firstRxR.Price);
             firstRxR.LandOn(owner);

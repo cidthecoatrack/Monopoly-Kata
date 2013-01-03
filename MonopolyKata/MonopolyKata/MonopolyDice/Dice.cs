@@ -9,10 +9,12 @@ namespace MonopolyKata.MonopolyDice
 
         public Boolean Doubles { get; private set; }
         public Int32 DoublesCount { get; private set; }
+        public Int32 Value { get; private set; }
 
         public Dice()
         {
             InitializeRandomInstanceWithCryptographicallyStrongRandomSeed();
+            DoublesCount = 0;
         }
 
         private void InitializeRandomInstanceWithCryptographicallyStrongRandomSeed()
@@ -21,7 +23,6 @@ namespace MonopolyKata.MonopolyDice
             var CryptoByteBuffer = new Byte[4];
             Crypto.GetBytes(CryptoByteBuffer);
             random = new Random(BitConverter.ToInt32(CryptoByteBuffer, 0));
-            DoublesCount = 0;
         }
         
         public Int32 RollSingleDie()
@@ -29,7 +30,7 @@ namespace MonopolyKata.MonopolyDice
             return random.Next(1, 7);
         }
 
-        public Int32 RollTwoDice()
+        public void RollTwoDice()
         {
             var Die1 = RollSingleDie();
             var Die2 = RollSingleDie();
@@ -41,11 +42,16 @@ namespace MonopolyKata.MonopolyDice
             }
             else
             {
-                Doubles = false;
-                DoublesCount = 0;
+                Reset();
             }
 
-            return Die1 + Die2;
+            Value = Die1 + Die2;
+        }
+
+        public void Reset()
+        {
+            DoublesCount = 0;
+            Doubles = false;
         }
     }
 }

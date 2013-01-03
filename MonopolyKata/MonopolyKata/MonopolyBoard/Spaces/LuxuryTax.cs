@@ -1,11 +1,12 @@
 ﻿using System;
 using MonopolyKata.MonopolyPlayer;
 
-namespace MonopolyKata.MonopolyBoard
+namespace MonopolyKata.MonopolyBoard.Spaces
 {
     public class LuxuryTax : ISpace
     {
         public String Name { get; private set; }
+        public const Int16 LUXURY_TAX = 75;
 
         public LuxuryTax()
         {
@@ -14,7 +15,7 @@ namespace MonopolyKata.MonopolyBoard
 
         public void LandOn(Player player)
         {
-            player.Pay(75);
+            player.Pay(LUXURY_TAX);
         }
     }
 }

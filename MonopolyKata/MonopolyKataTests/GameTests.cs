@@ -3,383 +3,187 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MonopolyKata;
 using MonopolyKata.MonopolyBoard;
-using MonopolyKata.MonopolyDice;
+using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.MortgageStrategies;
+using MonopolyKataTests.Strategies.JailStrategies;
+using MonopolyKataTests.Strategies.MortgageStrategies;
 
 namespace MonopolyKataTests
 {
     [TestClass]
     public class GameTests
     {
-        Game monopolyGame;
-        String[] players = new String[8] { "Horse", "Car", "Karl", "Allen", "Elliot", "Tim", "Keith", "Ramey" };
-        List<Player> playerList;
-
-        private void CreateDefaultGame()
-        {
-            CreateGameWithSpecifiedNumberOfPlayersAndDice(players.Length, new Dice());
-        }
-
-        private void CreateGameWithSpecificDice(IDice dice)
-        {
-            CreateGameWithSpecifiedNumberOfPlayersAndDice(players.Length, dice);
-        }
-
-        private void CreateGameWithSpecifiedNumberOfPlayers(Int32 numberOfPlayers)
-        {
-            CreateGameWithSpecifiedNumberOfPlayersAndDice(numberOfPlayers, new Dice());
-        }
-        
-        private void CreateGameWithSpecifiedNumberOfPlayersAndDice(Int32 numberOfPlayers, IDice dice)
-        {
-            monopolyGame = new Game(GeneratePlayerIEnumerable(numberOfPlayers), dice);
-        }
-
-        private ControlledDice CreateGameWithControlledDice(Int32 setRollValue)
-        {
-            var controlledDice = new ControlledDice();
-            controlledDice.SetPredeterminedRollValue(setRollValue);
-            CreateGameWithSpecificDice(controlledDice);
-            return controlledDice;
-        }
+        Game game;
+        BoardFactory boardFactory;
+        List<ISpace> board;
+        ControlledDice dice;
 
         private IEnumerable<Player> GeneratePlayerIEnumerable(Int32 NumberOfPlayers)
         {
-            playerList = new List<Player>();
-            var CountLimit = GenerateCountLimit(NumberOfPlayers);
+            var playerList = new List<Player>();
 
-            for (var i = 0; i < CountLimit; i++)
-                playerList.Add(new Player(players[i], new NeverMortgage()));
-
-            for (NumberOfPlayers -= CountLimit; NumberOfPlayers > 0; NumberOfPlayers--)
-                playerList.Add(new Player(NumberOfPlayers.ToString(), new NeverMortgage()));
+            while (NumberOfPlayers-- > 0)
+                playerList.Add(new Player("Player " + NumberOfPlayers, new NeverMortgage(), new NeverPay()));
 
             return playerList;
         }
 
-        private Int32 GenerateCountLimit(Int32 NumberOfPlayers)
+        [TestInitialize]
+        public void Setup()
         {
-            if (NumberOfPlayers > players.Length)
-                return players.Length;
-            return NumberOfPlayers;
+            dice = new ControlledDice();
+            boardFactory = new BoardFactory();
+            board = boardFactory.CreateMonopolyBoard(dice);
+            game = new Game(GeneratePlayerIEnumerable(8), dice, board);
         }
 
         [TestMethod]
         public void CreateTwoPlayerGame_GameHasTwoPlayers()
         {
-            CreateGameWithSpecifiedNumberOfPlayers(2);
-            Assert.AreEqual(2, monopolyGame.NumberOfActivePlayers);
+            game = new Game(GeneratePlayerIEnumerable(2), dice, board);
+            Assert.AreEqual(2, game.NumberOfActivePlayers);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void FewerThanTwoPlayers_MonopolyWillNotPlay()
         {
-            CreateGameWithSpecifiedNumberOfPlayers(1);
+            game = new Game(GeneratePlayerIEnumerable(1), dice, board);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MoreThanEightPlayers_MonopolyWillNotPlay()
         {
-            CreateGameWithSpecifiedNumberOfPlayers(9);
-        }
-
-        [TestMethod]
-        public void OnTurn_PlayerMoves()
-        {
-            CreateDefaultGame();
-            var firstPlayer = monopolyGame.CurrentPlayer;
-            monopolyGame.TakeTurn();
-            Assert.AreNotEqual(Board.GO, firstPlayer.Position);
+            game = new Game(GeneratePlayerIEnumerable(9), dice, board);
         }
 
         [TestMethod]
         public void AfterFirstTurn_NextPlayerIsTheCurrentPlayer()
         {
-            CreateDefaultGame();
-            var firstPlayer = monopolyGame.CurrentPlayer;
-            monopolyGame.TakeTurn();
-            Assert.AreNotEqual(firstPlayer, monopolyGame.CurrentPlayer);
+            var firstPlayer = game.CurrentPlayer;
+            game.TakeTurn();
+            Assert.AreNotEqual(firstPlayer, game.CurrentPlayer);
         }
 
         [TestMethod]
         public void AllPlayersTakeATurnInARound()
         {
-            CreateDefaultGame();
-            monopolyGame.TakeRound();
+            dice.SetPredeterminedRollValue(3);
 
-            while (monopolyGame.CurrentRound == 2)
+            while (game.Round == 1)
             {
-                Assert.AreNotEqual(Board.GO, monopolyGame.CurrentPlayer.Position);
-                monopolyGame.TakeTurn();
+                var player = game.CurrentPlayer;
+                game.TakeTurn();
+                Assert.AreEqual(3, player.Position);
             }
         }
 
         [TestMethod]
         public void AfterEveryoneTakesATurn_BeginNewRound()
         {
-            CreateDefaultGame();
-            Assert.AreEqual(1, monopolyGame.CurrentRound);
-            monopolyGame.TakeRound();
-            Assert.AreEqual(2, monopolyGame.CurrentRound);
+            var round = game.Round;
+            game.TakeRound();
+            Assert.AreEqual(round + 1, game.Round);
         }
 
         [TestMethod]
         public void AtNewRound_FirstPlayerHasNewTurn()
         {
-            CreateDefaultGame();
-            var firstPlayer = monopolyGame.CurrentPlayer;
-            monopolyGame.TakeRound();
-            Assert.IsTrue(firstPlayer.Equals(monopolyGame.CurrentPlayer));
+            var firstPlayer = game.CurrentPlayer;
+            game.TakeRound();
+            Assert.IsTrue(firstPlayer.Equals(game.CurrentPlayer));
         }
 
         [TestMethod]
         public void AfterTwentyRounds_GameEnds()
         {
-            CreateDefaultGame();
-            monopolyGame.PlayFullGame();
-            Assert.IsTrue(monopolyGame.GameOver);
+            game.Play();
+            Assert.IsTrue(game.Finished);
         }
 
         [TestMethod]
         public void PlayersPlayInSameOrderEveryRound()
         {
-            CreateDefaultGame();
-            var playerVerificationArray = new Player[monopolyGame.NumberOfActivePlayers];
-            var verificationIndex = 0;
-            var firstPlayer = monopolyGame.CurrentPlayer;
-            
+            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces());
+            dice.SetPredeterminedDieValues(1, 1, 2, 3, 4, 5, 6);
+            var playerVerificationList = new List<Player>();
+
             do
             {
-                playerVerificationArray[verificationIndex++] = monopolyGame.CurrentPlayer;
-                monopolyGame.TakeTurn();
-            } while (!firstPlayer.Equals(monopolyGame.CurrentPlayer));
+                playerVerificationList.Add(game.CurrentPlayer);
+                game.TakeTurn();
+            } while (game.Round == 1);
 
-            while (!monopolyGame.GameOver)
+            var verificationIndex = 0;
+            while (!game.Finished)
             {
-                if (playerVerificationArray.Length != monopolyGame.NumberOfActivePlayers)
-                {
-                    playerVerificationArray = ResetVerificationArray(playerVerificationArray);
-                    if (verificationIndex > 0)
-                        verificationIndex--;
-                }
-
-                if (verificationIndex >= playerVerificationArray.Length)
-                    verificationIndex = 0;
-
-                Assert.IsTrue(playerVerificationArray[verificationIndex++].Equals(monopolyGame.CurrentPlayer));
-                monopolyGame.TakeTurn();
+                verificationIndex %= playerVerificationList.Count;
+                Assert.AreEqual(playerVerificationList[verificationIndex++], game.CurrentPlayer);
+                game.TakeTurn();
+                Assert.AreEqual(8, game.NumberOfActivePlayers);
             }
-        }
-
-        private Player[] ResetVerificationArray(Player[] verificationArray)
-        {
-            var temp = new Player[monopolyGame.NumberOfActivePlayers];
-            var tempIndex = 0;
-
-            for(var i = 0; i < verificationArray.Length; i++)
-                if (monopolyGame.IsAnActivePlayer(verificationArray[i]))
-                    temp[tempIndex++] = verificationArray[i];
-                    
-            return temp;
-        }
-
-        [TestMethod]
-        public void PlayerCannotMoveOffOfBoard()
-        {
-            var controlledDice = CreateGameWithControlledDice(Board.BOARD_SIZE - 1);
-            var testPlayer = monopolyGame.CurrentPlayer;
-
-            monopolyGame.TakeRound();
-            Assert.AreEqual(Board.BOARD_SIZE - 1, testPlayer.Position);
-            
-            controlledDice.SetPredeterminedRollValue(6);
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(5, testPlayer.Position);
-        }
-
-        [TestMethod]
-        public void PlayersReceive200ForLandingOnGo()
-        {
-            CreateGameWithControlledDice(Board.BOARD_SIZE);
-            Player testPlayer = monopolyGame.CurrentPlayer;
-
-            Assert.AreEqual(0, testPlayer.Money);
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(200, testPlayer.Money);
-        }
-
-        [TestMethod]
-        public void PlayersReceive200ForPassingGo()
-        {
-            CreateGameWithControlledDice(Board.BOARD_SIZE + 1);
-            var testPlayer = monopolyGame.CurrentPlayer;
-
-            Assert.AreEqual(0, testPlayer.Money);
-            var priceOfProperty = 60;
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(200 - priceOfProperty, testPlayer.Money);
-        }
-
-        [TestMethod]
-        public void PlayersDoNotReceiveMoneyFromLeavingGo()
-        {
-            CreateDefaultGame();
-            Player testPlayer;
-
-            while (monopolyGame.CurrentRound == 1)
-            {
-                testPlayer = monopolyGame.CurrentPlayer;
-                monopolyGame.TakeTurn();
-                Assert.AreNotEqual(200, testPlayer.Money);
-            }
-        }
-
-        [TestMethod]
-        public void PassGoMultipleTimes_PlayerGetsMultiplePaymentsOfTwoHundred()
-        {
-            CreateGameWithControlledDice(Board.BOARD_SIZE * 2);
-            var testPlayer = monopolyGame.CurrentPlayer;
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(400, testPlayer.Money);
         }
 
         [TestMethod]
         public void OnePlayerLosesInTwoPlayerGame_OtherPlayerWins()
         {
-            CreateGameWithSpecifiedNumberOfPlayers(2);
-            var winner = monopolyGame.CurrentPlayer;
+            game = new Game(GeneratePlayerIEnumerable(2), dice, board);
+            var winner = game.CurrentPlayer;
 
-            monopolyGame.TakeTurn();
-            ForceCurrentPlayerToGoBroke();
+            game.TakeTurn();
+            var loser = game.CurrentPlayer;
+            loser.Pay(loser.Money + 1);
+            game.TakeTurn();
 
-            Assert.AreEqual(winner, monopolyGame.Winner);
+            Assert.AreEqual(winner, game.Winner);
         }
 
         [TestMethod]
         public void OnePlayerLosesInThreePlayerGame_OtherTwoKeepPlaying()
         {
-            CreateGameWithSpecifiedNumberOfPlayers(3);
-            var loser = monopolyGame.CurrentPlayer;
-            ForceCurrentPlayerToGoBroke();
+            game = new Game(GeneratePlayerIEnumerable(3), dice, board);
+            var loser = game.CurrentPlayer;
+            loser.Pay(loser.Money + 1);
+            game.TakeTurn();
 
-            Assert.IsFalse(monopolyGame.IsAnActivePlayer(loser));
-            Assert.AreEqual(2, monopolyGame.NumberOfActivePlayers);
+            Assert.IsTrue(loser.LostTheGame);
+            Assert.IsFalse(game.Finished);
+            Assert.AreEqual(2, game.NumberOfActivePlayers);
 
-            monopolyGame.TakeTurn();
-
-            Assert.IsFalse(monopolyGame.IsAnActivePlayer(loser));
-            Assert.AreEqual(2, monopolyGame.NumberOfActivePlayers);
-        }
-
-        private void ForceCurrentPlayerToGoBroke()
-        {
-            monopolyGame.CurrentPlayer.Pay(monopolyGame.CurrentPlayer.Money + 1);
-            monopolyGame.TakeTurn();
+            game.TakeTurn();
+            Assert.IsTrue(loser.LostTheGame);
+            Assert.IsFalse(game.Finished);
+            Assert.AreEqual(2, game.NumberOfActivePlayers);
         }
 
         [TestMethod]
         public void OnePlayerLosesEachTurn_RemainingPlayerIsWinner()
         {
-            CreateDefaultGame();
-            var TheChosenOne = monopolyGame.CurrentPlayer;
+            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces());
+            var theChosenOne = game.CurrentPlayer;
 
-            while (!monopolyGame.GameOver)
+            while (!game.Finished)
             {
-                if (TheChosenOne.Equals(monopolyGame.CurrentPlayer))
+                if (!theChosenOne.Equals(game.CurrentPlayer))
                 {
-                    TheChosenOne.ReceiveMoney(9266);
-                    monopolyGame.TakeTurn();
+                    var notTheChosenOne = game.CurrentPlayer;
+                    notTheChosenOne.Pay(notTheChosenOne.Money + 1);
                 }
-                else
-                {
-                    ForceCurrentPlayerToGoBroke();
-                }
+
+                game.TakeTurn();
             }
 
-            Assert.AreEqual(TheChosenOne, monopolyGame.Winner);
-        }
-
-        private void GivePlayerProperty(Player owner, Property property)
-        {
-            owner.ReceiveMoney(property.Price);
-            property.LandOn(owner);
-        }
-
-        private void ZeroOutPlayersMoney(Player p)
-        {
-            p.ReceiveMoney(9266);
-            monopolyGame.TakeTurn();
-            p.Pay(p.Money);
-            monopolyGame.TakeTurn();
+            Assert.AreEqual(theChosenOne, game.Winner);
         }
 
         [TestMethod]
-        public void PlayerRollsDoubles_GoesAgain()
+        public void AtEndOfGame_PlayerWithMostMoneyWins()
         {
-            var controlledDice = new ControlledDice();
-            controlledDice.SetPredeterminedDieValue(3, 3, 3, 1);
-            CreateGameWithSpecificDice(controlledDice);
+            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces());
+            var theChosenOne = game.CurrentPlayer;
 
-            var testPlayer = monopolyGame.CurrentPlayer;
-            testPlayer.ReceiveMoney(9266);
-
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(10, testPlayer.Position);
-            var property = monopolyGame.GetSpaceByIndex(6) as Property;
-            Assert.IsTrue(testPlayer.Owns(property));
-        }
-
-        [TestMethod]
-        public void PlayerDoesNotRollDoubles_OnlyMovesOneRoll()
-        {
-            var controlledDice = new ControlledDice();
-            controlledDice.SetPredeterminedDieValue(4, 2, 1, 1);
-            CreateGameWithSpecificDice(controlledDice);
-
-            var testPlayer = monopolyGame.CurrentPlayer;
-            testPlayer.ReceiveMoney(9266);
-
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(6, testPlayer.Position);
-        }
-
-        [TestMethod]
-        public void PlayerRolls2Doubles_Moves3Times()
-        {
-            var controlledDice = new ControlledDice();
-            controlledDice.SetPredeterminedDieValue(3, 3, 4, 4, 4, 2);
-            CreateGameWithSpecificDice(controlledDice);
-
-            var testPlayer = monopolyGame.CurrentPlayer;
-            testPlayer.ReceiveMoney(9266);
-
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(20, testPlayer.Position);
-            var property = monopolyGame.GetSpaceByIndex(6) as Property;
-            var otherProperty = monopolyGame.GetSpaceByIndex(14) as Property;
-            Assert.IsTrue(testPlayer.Owns(property));
-            Assert.IsTrue(testPlayer.Owns(otherProperty));
-        }
-
-        [TestMethod]
-        public void PlayerRolls3Doubles_GoesToJustVisiting()
-        {
-            var controlledDice = new ControlledDice();
-            controlledDice.SetPredeterminedDieValue(3, 3, 4, 4, 1, 1);
-            CreateGameWithSpecificDice(controlledDice);
-
-            var testPlayer = monopolyGame.CurrentPlayer;
-            testPlayer.ReceiveMoney(9266);
-
-            monopolyGame.TakeTurn();
-            Assert.AreEqual(Board.JAIL_OR_JUST_VISITING, testPlayer.Position);
-            var property = monopolyGame.GetSpaceByIndex(6) as Property;
-            var otherProperty = monopolyGame.GetSpaceByIndex(14) as Property;
-            var unownedProperty = monopolyGame.GetSpaceByIndex(16) as Property;
-            Assert.IsTrue(testPlayer.Owns(property));
-            Assert.IsTrue(testPlayer.Owns(otherProperty));
-            Assert.IsFalse(testPlayer.Owns(unownedProperty));
+            theChosenOne.ReceiveMoney(9266);
+            game.Play();
+            Assert.AreEqual(theChosenOne, game.Winner);
         }
     }
 }

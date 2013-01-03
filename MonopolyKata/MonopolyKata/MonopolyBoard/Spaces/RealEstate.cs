@@ -1,57 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using MonopolyKata.MonopolyPlayer;
 
-namespace MonopolyKata.MonopolyBoard
+namespace MonopolyKata.MonopolyBoard.Spaces
 {
-    public enum GROUPING { PURPLE, LIGHT_BLUE, PINK, GOLD, RED, YELLOW, GREEN, DARK_BLUE }
-
-    public class Property : ISpace
+    public class RealEstate : ISpace
     {
-        private Int32 baseRent;
-        public GROUPING Grouping { get; private set; }
-        public IEnumerable<Property> PropertiesInGroup { get; private set; }
         public Boolean Mortgaged { get; protected set; }
         public String Name { get; protected set; }
         public Boolean Owned { get { return Owner != null && !Owner.LostTheGame; } }
         public Player Owner { get; protected set; }
         public Int32 Price { get; protected set; }
 
-        protected Property() { }
-
-        public Property(String name, Int32 price, Int32 baseRent, GROUPING grouping)
+        public RealEstate(String name, Int32 price)
         {
             Name = name;
             Price = price;
-            this.baseRent = baseRent;
-            this.Grouping = grouping;
             Mortgaged = false;
-        }
-
-        public virtual void SetPropertiesInGroup(IEnumerable<Property> propertiesInGroup)
-        {
-            this.PropertiesInGroup = propertiesInGroup;
-        }
-
-        public void Reset()
-        {
-            Mortgaged = false;
-            Owner = null;
         }
 
         public void LandOn(Player player)
         {
             if (!Owned)
                 SeeIfPlayerCanBuyMe(player);
-            else if (!Owner.Equals(player))
+            else if (Owner != player)
                 MakePlayerPayRent(player);
-        }
-
-        protected virtual void MakePlayerPayRent(Player player)
-        {
-            var rent = GetRent();
-            player.Pay(rent);
-            Owner.ReceiveMoney(rent);
         }
 
         protected void SeeIfPlayerCanBuyMe(Player player)
@@ -67,16 +39,16 @@ namespace MonopolyKata.MonopolyBoard
             Owner = player;
         }
 
-        public virtual Int32 GetRent()
+        protected void MakePlayerPayRent(Player player)
         {
-            var ownerOwnsAllInGroup = true;
-            foreach (var property in PropertiesInGroup)
-                if (!Owner.Owns(property))
-                    ownerOwnsAllInGroup = false;
+            var rent = GetRent();
+            player.Pay(rent);
+            Owner.ReceiveMoney(rent);
+        }
 
-            if (ownerOwnsAllInGroup)
-                return baseRent * 2;
-            return baseRent;
+        protected virtual Int32 GetRent()
+        {
+            return 0;
         }
 
         public void Mortgage()

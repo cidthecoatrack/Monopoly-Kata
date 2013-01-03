@@ -39,22 +39,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MonopolyBoard\GoToJail.cs" />
-    <Compile Include="MonopolyBoard\IncomeTax.cs" />
-    <Compile Include="MonopolyBoard\LuxuryTax.cs" />
+    <Compile Include="GameConstants.cs" />
+    <Compile Include="Handlers\GoHandler.cs" />
+    <Compile Include="Handlers\JailHandler.cs" />
+    <Compile Include="MonopolyBoard\BoardConstants.cs" />
+    <Compile Include="MonopolyBoard\Spaces\GoToJail.cs" />
+    <Compile Include="MonopolyBoard\Spaces\IncomeTax.cs" />
+    <Compile Include="MonopolyBoard\Spaces\LuxuryTax.cs" />
+    <Compile Include="MonopolyBoard\Spaces\RealEstate.cs" />
     <Compile Include="MonopolyDice\Dice.cs" />
     <Compile Include="MonopolyDice\IDice.cs" />
-    <Compile Include="MonopolyPlayer\IMortgageStrategy.cs" />
+    <Compile Include="Strategies\IJailStrategy.cs" />
+    <Compile Include="Strategies\IMortgageStrategy.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="MonopolyBoard\Board.cs" />
-    <Compile Include="MonopolyBoard\Railroad.cs" />
-    <Compile Include="MonopolyBoard\NormalSpace.cs" />
-    <Compile Include="MonopolyBoard\Utility.cs" />
+    <Compile Include="MonopolyBoard\BoardFactory.cs" />
+    <Compile Include="MonopolyBoard\Spaces\Railroad.cs" />
+    <Compile Include="MonopolyBoard\Spaces\NormalSpace.cs" />
+    <Compile Include="MonopolyBoard\Spaces\Utility.cs" />
     <Compile Include="MonopolyPlayer\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MonopolyBoard\ISpace.cs" />
-    <Compile Include="MonopolyBoard\Property.cs" />
+    <Compile Include="MonopolyBoard\Spaces\ISpace.cs" />
+    <Compile Include="MonopolyBoard\Spaces\Property.cs" />
     <Compile Include="PlayerOrderRandomizer.cs" />
+    <Compile Include="Handlers\TurnHandler.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

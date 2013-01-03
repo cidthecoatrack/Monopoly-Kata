@@ -1,82 +1,61 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MonopolyKata.MonopolyDice;
 
 namespace MonopolyKataTests
 {
     public class ControlledDice : IDice
     {
-        private Int32[] predeterminedRollValues;
-        private Int32[] predeterminedDieValues;
-        private Int32 rIndex;
-        private Int32 dIndex;
+        private Int32 predeterminedRollValue;
+        private Queue<Int32> predeterminedDieValues;
 
         public Boolean Doubles { get; private set; }
         public Int32 DoublesCount { get; private set; }
-
-        private Int32 rollIndex
-        {
-            get { return rIndex; }
-            set
-            {
-                if (predeterminedRollValues.Length > 0)
-                {
-                    if (value >= predeterminedRollValues.Length)
-                        value %= predeterminedRollValues.Length;
-                    rIndex = value;
-                }
-            }
-        }
-
-        private Int32 dieIndex
-        {
-            get { return dIndex; }
-            set
-            {
-                if (predeterminedDieValues.Length > 0)
-                {
-                    if (value >= predeterminedDieValues.Length)
-                        value %= predeterminedDieValues.Length;
-                    dIndex = value;
-                }
-            }
-        }
+        public Int32 Value { get; private set; }
 
         public ControlledDice()
         {
-            predeterminedDieValues = new Int32[0];
-            predeterminedRollValues = new Int32[0];
+            predeterminedDieValues = new Queue<Int32>();
             DoublesCount = 0;
         }
 
         public void SetPredeterminedRollValue(Int32 rollValue)
         {
-            predeterminedRollValues = new Int32[] { rollValue };
-            rollIndex = 0;
+            predeterminedRollValue = rollValue;
         }
 
-        public void SetPredeterminedDieValue(Int32 dieValue)
+        public void SetPredeterminedDieValues(params Int32[] dieValues)
         {
-            predeterminedDieValues = new Int32[] { dieValue };
-            dieIndex = 0;
-        }
-
-        public void SetPredeterminedDieValue(params Int32[] dieValues)
-        {
-            predeterminedDieValues = dieValues;
-            dieIndex = 0;
+            foreach (var dieValue in dieValues)
+                predeterminedDieValues.Enqueue(dieValue);
         }
 
         public Int32 RollSingleDie()
         {
-            if (predeterminedDieValues.Length > 0)
-                return predeterminedDieValues[dieIndex++];
-            return new Dice().RollSingleDie();
+            Int32 roll;
+
+            if (predeterminedDieValues.Any())
+            {
+                roll = predeterminedDieValues.Dequeue();
+                predeterminedDieValues.Enqueue(roll);
+            }
+            else
+            {
+                var dice = new Dice();
+                roll = dice.RollSingleDie();
+            }
+
+            return roll;
         }
 
-        public Int32 RollTwoDice()
+        public void RollTwoDice()
         {
-            if (predeterminedRollValues.Length > 0)
-                return predeterminedRollValues[rollIndex++];
+            if (predeterminedRollValue != 0)
+            {
+                Value = predeterminedRollValue;
+                return;
+            }
 
             var Die1 = RollSingleDie();
             var Die2 = RollSingleDie();
@@ -88,11 +67,16 @@ namespace MonopolyKataTests
             }
             else
             {
-                Doubles = false;
-                DoublesCount = 0;
+                Reset();
             }
 
-            return Die1 + Die2;
+            Value = Die1 + Die2;
+        }
+
+        public void Reset()
+        {
+            Doubles = false;
+            DoublesCount = 0;
         }
     }
 }

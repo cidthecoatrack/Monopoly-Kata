@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MonopolyKata.MonopolyBoard;
+using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.MortgageStrategies;
+using MonopolyKataTests.Strategies.JailStrategies;
+using MonopolyKataTests.Strategies.MortgageStrategies;
 
 namespace MonopolyKataTests.BoardTests
 {
@@ -15,14 +17,14 @@ namespace MonopolyKataTests.BoardTests
         public void Setup()
         {
             goToJail = new GoToJail();
-            player = new Player("name", new RandomlyMortgage());
+            player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
         }
 
         [TestMethod]
         public void PlayerLandsOnGoToJail_PlayerGoesToJustVisiting()
         {
             goToJail.LandOn(player);
-            Assert.AreEqual(Board.JAIL_OR_JUST_VISITING, player.Position);
+            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
         }
 
         [TestMethod]
@@ -34,10 +36,10 @@ namespace MonopolyKataTests.BoardTests
         }
 
         [TestMethod]
-        public void PlayerGoesToJail_PlayerDoesNotReceivePassGoMoney()
+        public void PlayerGoesToJail_PlayerIsInJail()
         {
             goToJail.LandOn(player);
-            Assert.AreEqual(0, player.Money);
+            Assert.IsTrue(player.IsInJail);
         }
     }
 }
