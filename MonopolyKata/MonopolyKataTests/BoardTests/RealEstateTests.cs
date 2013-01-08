@@ -13,11 +13,17 @@ namespace MonopolyKataTests.BoardTests
         RealEstate realEstate;
         Player player;
         private const Int32 PRICE = 50;
+
+        private class TestRealEstate : RealEstate
+        {
+            public TestRealEstate(String name, Int32 price) : base(name, price) { }
+            protected override Int32 GetRent() { return 0; }
+        }
         
         [TestInitialize]
         public void Setup()
         {
-            realEstate = new RealEstate("real estate", PRICE);
+            realEstate = new TestRealEstate("real estate", PRICE);
             player = new Player("player", new RandomlyMortgage(), new RandomlyPay());
         }
         

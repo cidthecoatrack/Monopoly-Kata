@@ -3,7 +3,7 @@ using MonopolyKata.MonopolyPlayer;
 
 namespace MonopolyKata.MonopolyBoard.Spaces
 {
-    public class RealEstate : ISpace
+    public abstract class RealEstate : ISpace
     {
         public Boolean Mortgaged { get; protected set; }
         public String Name { get; protected set; }
@@ -46,10 +46,7 @@ namespace MonopolyKata.MonopolyBoard.Spaces
             Owner.ReceiveMoney(rent);
         }
 
-        protected virtual Int32 GetRent()
-        {
-            return 0;
-        }
+        protected abstract Int32 GetRent();
 
         public void Mortgage()
         {

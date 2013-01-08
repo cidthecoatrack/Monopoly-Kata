@@ -15,16 +15,9 @@ namespace MonopolyKata.Handlers
 
         public void HandleGo()
         {
-            while (PlayerHasPassedGo())
-            {
-                player.Move(-BoardConstants.BOARD_SIZE);
-                player.ReceiveMoney(GameConstants.PASS_GO_PAYMENT);
-            }
-        }
-
-        private Boolean PlayerHasPassedGo()
-        {
-            return player.Position >= BoardConstants.BOARD_SIZE;
+            var timesPassGo = (player.Position - (player.Position % BoardConstants.BOARD_SIZE)) / BoardConstants.BOARD_SIZE;
+            player.Move(-BoardConstants.BOARD_SIZE * timesPassGo);
+            player.ReceiveMoney(GameConstants.PASS_GO_PAYMENT * timesPassGo);
         }
     }
 }

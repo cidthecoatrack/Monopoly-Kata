@@ -27,7 +27,7 @@ namespace MonopolyKataTests.BoardTests
             player.ReceiveMoney(thisMuchMoney);
             incomeTax.LandOn(player);
 
-            var paid = Math.Min(thisMuchMoney * IncomeTax.INCOME_TAX_PERCENTAGE, IncomeTax.INCOME_TAX_FLAT_RATE);
+            var paid = Math.Min(thisMuchMoney / IncomeTax.INCOME_TAX_PERCENTAGE_DIVISOR, IncomeTax.INCOME_TAX_FLAT_RATE);
             Assert.AreEqual(paid, thisMuchMoney - player.Money);
         }
     }
