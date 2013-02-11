@@ -26,10 +26,10 @@ namespace Monopoly.Tests.Board.Spaces
             owner = new Player("owner", new RandomlyMortgage(), new RandomlyPay());
             renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
-            dice.RollTwoDice();
             utility.SetUtilities(utilities);
             otherUtility.SetUtilities(utilities);
-            owner.ReceiveMoney(utility.Price);
+
+            dice.RollTwoDice();
             utility.LandOn(owner);
             renter.Move(dice.Value);
         }

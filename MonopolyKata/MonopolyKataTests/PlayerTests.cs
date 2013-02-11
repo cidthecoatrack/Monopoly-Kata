@@ -73,7 +73,7 @@ namespace Monopoly.Tests
         [TestMethod]
         public void PlayerCanBuyProperty()
         {
-            var property = new Property("property", 5, 1, GROUPING.DARK_BLUE);
+            var property = new Property("property", 5, 1, GROUPING.DARK_BLUE, 4);
             var playerMoney = player.Money;
             property.LandOn(player);
 
