@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using MonopolyKata.MonopolyBoard.Spaces;
-using MonopolyKata.MonopolyDice;
-using MonopolyKata.MonopolyPlayer;
+using Monopoly.Board.Spaces;
+using Monopoly.Dice;
+using Monopoly;
 
-namespace MonopolyKata.Handlers
+namespace Monopoly.Handlers
 {
     public class TurnHandler
     {

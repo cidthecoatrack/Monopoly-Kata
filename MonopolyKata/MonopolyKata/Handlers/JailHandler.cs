@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using MonopolyKata.MonopolyBoard;
-using MonopolyKata.MonopolyDice;
-using MonopolyKata.MonopolyPlayer;
+using Monopoly.Board;
+using Monopoly.Dice;
+using Monopoly;
 
-namespace MonopolyKata.Handlers
+namespace Monopoly.Handlers
 {
     public class JailHandler
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using MonopolyKata.MonopolyBoard.Spaces;
-using MonopolyKata.Strategies;
+using Monopoly.Board.Spaces;
+using Monopoly.Strategies;
 
-namespace MonopolyKataTests.Strategies.MortgageStrategies
+namespace Monopoly.Tests.Strategies.MortgageStrategies
 {
     public class NeverMortgage : IMortgageStrategy
     {

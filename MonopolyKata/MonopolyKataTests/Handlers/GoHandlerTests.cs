@@ -1,12 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata;
-using MonopolyKata.Handlers;
-using MonopolyKata.MonopolyBoard;
-using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.Strategies.JailStrategies;
-using MonopolyKataTests.Strategies.MortgageStrategies;
+using Monopoly;
+using Monopoly.Handlers;
+using Monopoly.Board;
+using Monopoly.Tests.Strategies.JailStrategies;
+using Monopoly.Tests.Strategies.MortgageStrategies;
 
-namespace MonopolyKataTests.Handlers
+namespace Monopoly.Tests.Handlers
 {
     [TestClass]
     public class GoHandlerTests

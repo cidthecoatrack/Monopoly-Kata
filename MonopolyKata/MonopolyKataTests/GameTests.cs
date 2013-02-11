@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata;
-using MonopolyKata.Handlers;
-using MonopolyKata.MonopolyBoard;
-using MonopolyKata.MonopolyBoard.Spaces;
-using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.Strategies.JailStrategies;
-using MonopolyKataTests.Strategies.MortgageStrategies;
+using Monopoly;
+using Monopoly.Handlers;
+using Monopoly.Board;
+using Monopoly.Board.Spaces;
+using Monopoly.Tests.Strategies.JailStrategies;
+using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Tests.Dice;
 
-namespace MonopolyKataTests
+namespace Monopoly.Tests
 {
     [TestClass]
     public class GameTests

@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata;
-using MonopolyKata.Handlers;
-using MonopolyKata.MonopolyBoard;
-using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.Strategies.JailStrategies;
-using MonopolyKataTests.Strategies.MortgageStrategies;
+using Monopoly;
+using Monopoly.Handlers;
+using Monopoly.Board;
+using Monopoly.Tests.Strategies.JailStrategies;
+using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Tests.Dice;
 
-namespace MonopolyKataTests.Hendlers
+namespace Monopoly.Tests.Hendlers
 {
     [TestClass]
     public class JailHandlerTests
@@ -27,6 +27,7 @@ namespace MonopolyKataTests.Hendlers
         public void PlayerRolls3Doubles_GoesToJail()
         {
             jailHandler.HandleJail(3, player);
+
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
             Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
@@ -39,34 +40,35 @@ namespace MonopolyKataTests.Hendlers
 
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
+
             Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
 
         [TestMethod]
         public void DontRollDoublesInJail_StillInJailAndNoTurn()
         {
-            dice.SetPredeterminedDieValues(3, 1);
+            var playerMoney = player.Money; 
             jailHandler.Imprison(player);
-            jailHandler.HandleJail(0, player);
-            var playerMoney = player.Money;
-
-            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
-            Assert.AreEqual(playerMoney, player.Money);
-            Assert.IsTrue(jailHandler.HasImprisoned(player));
-
+            dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
             Assert.AreEqual(playerMoney, player.Money);
-            Assert.IsTrue(jailHandler.HasImprisoned(player));
+            Assert.IsTrue(jailHandler.HasImprisoned(player), "first turn");
+
+            dice.RollTwoDice();
+            jailHandler.HandleJail(0, player);
+
+            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
+            Assert.AreEqual(playerMoney, player.Money);
+            Assert.IsTrue(jailHandler.HasImprisoned(player), "second turn");
         }
 
         [TestMethod]
         public void InJailThreeTurnsAndNoDoubles_Pay50AndGetOut()
         {
-            dice.SetPredeterminedDieValues(3, 1);
-            jailHandler.Imprison(player);
             var playerMoney = player.Money;
+            jailHandler.Imprison(player);
             
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);

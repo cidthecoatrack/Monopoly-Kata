@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MonopolyKata
+namespace Monopoly
 {
     public class GameConstants
     {

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonopolyKata.Handlers;
-using MonopolyKata.MonopolyBoard.Spaces;
-using MonopolyKata.MonopolyDice;
-using MonopolyKata.MonopolyPlayer;
+using Monopoly.Handlers;
+using Monopoly.Board.Spaces;
+using Monopoly.Dice;
+using Monopoly;
 
-namespace MonopolyKata
+namespace Monopoly
 {
     public class Game
     {
@@ -39,7 +39,7 @@ namespace MonopolyKata
             CheckNumberOfPlayers(newPlayers);
 
             var randomizer = new PlayerOrderRandomizer();
-            var randomizedPlayers = randomizer.Execute(newPlayers);
+            var randomizedPlayers = randomizer.Execute(newPlayers, dice);
             players = new LinkedList<Player>(randomizedPlayers);
 
             turnHandler = new TurnHandler(dice, board, jailHandler);

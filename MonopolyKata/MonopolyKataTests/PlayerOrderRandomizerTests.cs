@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata;
-using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.Strategies.JailStrategies;
-using MonopolyKataTests.Strategies.MortgageStrategies;
+using Monopoly;
+using Monopoly.Tests.Dice;
+using Monopoly.Tests.Strategies.JailStrategies;
+using Monopoly.Tests.Strategies.MortgageStrategies;
 
-namespace MonopolyKataTests
+namespace Monopoly.Tests
 {
     [TestClass]
     public class PlayerOrderRandomizerTests
@@ -22,7 +22,7 @@ namespace MonopolyKataTests
                 nonRandomizedPlayers.Add(new Player(i.ToString(), new RandomlyMortgage(), new RandomlyPay()));
 
             var randomizer = new PlayerOrderRandomizer();
-            randomizedPlayers = randomizer.Execute(nonRandomizedPlayers);
+            randomizedPlayers = randomizer.Execute(nonRandomizedPlayers, new ControlledDice());
         }
         
         [TestMethod]

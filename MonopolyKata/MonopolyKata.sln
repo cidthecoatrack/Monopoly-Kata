@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonopolyKata", "MonopolyKata\MonopolyKata.csproj", "{3CA994DB-C7C4-4ECD-A5C0-66322304D31A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monopoly", "MonopolyKata\Monopoly.csproj", "{3CA994DB-C7C4-4ECD-A5C0-66322304D31A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonopolyKataTests", "MonopolyKataTests\MonopolyKataTests.csproj", "{2E6989EF-CCAD-4E53-99F0-D7623BBDC8BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monopoly.Tests", "MonopolyKataTests\Monopoly.Tests.csproj", "{2E6989EF-CCAD-4E53-99F0-D7623BBDC8BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

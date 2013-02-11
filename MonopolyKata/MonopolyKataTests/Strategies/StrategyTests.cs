@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MonopolyKata;
-using MonopolyKata.Handlers;
-using MonopolyKata.MonopolyBoard.Spaces;
-using MonopolyKata.MonopolyPlayer;
-using MonopolyKataTests.Strategies.JailStrategies;
-using MonopolyKataTests.Strategies.MortgageStrategies;
+using Monopoly;
+using Monopoly.Handlers;
+using Monopoly.Board.Spaces;
+using Monopoly.Tests.Strategies.JailStrategies;
+using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Tests.Dice;
 
-namespace MonopolyKataTests.Strategies
+namespace Monopoly.Tests.Strategies
 {
     [TestClass]
     public class StrategyTests
@@ -101,10 +101,12 @@ namespace MonopolyKataTests.Strategies
         private void PlayerNeverPays()
         {
             var player = new Player("name", new RandomlyMortgage(), new NeverPay());
-            var jailHandler = new JailHandler(new DiceForTesting());
+            var dice = new ControlledDice();
+            var jailHandler = new JailHandler(dice);
             var goToJail = new GoToJail(jailHandler);
 
             var playerMoney = player.Money;
+            dice.RollTwoDice();
             goToJail.LandOn(player);
             jailHandler.HandleJail(0, player);
 
@@ -115,10 +117,12 @@ namespace MonopolyKataTests.Strategies
         private void PlayerAlwaysPays()
         {
             var player = new Player("name", new RandomlyMortgage(), new AlwaysPay());
-            var jailHandler = new JailHandler(new DiceForTesting());
+            var dice = new ControlledDice();
+            var jailHandler = new JailHandler(dice);
             var goToJail = new GoToJail(jailHandler);
 
             var playerMoney = player.Money;
+            dice.RollTwoDice();
             goToJail.LandOn(player);
             jailHandler.HandleJail(0, player);
 

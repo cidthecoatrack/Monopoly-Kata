@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MonopolyKata.Strategies
+namespace Monopoly.Strategies
 {
     public interface IJailStrategy
     {

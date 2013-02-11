@@ -1,8 +1,8 @@
 ﻿using System;
-using MonopolyKata.MonopolyBoard;
-using MonopolyKata.MonopolyPlayer;
+using Monopoly.Board;
+using Monopoly;
 
-namespace MonopolyKata.Handlers
+namespace Monopoly.Handlers
 {
     public class GoHandler
     {

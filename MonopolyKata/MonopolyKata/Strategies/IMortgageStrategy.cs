@@ -1,7 +1,7 @@
 ﻿using System;
-using MonopolyKata.MonopolyBoard.Spaces;
+using Monopoly.Board.Spaces;
 
-namespace MonopolyKata.Strategies
+namespace Monopoly.Strategies
 {
     public interface IMortgageStrategy
     {

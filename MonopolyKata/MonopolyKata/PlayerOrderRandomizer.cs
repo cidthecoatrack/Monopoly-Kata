@@ -1,15 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using MonopolyKata.MonopolyDice;
-using MonopolyKata.MonopolyPlayer;
+using Monopoly.Dice;
 
-namespace MonopolyKata
+namespace Monopoly
 {
     public class PlayerOrderRandomizer
     {
-        public IEnumerable<Player> Execute(IEnumerable<Player> newPlayers)
+        public IEnumerable<Player> Execute(IEnumerable<Player> newPlayers, IDice dice)
         {
-            return newPlayers.OrderBy(player => new Dice().RollSingleDie());
+            return newPlayers.OrderBy(player => RollToGoFirst(dice));
+        }
+
+        private Int32 RollToGoFirst(IDice dice)
+        {
+            dice.RollTwoDice();
+            return dice.Value;
         }
     }
 }

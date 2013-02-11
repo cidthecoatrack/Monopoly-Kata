@@ -1,7 +1,7 @@
 ﻿using System;
-using MonopolyKata.Strategies;
+using Monopoly.Strategies;
 
-namespace MonopolyKataTests.Strategies.JailStrategies
+namespace Monopoly.Tests.Strategies.JailStrategies
 {
     public class AlwaysPay : IJailStrategy
     {
