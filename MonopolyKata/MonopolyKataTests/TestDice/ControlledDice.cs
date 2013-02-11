@@ -11,13 +11,11 @@ namespace MonopolyKataTests
         private Queue<Int32> predeterminedDieValues;
 
         public Boolean Doubles { get; private set; }
-        public Int32 DoublesCount { get; private set; }
         public Int32 Value { get; private set; }
 
         public ControlledDice()
         {
             predeterminedDieValues = new Queue<Int32>();
-            DoublesCount = 0;
         }
 
         public void SetPredeterminedRollValue(Int32 rollValue)
@@ -60,23 +58,8 @@ namespace MonopolyKataTests
             var Die1 = RollSingleDie();
             var Die2 = RollSingleDie();
 
-            if (Die1 == Die2)
-            {
-                Doubles = true;
-                DoublesCount++;
-            }
-            else
-            {
-                Reset();
-            }
-
+            Doubles = (Die1 == Die2);
             Value = Die1 + Die2;
-        }
-
-        public void Reset()
-        {
-            Doubles = false;
-            DoublesCount = 0;
         }
     }
 }

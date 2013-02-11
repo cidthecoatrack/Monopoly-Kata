@@ -5,3 +5,10 @@ C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bi
 C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.csprojResolveAssemblyReference.cache
 C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.dll
 C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.pdb
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKataTests.dll
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKataTests.pdb
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKata.dll
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKataTests\bin\Debug\MonopolyKata.pdb
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.csprojResolveAssemblyReference.cache
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.dll
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKataTests\obj\Debug\MonopolyKataTests.pdb

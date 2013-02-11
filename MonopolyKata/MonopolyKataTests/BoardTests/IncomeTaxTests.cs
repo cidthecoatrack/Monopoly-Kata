@@ -24,11 +24,11 @@ namespace MonopolyKataTests.BoardTests
             var incomeTax = new IncomeTax();
             var player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
 
-            player.ReceiveMoney(thisMuchMoney);
+            player.Pay(player.Money - thisMuchMoney);
             incomeTax.LandOn(player);
-
             var paid = Math.Min(thisMuchMoney / IncomeTax.INCOME_TAX_PERCENTAGE_DIVISOR, IncomeTax.INCOME_TAX_FLAT_RATE);
-            Assert.AreEqual(paid, thisMuchMoney - player.Money);
+
+            Assert.AreEqual(thisMuchMoney - paid, player.Money);
         }
     }
 }

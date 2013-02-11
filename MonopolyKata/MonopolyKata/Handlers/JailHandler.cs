@@ -1,4 +1,7 @@
-﻿using MonopolyKata.MonopolyDice;
+﻿using System;
+using System.Collections.Generic;
+using MonopolyKata.MonopolyBoard;
+using MonopolyKata.MonopolyDice;
 using MonopolyKata.MonopolyPlayer;
 
 namespace MonopolyKata.Handlers
@@ -6,38 +9,55 @@ namespace MonopolyKata.Handlers
     public class JailHandler
     {
         private IDice dice;
+        private Dictionary<Player, Int16> turnsInJail;
         private Player player;
 
-        public JailHandler(IDice dice, Player player)
+        public JailHandler(IDice dice)
         {
             this.dice = dice;
-            this.player = player;
+            turnsInJail = new Dictionary<Player, Int16>();
         }
 
-        public void HandleJail()
+        public Boolean HasImprisoned(Player player)
         {
-            if (player.IsInJail)
-            {
-                SeeIfPlayerCanGetOutOfJailOnDoubles();
-            }
-            else if (dice.DoublesCount >= GameConstants.DOUBLES_LIMIT)
-            {
-                player.GoToJail();
-                dice.Reset();
-            }
+            return turnsInJail.ContainsKey(player);
         }
 
-        private void SeeIfPlayerCanGetOutOfJailOnDoubles()
+        public void HandleJail(Int32 doublesCount, Player p)
         {
+            player = p;
+
+            if (HasImprisoned(player))
+                DoTime();
+            else if (doublesCount >= GameConstants.DOUBLES_LIMIT)
+                Imprison(player);
+        }
+
+        public void Imprison(Player playerToImprison)
+        {
+            playerToImprison.Move(BoardConstants.JAIL_OR_JUST_VISITING - playerToImprison.Position);
+            turnsInJail.Add(playerToImprison, 0);
+        }
+
+        private void PayToLiberate(Player playerToLiberate)
+        {
+            player.Pay(GameConstants.COST_TO_GET_OUT_OF_JAIL);
+            turnsInJail.Remove(player);
+        }
+
+        public void Liberate(Player playerToLiberate)
+        {
+            turnsInJail.Remove(player);
+        }
+
+        private void DoTime()
+        {
+            turnsInJail[player]++;
+            
             if (dice.Doubles)
-            {
-                player.IsInJail = false;
-                dice.Reset();
-            }
-            else if (player.TurnsInJail >= GameConstants.TURNS_IN_JAIL_LIMIT)
-            {
-                player.PayToGetOutOfJail();
-            }
+                turnsInJail.Remove(player);
+            else if (turnsInJail[player] >= GameConstants.TURNS_IN_JAIL_LIMIT || player.WillPayToGetOutOfJail())
+                PayToLiberate(player); 
         }
     }
 }

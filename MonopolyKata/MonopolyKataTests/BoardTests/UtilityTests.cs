@@ -36,23 +36,26 @@ namespace MonopolyKataTests.BoardTests
         [TestMethod]
         public void PlayerLandsOnOwnedUtility_PlayerPays4xDieRoll()
         {
-            renter.ReceiveMoney(16);
+            var ownerMoney = owner.Money;
+            var renterMoney = renter.Money;
             utility.LandOn(renter);
-            Assert.AreEqual(0, renter.Money);
-            Assert.AreEqual(16, owner.Money);
+
+            Assert.AreEqual(renterMoney - 16, renter.Money);
+            Assert.AreEqual(ownerMoney + 16, owner.Money);
         }
 
         [TestMethod]
         public void PlayerLandsOnOwnedUtilityx2_PlayerPays10xDieRoll()
         {
             var otherOwner = new Player("other owner", new RandomlyMortgage(), new RandomlyPay());
-            otherOwner.ReceiveMoney(otherUtility.Price);
             otherUtility.LandOn(otherOwner);
-            
-            renter.ReceiveMoney(40);
+
+            var ownerMoney = owner.Money;
+            var renterMoney = renter.Money;
             utility.LandOn(renter);
-            Assert.AreEqual(0, renter.Money);
-            Assert.AreEqual(40, owner.Money);
+
+            Assert.AreEqual(renterMoney - 40, renter.Money);
+            Assert.AreEqual(ownerMoney + 40, owner.Money);
         }
     }
 }

@@ -14,9 +14,11 @@ namespace MonopolyKataTests.BoardTests
         {
             var luxuryTax = new LuxuryTax();
             var player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
-            player.ReceiveMoney(LuxuryTax.LUXURY_TAX);
+
+            var playerMoney = player.Money;
             luxuryTax.LandOn(player);
-            Assert.AreEqual(0, player.Money);
+
+            Assert.AreEqual(playerMoney - LuxuryTax.LUXURY_TAX, player.Money);
         }
     }
 }

@@ -9,12 +9,10 @@ namespace MonopolyKata.MonopolyPlayer
 {
     public class Player
     {
-        public Boolean IsInJail { get; set; }
-        public Boolean LostTheGame { get { return (Money < 0); } }
         public Int32 Money { get; private set; }
         public String Name { get; private set; }
-        public Int32 Position {get; private set;}
-        public Int32 TurnsInJail { get; private set; }
+        public Int32 Position { get; private set; }
+        public Boolean LostTheGame { get { return (Money < 0); } }
 
         private IJailStrategy jailStrategy;
         private IMortgageStrategy mortgageStrategy;
@@ -24,11 +22,10 @@ namespace MonopolyKata.MonopolyPlayer
         {
             Name = name;
             Position = 0;
-            Money = 0;
+            Money = 1500;
             ownedRealEstate = new List<RealEstate>();
             this.mortgageStrategy = mortgageStrategy;
             this.jailStrategy = jailStrategy;
-            IsInJail = false;
         }
 
         public void Move(Int32 amountToMove)
@@ -84,36 +81,9 @@ namespace MonopolyKata.MonopolyPlayer
                     property.PayOffMortgage();
         }
 
-        public void GoToJail()
+        public Boolean WillPayToGetOutOfJail()
         {
-            Move(BoardConstants.JAIL_OR_JUST_VISITING - Position);
-            IsInJail = true;
-            TurnsInJail = 0;
-        }
-
-        private void AttemptToGetOutOfJail()
-        {
-            TurnsInJail++;
-            if (jailStrategy.SaysIShouldPayToGetOutOfJail(Money) && CanAfford(GameConstants.COST_TO_GET_OUT_OF_JAIL))
-                PayToGetOutOfJail();
-        }
-
-        public void PayToGetOutOfJail()
-        {
-            Pay(GameConstants.COST_TO_GET_OUT_OF_JAIL);
-            IsInJail = false;
-        }
-
-        public void PreTurnChecks()
-        {
-            if (IsInJail)
-                AttemptToGetOutOfJail();
-            HandleMortgages();
-        }
-
-        public void PostTurnChecks()
-        {
-            HandleMortgages();
+            return jailStrategy.SaysIShouldPayToGetOutOfJail(Money) && CanAfford(GameConstants.COST_TO_GET_OUT_OF_JAIL);
         }
     }
 }

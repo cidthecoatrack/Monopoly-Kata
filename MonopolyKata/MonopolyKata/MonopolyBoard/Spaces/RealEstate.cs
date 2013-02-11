@@ -22,7 +22,7 @@ namespace MonopolyKata.MonopolyBoard.Spaces
         {
             if (!Owned)
                 SeeIfPlayerCanBuyMe(player);
-            else if (Owner != player)
+            else
                 MakePlayerPayRent(player);
         }
 

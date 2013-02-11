@@ -30,9 +30,9 @@ namespace MonopolyKataTests
         }
 
         [TestMethod]
-        public void PlayerMoneyInitializedToZero()
+        public void PlayerMoneyInitializedTo1500()
         {
-            Assert.AreEqual(0, player.Money);
+            Assert.AreEqual(1500, player.Money);
         }
 
         [TestMethod]
@@ -46,29 +46,21 @@ namespace MonopolyKataTests
         public void GivePlayerTwoHundred_PlayerReceivesTwoHundred()
         {
             player.ReceiveMoney(200);
-            Assert.AreEqual(200, player.Money);
+            Assert.AreEqual(1700, player.Money);
         }
 
         [TestMethod]
         public void TellPlayerToPayOneHundred_PlayerPaysOneHundred()
         {
-            player.ReceiveMoney(101);
             player.Pay(100);
-            Assert.AreEqual(1, player.Money);
-        }
-
-        [TestMethod]
-        public void PlayerHasNegativeMoney_PlayerLoses()
-        {
-            player.ReceiveMoney(-1);
-            Assert.IsTrue(player.LostTheGame);
+            Assert.AreEqual(1400, player.Money);
         }
 
         [TestMethod]
         public void PlayerPaysUnaffordableAmount_PlayerLoses()
         {
-            player.ReceiveMoney(1);
-            player.Pay(2);
+            player.Pay(player.Money + 1);
+            Assert.IsTrue(player.Money < 0);
             Assert.IsTrue(player.LostTheGame);
         }
 
@@ -82,10 +74,10 @@ namespace MonopolyKataTests
         public void PlayerCanBuyProperty()
         {
             var property = new Property("property", 5, 1, GROUPING.DARK_BLUE);
-            player.ReceiveMoney(5);
+            var playerMoney = player.Money;
             property.LandOn(player);
 
-            Assert.AreEqual(0, player.Money);
+            Assert.AreEqual(playerMoney - property.Price, player.Money);
             Assert.IsTrue(player.Owns(property));
             Assert.IsTrue(property.Owned);
             Assert.IsTrue(property.Owner.Equals(player));

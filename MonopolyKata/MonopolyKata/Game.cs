@@ -34,7 +34,7 @@ namespace MonopolyKata
             }
         }
 
-        public Game(IEnumerable<Player> newPlayers, IDice dice, List<ISpace> board)
+        public Game(IEnumerable<Player> newPlayers, IDice dice, List<ISpace> board, JailHandler jailHandler)
         {
             CheckNumberOfPlayers(newPlayers);
 
@@ -42,7 +42,7 @@ namespace MonopolyKata
             var randomizedPlayers = randomizer.Execute(newPlayers);
             players = new LinkedList<Player>(randomizedPlayers);
 
-            turnHandler = new TurnHandler(dice, board);
+            turnHandler = new TurnHandler(dice, board, jailHandler);
             currentPlayerPointer = players.First;
             Round = 1;
         }

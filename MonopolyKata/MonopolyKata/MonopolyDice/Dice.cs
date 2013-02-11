@@ -8,16 +8,9 @@ namespace MonopolyKata.MonopolyDice
         protected Random random;
 
         public Boolean Doubles { get; private set; }
-        public Int32 DoublesCount { get; private set; }
         public Int32 Value { get; private set; }
 
         public Dice()
-        {
-            InitializeRandomInstanceWithCryptographicallyStrongRandomSeed();
-            DoublesCount = 0;
-        }
-
-        private void InitializeRandomInstanceWithCryptographicallyStrongRandomSeed()
         {
             var Crypto = new RNGCryptoServiceProvider();
             var CryptoByteBuffer = new Byte[4];
@@ -34,24 +27,9 @@ namespace MonopolyKata.MonopolyDice
         {
             var Die1 = RollSingleDie();
             var Die2 = RollSingleDie();
-            
-            if (Die1 == Die2)
-            {
-                Doubles = true;
-                DoublesCount++;
-            }
-            else
-            {
-                Reset();
-            }
 
+            Doubles = (Die1 == Die2);
             Value = Die1 + Die2;
-        }
-
-        public void Reset()
-        {
-            DoublesCount = 0;
-            Doubles = false;
         }
     }
 }

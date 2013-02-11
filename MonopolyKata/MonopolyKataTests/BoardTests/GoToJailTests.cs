@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MonopolyKata.Handlers;
 using MonopolyKata.MonopolyBoard;
 using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
@@ -10,13 +11,15 @@ namespace MonopolyKataTests.BoardTests
     [TestClass]
     public class GoToJailTests
     {
-        GoToJail goToJail;
-        Player player;
+        private GoToJail goToJail;
+        private JailHandler jailHandler;
+        private Player player;
 
         [TestInitialize]
         public void Setup()
         {
-            goToJail = new GoToJail();
+            jailHandler = new JailHandler(new DiceForTesting());
+            goToJail = new GoToJail(jailHandler);
             player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
         }
 
@@ -30,16 +33,16 @@ namespace MonopolyKataTests.BoardTests
         [TestMethod]
         public void PlayerGoesToJail_MoneyUnaffected()
         {
-            player.ReceiveMoney(9266);
+            var playerMoney = player.Money;
             goToJail.LandOn(player);
-            Assert.AreEqual(9266, player.Money);
+            Assert.AreEqual(playerMoney, player.Money);
         }
 
         [TestMethod]
         public void PlayerGoesToJail_PlayerIsInJail()
         {
             goToJail.LandOn(player);
-            Assert.IsTrue(player.IsInJail);
+            Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
     }
 }

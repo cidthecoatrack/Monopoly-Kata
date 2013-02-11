@@ -9,86 +9,85 @@ namespace MonopolyKataTests.BoardTests
     [TestClass]
     public class RailroadTests
     {
-        Railroad firstRxR;
-        Railroad secondRxR;
-        Railroad thirdRxR;
-        Railroad fourthRxR;
+        Railroad[] railroads;
         Player owner;
         Player renter;
 
         [TestInitialize]
         public void Setup()
         {
-            firstRxR = new Railroad("first railroad");
-            secondRxR = new Railroad("second railroad");
-            thirdRxR = new Railroad("third railroad");
-            fourthRxR = new Railroad("fourth railroad");
-
-            var railroads = new Railroad[] { firstRxR, secondRxR, thirdRxR, fourthRxR };
-
-            foreach (var railroad in railroads)
-                railroad.SetRailroads(railroads);
+            BuildRailroads();
 
             owner = new Player("owner", new RandomlyMortgage(), new RandomlyPay());
             renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
-            owner.ReceiveMoney(firstRxR.Price);
-            firstRxR.LandOn(owner);
+            railroads[0].LandOn(owner);
+        }
+
+        private void BuildRailroads()
+        {
+            var firstRxR = new Railroad("first railroad");
+            var secondRxR = new Railroad("second railroad");
+            var thirdRxR = new Railroad("third railroad");
+            var fourthRxR = new Railroad("fourth railroad");
+
+            railroads = new Railroad[] { firstRxR, secondRxR, thirdRxR, fourthRxR };
+
+            foreach (var railroad in railroads)
+                railroad.SetRailroads(railroads);
         }
         
         [TestMethod]
         public void PlayerLandsOnOwnedRailroadx1_Pays25()
         {
-            renter.ReceiveMoney(25);
-            firstRxR.LandOn(renter);
+            var renterMoney = renter.Money;
+            var ownerMoney = owner.Money;
+            railroads[0].LandOn(renter);
 
-            Assert.AreEqual(0, renter.Money);
-            Assert.AreEqual(25, owner.Money);
+            Assert.AreEqual(renterMoney - 25, renter.Money);
+            Assert.AreEqual(ownerMoney + 25, owner.Money);
         }
 
         [TestMethod]
         public void PlayerLandsOnOwnedRailroadx2_Pays50()
         {
-            owner.ReceiveMoney(secondRxR.Price);
-            secondRxR.LandOn(owner);
+            railroads[1].LandOn(owner);
 
-            renter.ReceiveMoney(50);
-            firstRxR.LandOn(renter);
+            var renterMoney = renter.Money;
+            var ownerMoney = owner.Money;
+            railroads[0].LandOn(renter);
 
-            Assert.AreEqual(0, renter.Money);
-            Assert.AreEqual(50, owner.Money);
+            Assert.AreEqual(renterMoney - 50, renter.Money);
+            Assert.AreEqual(ownerMoney + 50, owner.Money);
         }
 
         [TestMethod]
         public void PlayerLandsOnOwnedRailroadx3_Pays100()
         {
-            owner.ReceiveMoney(secondRxR.Price);
-            secondRxR.LandOn(owner);
-            owner.ReceiveMoney(thirdRxR.Price);
-            thirdRxR.LandOn(owner);
+            railroads[1].LandOn(owner);
+            railroads[2].LandOn(owner);
 
-            renter.ReceiveMoney(100);
-            firstRxR.LandOn(renter);
+            var renterMoney = renter.Money;
+            var ownerMoney = owner.Money;
+            railroads[0].LandOn(renter);
 
-            Assert.AreEqual(0, renter.Money);
-            Assert.AreEqual(100, owner.Money);
+            Assert.AreEqual(renterMoney - 100, renter.Money);
+            Assert.AreEqual(ownerMoney + 100, owner.Money);
         }
 
         [TestMethod]
         public void PlayerLandsOnOwnedRailroadx4_Pays200()
         {
-            owner.ReceiveMoney(secondRxR.Price);
-            secondRxR.LandOn(owner);
-            owner.ReceiveMoney(thirdRxR.Price);
-            thirdRxR.LandOn(owner);
-            owner.ReceiveMoney(fourthRxR.Price);
-            fourthRxR.LandOn(owner);
+            railroads[1].LandOn(owner);
+            railroads[2].LandOn(owner);
+            railroads[3].LandOn(owner);
 
-            renter.ReceiveMoney(200);
-            firstRxR.LandOn(renter);
+            var renterMoney = renter.Money;
+            var ownerMoney = owner.Money;
+            railroads[0].LandOn(renter);
 
-            Assert.AreEqual(0, renter.Money);
-            Assert.AreEqual(200, owner.Money);
+            Assert.AreEqual(renterMoney - 200, renter.Money);
+            Assert.AreEqual(ownerMoney + 200, owner.Money);
         }
     }
 }

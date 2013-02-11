@@ -41,9 +41,9 @@ namespace MonopolyKataTests.BoardTests
         [TestMethod]
         public void PlayerDoesNotBuyUnaffordableRealEstate()
         {
-            var previousPlayer = player;
+            player.Pay(player.Money - realEstate.Price + 1);
             realEstate.LandOn(player);
-            Assert.AreEqual(player, previousPlayer);
+
             Assert.IsFalse(player.Owns(realEstate));
             Assert.IsFalse(realEstate.Owned);
             Assert.IsNull(realEstate.Owner);
@@ -52,22 +52,27 @@ namespace MonopolyKataTests.BoardTests
         [TestMethod]
         public void PlayerMortgagesPropertyFor90PercentPurchasePrice()
         {
-            player.ReceiveMoney(PRICE);
             realEstate.LandOn(player);
+            var previousMoney = player.Money;
+
             realEstate.Mortgage();
-            Assert.AreEqual(PRICE * .9, player.Money);
+
+            Assert.AreEqual(previousMoney + PRICE * .9, player.Money);
         }
 
         [TestMethod]
         public void CannotMortgageAlreadyMortgagedProperty()
         {
-            player.ReceiveMoney(PRICE);
             realEstate.LandOn(player);
+            var previousMoney = player.Money;
             realEstate.Mortgage();
-            Assert.AreEqual(PRICE * .9, player.Money);
+
+            Assert.AreEqual(previousMoney + PRICE * .9, player.Money);
             Assert.IsTrue(realEstate.Mortgaged);
+
             realEstate.Mortgage();
-            Assert.AreEqual(PRICE * .9, player.Money);
+
+            Assert.AreEqual(previousMoney + PRICE * .9, player.Money);
         }
 
         [TestMethod]
@@ -78,6 +83,7 @@ namespace MonopolyKataTests.BoardTests
             realEstate.Mortgage();
             player.ReceiveMoney(PRICE - player.Money);
             realEstate.PayOffMortgage();
+
             Assert.AreEqual(0, player.Money);
             Assert.IsFalse(realEstate.Mortgaged);
         }
@@ -85,11 +91,11 @@ namespace MonopolyKataTests.BoardTests
         [TestMethod]
         public void PlayerCantPayOffUnmortgagedProperty()
         {
-            player.ReceiveMoney(PRICE);
             realEstate.LandOn(player);
-            player.ReceiveMoney(PRICE);
+            var playerMoney = player.Money;
             realEstate.PayOffMortgage();
-            Assert.AreEqual(PRICE, player.Money);
+
+            Assert.AreEqual(playerMoney, player.Money);
             Assert.IsFalse(realEstate.Mortgaged);
         }
 
@@ -98,8 +104,11 @@ namespace MonopolyKataTests.BoardTests
         {
             player.ReceiveMoney(PRICE);
             realEstate.LandOn(player);
+
             Assert.IsTrue(realEstate.Owned);
+
             player.Pay(player.Money + 1);
+
             Assert.IsTrue(player.LostTheGame);
             Assert.IsFalse(realEstate.Owned);
         }

@@ -20,83 +20,61 @@ namespace MonopolyKataTests.Hendlers
         {
             dice = new ControlledDice();
             player = new Player("name", new NeverMortgage(), new NeverPay());
-            jailHandler = new JailHandler(dice, player);
+            jailHandler = new JailHandler(dice);
         }
 
         [TestMethod]
         public void PlayerRolls3Doubles_GoesToJail()
         {
-            dice.SetPredeterminedDieValues(3, 3, 4, 4, 1, 1);
-            for (var i = 3; i > 0; i--)
-                dice.RollTwoDice();
-
-            jailHandler.HandleJail();
+            jailHandler.HandleJail(3, player);
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
-            Assert.IsTrue(player.IsInJail);
-        }
-
-        [TestMethod]
-        public void GoToJailForDoubles_DoubleCountResets()
-        {
-            dice.SetPredeterminedDieValues(3, 3, 4, 4, 1, 1);
-            for (var i = 3; i > 0; i--)
-                dice.RollTwoDice();
-
-            jailHandler.HandleJail();
-            Assert.IsFalse(dice.Doubles);
-            Assert.AreEqual(0, dice.DoublesCount);
+            Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
 
         [TestMethod]
         public void RollDoublesInJail_GetOut()
         {
             dice.SetPredeterminedDieValues(3, 3, 3, 1);
-            player.GoToJail();
+            jailHandler.Imprison(player);
 
             dice.RollTwoDice();
-            jailHandler.HandleJail();
-            Assert.IsFalse(player.IsInJail);
+            jailHandler.HandleJail(0, player);
+            Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
 
         [TestMethod]
         public void DontRollDoublesInJail_StillInJailAndNoTurn()
         {
             dice.SetPredeterminedDieValues(3, 1);
-            player.GoToJail();
-            jailHandler.HandleJail();
+            jailHandler.Imprison(player);
+            jailHandler.HandleJail(0, player);
+            var playerMoney = player.Money;
+
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
-            Assert.IsTrue(player.IsInJail);
-            jailHandler.HandleJail();
+            Assert.AreEqual(playerMoney, player.Money);
+            Assert.IsTrue(jailHandler.HasImprisoned(player));
+
+            jailHandler.HandleJail(0, player);
+
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
-            Assert.IsTrue(player.IsInJail);
+            Assert.AreEqual(playerMoney, player.Money);
+            Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
 
         [TestMethod]
         public void InJailThreeTurnsAndNoDoubles_Pay50AndGetOut()
         {
             dice.SetPredeterminedDieValues(3, 1);
-            player.ReceiveMoney(GameConstants.COST_TO_GET_OUT_OF_JAIL);
-            player.GoToJail();
+            jailHandler.Imprison(player);
+            var playerMoney = player.Money;
             
             dice.RollTwoDice();
-            player.PreTurnChecks();
-            jailHandler.HandleJail();
-            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
-            Assert.AreEqual(GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
-            Assert.IsTrue(player.IsInJail);
+            jailHandler.HandleJail(0, player);
+            jailHandler.HandleJail(0, player);
+            jailHandler.HandleJail(0, player);
 
-            dice.RollTwoDice();
-            player.PreTurnChecks();
-            jailHandler.HandleJail();
-            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
-            Assert.AreEqual(GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
-            Assert.IsTrue(player.IsInJail);
-
-            dice.RollTwoDice();
-            player.PreTurnChecks();
-            jailHandler.HandleJail();
-            Assert.AreEqual(0, player.Money);
-            Assert.IsFalse(player.IsInJail);
+            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
+            Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
     }
 }

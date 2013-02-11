@@ -1,4 +1,5 @@
 ﻿using System;
+using MonopolyKata.Handlers;
 using MonopolyKata.MonopolyPlayer;
 
 namespace MonopolyKata.MonopolyBoard.Spaces
@@ -7,14 +8,17 @@ namespace MonopolyKata.MonopolyBoard.Spaces
     {
         public String Name { get; private set; }
 
-        public GoToJail()
+        private JailHandler jailHandler;
+
+        public GoToJail(JailHandler jailHandler)
         {
             Name = "Go To Jail";
+            this.jailHandler = jailHandler;
         }
 
         public void LandOn(Player player)
         {
-            player.GoToJail();
+            jailHandler.Imprison(player);
         }
     }
 }

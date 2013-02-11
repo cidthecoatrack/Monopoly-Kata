@@ -3,3 +3,8 @@ C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKata\bin\Deb
 C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKata\obj\Debug\MonopolyKata.dll
 C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKata\obj\Debug\MonopolyKata.pdb
 C:\Users\kspeer\Documents\GitHub\Monopoly-Kata\MonopolyKata\MonopolyKata\obj\Debug\MonopolyKata.csprojResolveAssemblyReference.cache
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKata\bin\Debug\MonopolyKata.dll
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKata\bin\Debug\MonopolyKata.pdb
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKata\obj\Debug\MonopolyKata.csprojResolveAssemblyReference.cache
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKata\obj\Debug\MonopolyKata.dll
+C:\Dev\Kata\MonopolyKata\Monopoly-Kata\MonopolyKata\MonopolyKata\obj\Debug\MonopolyKata.pdb

@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MonopolyKata;
+using MonopolyKata.Handlers;
 using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
 using MonopolyKataTests.Strategies.JailStrategies;
@@ -24,7 +26,6 @@ namespace MonopolyKataTests.Strategies
             var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW);
             var thirdProperty = new Property("third", 50, 5, GROUPING.RED);
 
-            player.ReceiveMoney(150);
             firstProperty.LandOn(player);
             secondProperty.LandOn(player);
             thirdProperty.LandOn(player);
@@ -35,7 +36,6 @@ namespace MonopolyKataTests.Strategies
             Assert.IsFalse(thirdProperty.Mortgaged);
 
             firstProperty.Mortgage();
-            player.ReceiveMoney(50);
             player.HandleMortgages();
 
             Assert.IsFalse(firstProperty.Mortgaged);
@@ -50,16 +50,17 @@ namespace MonopolyKataTests.Strategies
             var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW);
             var thirdProperty = new Property("third", 50, 5, GROUPING.RED);
 
-            player.ReceiveMoney(600);
             firstProperty.LandOn(player);
             secondProperty.LandOn(player);
             thirdProperty.LandOn(player);
+            player.Pay(player.Money - 440);
             player.HandleMortgages();
 
             Assert.IsTrue(firstProperty.Mortgaged);
             Assert.IsTrue(secondProperty.Mortgaged);
             Assert.IsFalse(thirdProperty.Mortgaged);
-            player.ReceiveMoney(10);
+
+            player.ReceiveMoney(551 - player.Money);
             player.HandleMortgages();
 
             Assert.IsFalse(firstProperty.Mortgaged);
@@ -74,7 +75,6 @@ namespace MonopolyKataTests.Strategies
             var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW);
             var thirdProperty = new Property("third", 50, 5, GROUPING.RED);
 
-            player.ReceiveMoney(150);
             firstProperty.LandOn(player);
             secondProperty.LandOn(player);
             thirdProperty.LandOn(player);
@@ -101,23 +101,29 @@ namespace MonopolyKataTests.Strategies
         private void PlayerNeverPays()
         {
             var player = new Player("name", new RandomlyMortgage(), new NeverPay());
-            var goToJail = new GoToJail();
-            player.ReceiveMoney(50);
+            var jailHandler = new JailHandler(new DiceForTesting());
+            var goToJail = new GoToJail(jailHandler);
+
+            var playerMoney = player.Money;
             goToJail.LandOn(player);
-            player.PreTurnChecks();
-            Assert.AreEqual(50, player.Money);
-            Assert.IsTrue(player.IsInJail);
+            jailHandler.HandleJail(0, player);
+
+            Assert.AreEqual(playerMoney, player.Money);
+            Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
 
         private void PlayerAlwaysPays()
         {
             var player = new Player("name", new RandomlyMortgage(), new AlwaysPay());
-            var goToJail = new GoToJail();
-            player.ReceiveMoney(50);
+            var jailHandler = new JailHandler(new DiceForTesting());
+            var goToJail = new GoToJail(jailHandler);
+
+            var playerMoney = player.Money;
             goToJail.LandOn(player);
-            player.PreTurnChecks();
-            Assert.AreEqual(0, player.Money);
-            Assert.IsFalse(player.IsInJail);
+            jailHandler.HandleJail(0, player);
+
+            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
+            Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MonopolyKata.Handlers;
 using MonopolyKata.MonopolyBoard;
 using MonopolyKata.MonopolyBoard.Spaces;
 
@@ -16,7 +17,7 @@ namespace MonopolyKataTests.BoardTests
         {
             var dice = new DiceForTesting();
             var boardFactory = new BoardFactory();
-            board = boardFactory.CreateMonopolyBoard(dice);
+            board = boardFactory.CreateMonopolyBoard(dice, new JailHandler(dice));
         }
 
         [TestMethod]

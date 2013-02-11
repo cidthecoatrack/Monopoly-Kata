@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MonopolyKata.Handlers;
 using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyDice;
 
@@ -7,7 +8,7 @@ namespace MonopolyKata.MonopolyBoard
 {
     public class BoardFactory
     {
-        public List<ISpace> CreateMonopolyBoard(IDice dice)
+        public List<ISpace> CreateMonopolyBoard(IDice dice, JailHandler jailHandler)
         {
             var board = new List<ISpace>();
             board.Capacity = BoardConstants.BOARD_SIZE;
@@ -91,7 +92,7 @@ namespace MonopolyKata.MonopolyBoard
             board.Add(ventnor);
             board.Add(water);
             board.Add(marvin);
-            board.Add(new GoToJail());
+            board.Add(new GoToJail(jailHandler));
             board.Add(pacific);
             board.Add(northCarolina);
             board.Add(new NormalSpace("Community Chest"));

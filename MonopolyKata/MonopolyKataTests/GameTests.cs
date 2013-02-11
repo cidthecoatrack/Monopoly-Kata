@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MonopolyKata;
+using MonopolyKata.Handlers;
 using MonopolyKata.MonopolyBoard;
 using MonopolyKata.MonopolyBoard.Spaces;
 using MonopolyKata.MonopolyPlayer;
@@ -13,10 +14,11 @@ namespace MonopolyKataTests
     [TestClass]
     public class GameTests
     {
-        Game game;
-        BoardFactory boardFactory;
-        List<ISpace> board;
-        ControlledDice dice;
+        private Game game;
+        private BoardFactory boardFactory;
+        private List<ISpace> board;
+        private ControlledDice dice;
+        private JailHandler jailHandler;
 
         private IEnumerable<Player> GeneratePlayerIEnumerable(Int32 NumberOfPlayers)
         {
@@ -33,27 +35,28 @@ namespace MonopolyKataTests
         {
             dice = new ControlledDice();
             boardFactory = new BoardFactory();
-            board = boardFactory.CreateMonopolyBoard(dice);
-            game = new Game(GeneratePlayerIEnumerable(8), dice, board);
+            jailHandler = new JailHandler(dice);
+            board = boardFactory.CreateMonopolyBoard(dice, jailHandler);
+            game = new Game(GeneratePlayerIEnumerable(8), dice, board, jailHandler);
         }
 
         [TestMethod]
         public void CreateTwoPlayerGame_GameHasTwoPlayers()
         {
-            game = new Game(GeneratePlayerIEnumerable(2), dice, board);
+            game = new Game(GeneratePlayerIEnumerable(2), dice, board, jailHandler);
             Assert.AreEqual(2, game.NumberOfActivePlayers);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void FewerThanTwoPlayers_MonopolyWillNotPlay()
         {
-            game = new Game(GeneratePlayerIEnumerable(1), dice, board);
+            game = new Game(GeneratePlayerIEnumerable(1), dice, board, jailHandler);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MoreThanEightPlayers_MonopolyWillNotPlay()
         {
-            game = new Game(GeneratePlayerIEnumerable(9), dice, board);
+            game = new Game(GeneratePlayerIEnumerable(9), dice, board, jailHandler);
         }
 
         [TestMethod]
@@ -103,7 +106,7 @@ namespace MonopolyKataTests
         [TestMethod]
         public void PlayersPlayInSameOrderEveryRound()
         {
-            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces());
+            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces(), jailHandler);
             dice.SetPredeterminedDieValues(1, 1, 2, 3, 4, 5, 6);
             var playerVerificationList = new List<Player>();
 
@@ -126,7 +129,7 @@ namespace MonopolyKataTests
         [TestMethod]
         public void OnePlayerLosesInTwoPlayerGame_OtherPlayerWins()
         {
-            game = new Game(GeneratePlayerIEnumerable(2), dice, board);
+            game = new Game(GeneratePlayerIEnumerable(2), dice, board, jailHandler);
             var winner = game.CurrentPlayer;
 
             game.TakeTurn();
@@ -140,7 +143,7 @@ namespace MonopolyKataTests
         [TestMethod]
         public void OnePlayerLosesInThreePlayerGame_OtherTwoKeepPlaying()
         {
-            game = new Game(GeneratePlayerIEnumerable(3), dice, board);
+            game = new Game(GeneratePlayerIEnumerable(3), dice, board, jailHandler);
             var loser = game.CurrentPlayer;
             loser.Pay(loser.Money + 1);
             game.TakeTurn();
@@ -158,7 +161,7 @@ namespace MonopolyKataTests
         [TestMethod]
         public void OnePlayerLosesEachTurn_RemainingPlayerIsWinner()
         {
-            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces());
+            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces(), jailHandler);
             var theChosenOne = game.CurrentPlayer;
 
             while (!game.Finished)
@@ -178,7 +181,7 @@ namespace MonopolyKataTests
         [TestMethod]
         public void AtEndOfGame_PlayerWithMostMoneyWins()
         {
-            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces());
+            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces(), jailHandler);
             var theChosenOne = game.CurrentPlayer;
 
             theChosenOne.ReceiveMoney(9266);
