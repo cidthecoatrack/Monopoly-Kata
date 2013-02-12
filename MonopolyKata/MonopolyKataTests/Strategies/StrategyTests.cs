@@ -22,9 +22,9 @@ namespace Monopoly.Tests.Strategies
         private void PlayerNeverMortgages()
         {
             var player = new Player("name", new NeverMortgage(), new RandomlyPay());
-            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW, 30);
-            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW, 30);
-            var thirdProperty = new Property("third", 50, 5, GROUPING.RED, 30);
+            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW, 30, new[] { 25, 75, 225, 400, 500 });
+            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW, 30, new[] { 25, 75, 225, 400, 500 });
+            var thirdProperty = new Property("third", 50, 5, GROUPING.RED, 30, new[] { 25, 75, 225, 400, 500 });
 
             firstProperty.LandOn(player);
             secondProperty.LandOn(player);
@@ -46,9 +46,9 @@ namespace Monopoly.Tests.Strategies
         private void PlayerMortgagesWhenSheHasLessThan500()
         {
             var player = new Player("name", new MortgageIfMoneyLessThanFiveHundred(), new RandomlyPay());
-            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW, 30);
-            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW, 30);
-            var thirdProperty = new Property("third", 50, 5, GROUPING.RED, 30);
+            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW, 30, new[] { 25, 75, 225, 400, 500 });
+            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW, 30, new[] { 25, 75, 225, 400, 500 });
+            var thirdProperty = new Property("third", 50, 5, GROUPING.RED, 30, new[] { 25, 75, 225, 400, 500 });
 
             firstProperty.LandOn(player);
             secondProperty.LandOn(player);
@@ -71,9 +71,9 @@ namespace Monopoly.Tests.Strategies
         private void PlayerAlwaysMortgages()
         {
             var player = new Player("name", new AlwaysMortgage(), new RandomlyPay());
-            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW, 30);
-            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW, 30);
-            var thirdProperty = new Property("third", 50, 5, GROUPING.RED, 30);
+            var firstProperty = new Property("first", 50, 5, GROUPING.YELLOW, 30, new[] { 25, 75, 225, 400, 500 });
+            var secondProperty = new Property("second", 50, 5, GROUPING.YELLOW, 30, new[] { 25, 75, 225, 400, 500 });
+            var thirdProperty = new Property("third", 50, 5, GROUPING.RED, 30, new[] { 25, 75, 225, 400, 500 });
 
             firstProperty.LandOn(player);
             secondProperty.LandOn(player);

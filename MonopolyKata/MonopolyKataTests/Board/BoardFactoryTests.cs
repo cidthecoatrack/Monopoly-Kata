@@ -5,6 +5,7 @@ using Monopoly.Handlers;
 using Monopoly.Board;
 using Monopoly.Board.Spaces;
 using Monopoly.Tests.Dice;
+using System;
 
 namespace Monopoly.Tests.Board
 {
@@ -22,7 +23,7 @@ namespace Monopoly.Tests.Board
         }
 
         [TestMethod]
-        public void FactoryBuildsCorrectBoard()
+        private void BoardHasCorrectNames()
         {
             Assert.AreEqual(40, board.Capacity);
             Assert.AreEqual(40, board.Count);
@@ -41,7 +42,7 @@ namespace Monopoly.Tests.Board
             Assert.AreEqual("Electric Company", board[BoardConstants.ELECTRIC_COMPANY].Name);
             Assert.AreEqual("States Avenue", board[BoardConstants.STATES_AVENUE].Name);
             Assert.AreEqual("Virginia Avenue", board[BoardConstants.VIRGINIA_AVENUE].Name);
-            Assert.AreEqual("Pennsylvania Avenue", board[BoardConstants.PENNSYLVANIA_AVENUE].Name);
+            Assert.AreEqual("Pennsylvania Railroad", board[BoardConstants.PENNSYLVANIA_RAILROAD].Name);
             Assert.AreEqual("St. James Place", board[BoardConstants.ST_JAMES_PLACE].Name);
             Assert.AreEqual("Community Chest", board[17].Name);
             Assert.AreEqual("Tennessee Avenue", board[BoardConstants.TENNESSEE_AVENUE].Name);
@@ -69,6 +70,33 @@ namespace Monopoly.Tests.Board
         }
 
         [TestMethod]
+        private void BoardHasCorrectGroupings()
+        {
+            Assert.AreEqual(GROUPING.PURPLE, (board[BoardConstants.MEDITERANEAN_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.PURPLE, (board[BoardConstants.BALTIC_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.LIGHT_BLUE, (board[BoardConstants.ORIENTAL_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.LIGHT_BLUE, (board[BoardConstants.VERMONT_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.LIGHT_BLUE, (board[BoardConstants.CONNECTICUT_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.PINK, (board[BoardConstants.ST_CHARLES_PLACE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.PINK, (board[BoardConstants.STATES_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.PINK, (board[BoardConstants.VIRGINIA_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.ORANGE, (board[BoardConstants.ST_JAMES_PLACE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.ORANGE, (board[BoardConstants.TENNESSEE_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.ORANGE, (board[BoardConstants.NEW_YORK_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.RED, (board[BoardConstants.KENTUCKY_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.RED, (board[BoardConstants.INDIANA_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.RED, (board[BoardConstants.ILLINOIS_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.YELLOW, (board[BoardConstants.ATLANTIC_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.YELLOW, (board[BoardConstants.VENTNOR_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.YELLOW, (board[BoardConstants.MARVIN_GARDENS] as Property).Grouping);
+            Assert.AreEqual(GROUPING.GREEN, (board[BoardConstants.PACIFIC_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.GREEN, (board[BoardConstants.NORTH_CAROLINA_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.GREEN, (board[BoardConstants.PENNSYLVANIA_AVENUE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.DARK_BLUE, (board[BoardConstants.PARK_PLACE] as Property).Grouping);
+            Assert.AreEqual(GROUPING.DARK_BLUE, (board[BoardConstants.BOARDWALK] as Property).Grouping);
+        }
+
+        [TestMethod]
         public void CanGrabSpecificSpaceTypesFromBoard()
         {
             var properties = board.Count(x => x is Property);
@@ -91,19 +119,6 @@ namespace Monopoly.Tests.Board
 
             var luxury = board.Count(x => x is LuxuryTax);
             Assert.AreEqual(1, luxury);
-        }
-
-        [TestMethod]
-        public void PropertiesInGroupsAreAccuratelyAssociated()
-        {
-            var properties = board.Where(x => x is Property).Cast<Property>();
-            var yellowGroup = properties.Where(x => x.Grouping == GROUPING.YELLOW);
-
-            foreach (var y in yellowGroup)
-            {
-                Assert.IsNotNull(y.PropertiesInGroup);
-                Assert.IsTrue(yellowGroup.All(x => y.PropertiesInGroup.Contains(x)));
-            }
         }
     }
 }

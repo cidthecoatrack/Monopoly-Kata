@@ -16,19 +16,21 @@ namespace Monopoly.Tests.Board.Spaces
         private const Int32 PRICE = 50;
         private const Int32 RENT = 5;
         private const Int32 HOUSE_COST = 30;
+        private Int32[] houseRents;
 
         [TestInitialize]
         public void Setup()
         {
-            property = new Property("property", PRICE, RENT, GROUPING.DARK_BLUE, HOUSE_COST);
+            houseRents = new Int32[] { 25, 75, 225, 400, 500 };
+            property = new Property("property", PRICE, RENT, GROUPING.DARK_BLUE, HOUSE_COST, houseRents);
             player = new Player("player", new RandomlyMortgage(), new RandomlyPay());
             SetUpGroup();
         }
 
         private void SetUpGroup()
         {
-            otherProperty = new Property("other property", PRICE, RENT, GROUPING.DARK_BLUE, HOUSE_COST);
-            var group = new Property[] { property, otherProperty };
+            otherProperty = new Property("other property", PRICE, RENT, GROUPING.DARK_BLUE, HOUSE_COST, houseRents);
+            var group = new[] { property, otherProperty };
             property.SetPropertiesInGroup(group);
             otherProperty.SetPropertiesInGroup(group);
         }
@@ -39,7 +41,6 @@ namespace Monopoly.Tests.Board.Spaces
             Assert.AreEqual("property", property.Name);
             Assert.AreEqual(PRICE, property.Price);
             Assert.AreEqual(GROUPING.DARK_BLUE, property.Grouping);
-            Assert.AreEqual(HOUSE_COST, property.HousePrice);
         }
 
         [TestMethod]
@@ -104,7 +105,6 @@ namespace Monopoly.Tests.Board.Spaces
             property.BuyHouse();
 
             Assert.AreEqual(playerMoney - HOUSE_COST, player.Money);
-            Assert.AreEqual(1, property.HouseCount);
         }
 
         [TestMethod]
@@ -118,7 +118,6 @@ namespace Monopoly.Tests.Board.Spaces
             property.BuyHouse();
 
             Assert.AreEqual(playerMoney, player.Money);
-            Assert.AreEqual(0, property.HouseCount);
         }
 
         [TestMethod]
@@ -132,7 +131,6 @@ namespace Monopoly.Tests.Board.Spaces
             property.BuyHouse();
 
             Assert.AreEqual(playerMoney - HOUSE_COST, player.Money);
-            Assert.AreEqual(1, property.HouseCount);
         }
 
         [TestMethod]
@@ -141,16 +139,164 @@ namespace Monopoly.Tests.Board.Spaces
             property.LandOn(player);
             otherProperty.LandOn(player);
 
-            var playerMoney = player.Money;
+            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+
+            BuyHousesAndAssertRent(1, renter);
+            BuyHousesAndAssertRent(2, renter);
+            BuyHousesAndAssertRent(3, renter);
+            BuyHousesAndAssertRent(4, renter);
+        }
+
+        private void BuyHousesAndAssertRent(Int32 numberOfHouses, Player renter)
+        {
+            var rent = houseRents[numberOfHouses - 1];
+
             property.BuyHouse();
+            otherProperty.BuyHouse();
+
+            var previousPlayerMoney = player.Money;
+            var previousRenterMoney = renter.Money; 
+            
+            property.LandOn(renter);
+
+            Assert.AreEqual(previousRenterMoney - rent, renter.Money, String.Format("renter wrong for {0} houses", numberOfHouses));
+            Assert.AreEqual(previousPlayerMoney + rent, player.Money, String.Format("renter wrong for {0} houses", numberOfHouses));
+        }
+
+        [TestMethod]
+        public void CannotBuyMoreThan4Houses()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
 
             var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
-            var renterMoney = renter.Money;
+
+            for (var i = 4; i > 0; i--)
+            {
+                property.BuyHouse();
+                otherProperty.BuyHouse();
+            }
+
+            var previousPlayerMoney = player.Money;
+            var previousRenterMoney = renter.Money;
 
             property.LandOn(renter);
 
-            Assert.AreEqual(renterMoney - 25, renter.Money);
-            Assert.AreEqual(playerMoney + 25, player.Money);
+            Assert.AreEqual(previousRenterMoney - houseRents[3], renter.Money);
+            Assert.AreEqual(previousPlayerMoney + houseRents[3], player.Money);
+
+            property.BuyHouse();
+            otherProperty.BuyHouse();
+            previousPlayerMoney = player.Money;
+            previousRenterMoney = renter.Money;
+
+            property.LandOn(renter);
+
+            Assert.AreEqual(previousRenterMoney - houseRents[3], renter.Money);
+            Assert.AreEqual(previousPlayerMoney + houseRents[3], player.Money);
         }
+
+        [TestMethod]
+        public void BuyHotel()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
+
+            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+
+            for (var i = 4; i > 0; i--)
+            {
+                property.BuyHouse();
+                otherProperty.BuyHouse();
+            }
+
+            property.BuyHotel();
+
+            var previousPlayerMoney = player.Money;
+            var previousRenterMoney = renter.Money;
+
+            property.LandOn(renter);
+
+            Assert.AreEqual(previousRenterMoney - houseRents[4], renter.Money);
+            Assert.AreEqual(previousPlayerMoney + houseRents[4], player.Money);
+        }
+
+        [TestMethod]
+        public void EvenBuildEnforcedOnHotels()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
+
+            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+
+            for (var i = 3; i > 0; i--)
+            {
+                property.BuyHouse();
+                otherProperty.BuyHouse();
+            }
+
+            property.BuyHouse();
+            property.BuyHotel();
+
+            var previousPlayerMoney = player.Money;
+            var previousRenterMoney = renter.Money;
+
+            property.LandOn(renter);
+
+            Assert.AreEqual(previousRenterMoney - houseRents[3], renter.Money);
+            Assert.AreEqual(previousPlayerMoney + houseRents[3], player.Money);
+        }
+
+        [TestMethod]
+        public void CantBuyMoreThanOneHotel()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
+
+            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+
+            for (var i = 4; i > 0; i--)
+            {
+                property.BuyHouse();
+                otherProperty.BuyHouse();
+            }
+
+            property.BuyHotel();
+            property.BuyHotel();
+
+            var previousPlayerMoney = player.Money;
+            var previousRenterMoney = renter.Money;
+
+            property.LandOn(renter);
+
+            Assert.AreEqual(previousRenterMoney - houseRents[4], renter.Money);
+            Assert.AreEqual(previousPlayerMoney + houseRents[4], player.Money);
+        }
+
+        [TestMethod]
+        public void CantBuyHousesIfAnyPropertyInGroupIsMortgaged()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
+
+            property.Mortgage();
+
+            var previousPlayerMoney = player.Money;
+            property.BuyHouse();
+
+            Assert.AreEqual(previousPlayerMoney, player.Money);
+
+            property.PayOffMortgage();
+            otherProperty.Mortgage();
+
+            previousPlayerMoney = player.Money;
+            property.BuyHouse();
+
+            Assert.AreEqual(previousPlayerMoney, player.Money);
+        }
+
+        //mortgaging sells houses
+        //add RealEstateStrategy [buy realestate, buy housesOrHotels]
+        //add StrategyCollection
     }
 }
