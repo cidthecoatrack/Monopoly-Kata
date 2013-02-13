@@ -21,22 +21,20 @@ namespace Monopoly.Board.Spaces
         public void LandOn(Player player)
         {
             if (!Owned)
-                SeeIfPlayerCanBuyMe(player);
+                TryToBuyMe(player);
             else
                 MakePlayerPayRent(player);
         }
 
-        protected void SeeIfPlayerCanBuyMe(Player player)
-        {
-            if (player.CanAfford(Price))
-                BuyMe(player);
-        }
-
-        protected void BuyMe(Player player)
+        protected void TryToBuyMe(Player player)
         {
             player.Buy(this);
-            Mortgaged = false;
-            Owner = player;
+
+            if (player.Owns(this))
+            {
+                Mortgaged = false;
+                Owner = player;
+            }
         }
 
         protected void MakePlayerPayRent(Player player)
@@ -59,7 +57,7 @@ namespace Monopoly.Board.Spaces
 
         public void PayOffMortgage()
         {
-            if (Owned && Mortgaged && Owner.CanAfford(Price))
+            if (Owned && Mortgaged)
             {
                 Owner.Pay(Price);
                 Mortgaged = false;

@@ -5,9 +5,11 @@ namespace Monopoly.Tests.Strategies.JailStrategies
 {
     public class RandomlyPay : IJailStrategy
     {
-        public Boolean SaysIShouldPayToGetOutOfJail(Int32 moneyOnHand)
+        Random random = new Random();
+        
+        public Boolean ShouldPay(Int32 moneyOnHand)
         {
-            return Convert.ToBoolean(new Random().Next());
+            return Convert.ToBoolean(random.Next());
         }
     }
 }

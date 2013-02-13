@@ -23,11 +23,11 @@ namespace Monopoly.Tests.Strategies.JailStrategies
         }
         
         [TestMethod]
-        private void NeverPay()
+        public void NeverPay()
         {
             var player = new Player("name", new RandomlyMortgage(), new NeverPay());
-
             var playerMoney = player.Money;
+
             dice.RollTwoDice();
             goToJail.LandOn(player);
             jailHandler.HandleJail(0, player);
@@ -37,11 +37,11 @@ namespace Monopoly.Tests.Strategies.JailStrategies
         }
 
         [TestMethod]
-        private void AlwaysPay()
+        public void AlwaysPay()
         {
             var player = new Player("name", new RandomlyMortgage(), new AlwaysPay());
-
             var playerMoney = player.Money;
+
             dice.RollTwoDice();
             goToJail.LandOn(player);
             jailHandler.HandleJail(0, player);

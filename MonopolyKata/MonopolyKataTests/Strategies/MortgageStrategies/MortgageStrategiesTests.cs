@@ -8,7 +8,7 @@ using Monopoly.Tests.Strategies.JailStrategies;
 namespace Monopoly.Tests.Strategies.MortgageStrategies
 {
     [TestClass]
-    public class MortgageStrategyTests
+    public class MortgageStrategiesTests
     {
         private RealEstate firstRealEstate;
         private RealEstate secondRealEstate;
@@ -34,7 +34,7 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
         }
 
         [TestMethod]
-        private void NeverMortgage()
+        public void NeverMortgage()
         {
             var player = CreatePlayer(new NeverMortgage());
 
@@ -53,7 +53,7 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
         }
 
         [TestMethod]
-        private void MortgageWhenSheHasLessThan500()
+        public void MortgageWhenSheHasLessThan500()
         {
             var player = CreatePlayer(new MortgageIfMoneyLessThanFiveHundred());
 
@@ -73,7 +73,7 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
         }
 
         [TestMethod]
-        private void AlwaysMortgage()
+        public void AlwaysMortgage()
         {
             var player = CreatePlayer(new AlwaysMortgage());
 

@@ -4,6 +4,8 @@ using Monopoly.Handlers;
 using Monopoly.Board;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Tests.Strategies.RealEstateStrategies;
+using Monopoly.Strategies;
 
 namespace Monopoly.Tests.Handlers
 {
@@ -16,7 +18,12 @@ namespace Monopoly.Tests.Handlers
         [TestInitialize]
         public void Setup()
         {
-            player = new Player("name", new NeverMortgage(), new NeverPay());
+            var strategies = new StrategyCollection();
+            strategies.JailStrategy = new RandomlyPay();
+            strategies.MortgageStrategy = new RandomlyMortgage();
+            strategies.RealEstateStrategy = new RandomlyBuy();
+
+            player = new Player("name", strategies);
             goHandler = new GoHandler(player);
         }
         

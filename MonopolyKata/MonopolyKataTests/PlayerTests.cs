@@ -3,6 +3,8 @@ using Monopoly.Board.Spaces;
 using Monopoly;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Strategies;
+using Monopoly.Tests.Strategies.RealEstateStrategies;
 
 namespace Monopoly.Tests
 {
@@ -14,7 +16,12 @@ namespace Monopoly.Tests
         [TestInitialize]
         public void Setup()
         {
-            player = new Player("Name", new RandomlyMortgage(), new RandomlyPay());
+            var strategies = new StrategyCollection();
+            strategies.JailStrategy = new RandomlyPay();
+            strategies.MortgageStrategy = new RandomlyMortgage();
+            strategies.RealEstateStrategy = new RandomlyBuy();
+
+            player = new Player("Name", strategies);
         }
 
         [TestMethod]

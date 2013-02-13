@@ -9,12 +9,12 @@ namespace Monopoly.Board.Spaces
     public class Property : RealEstate
     {
         public readonly GROUPING Grouping;
+        public readonly Int32 HousePrice;
 
-        private Int32 baseRent;
-        private List<Int32> houseRents;
         private Int32 houses;
         private IEnumerable<Property> propertiesInGroup;
-        private Int32 housePrice;
+        private readonly Int32 baseRent;
+        private readonly List<Int32> houseRents;
 
         public Property(String name, Int32 price, Int32 baseRent, GROUPING grouping, Int32 housePrice, IEnumerable<Int32> houseRents)
             : base(name, price)
@@ -24,7 +24,7 @@ namespace Monopoly.Board.Spaces
             
             this.baseRent = baseRent;
             Grouping = grouping;
-            this.housePrice = housePrice;
+            HousePrice = housePrice;
 
             this.houseRents = new List<Int32>();
             this.houseRents.Add(baseRent * 2);
@@ -46,13 +46,16 @@ namespace Monopoly.Board.Spaces
 
         public void BuyHouse()
         {
-            if (OwnerOwnsAllInGroup() && Owner.CanAfford(housePrice) && 
-                !AnyPropertiesInGroupAreMortgaged() && EvenBuildAllowsANewHouseHere() && 
-                houses < 4)
+            if (CanBuyHouseOrHotel() && houses < 4)
             {
-                Owner.Pay(housePrice);
+                Owner.Pay(HousePrice);
                 houses++;
             }
+        }
+
+        public Boolean CanBuyHouseOrHotel()
+        {
+            return OwnerOwnsAllInGroup() && !AnyPropertiesInGroupAreMortgaged() && EvenBuildAllowsANewHouseHere();
         }
 
         private Boolean AnyPropertiesInGroupAreMortgaged()
@@ -72,9 +75,9 @@ namespace Monopoly.Board.Spaces
 
         public void BuyHotel()
         {
-            if (houses == 4 && Owner.CanAfford(housePrice) && EvenBuildAllowsANewHouseHere())
+            if (CanBuyHouseOrHotel() && houses == 4)
             {
-                Owner.Pay(housePrice);
+                Owner.Pay(HousePrice);
                 houses++;
             }
         }
@@ -84,7 +87,7 @@ namespace Monopoly.Board.Spaces
             if (houses > 0 && EvenBuildAllowsSellingHouse())
             {
                 houses--;
-                Owner.ReceiveMoney(housePrice / 2);
+                Owner.ReceiveMoney(HousePrice / 2);
             }
             else if (houses == 0 && Owned && !Mortgaged && !AnyPropertiesInGroupHaveHouses())
             {

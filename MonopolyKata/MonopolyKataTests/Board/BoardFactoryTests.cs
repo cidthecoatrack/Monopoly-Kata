@@ -70,7 +70,7 @@ namespace Monopoly.Tests.Board
         }
 
         [TestMethod]
-        private void BoardHasCorrectGroupings()
+        public void BoardHasCorrectGroupings()
         {
             Assert.AreEqual(GROUPING.PURPLE, (board[BoardConstants.MEDITERANEAN_AVENUE] as Property).Grouping);
             Assert.AreEqual(GROUPING.PURPLE, (board[BoardConstants.BALTIC_AVENUE] as Property).Grouping);

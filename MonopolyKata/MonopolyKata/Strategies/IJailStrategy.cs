@@ -4,6 +4,6 @@ namespace Monopoly.Strategies
 {
     public interface IJailStrategy
     {
-        Boolean SaysIShouldPayToGetOutOfJail(Int32 moneyOnHand);
+        Boolean ShouldPay(Int32 moneyOnHand);
     }
 }

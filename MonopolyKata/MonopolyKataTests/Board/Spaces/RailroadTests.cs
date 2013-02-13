@@ -3,6 +3,8 @@ using Monopoly.Board.Spaces;
 using Monopoly;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Strategies;
+using Monopoly.Tests.Strategies.RealEstateStrategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -18,8 +20,13 @@ namespace Monopoly.Tests.Board.Spaces
         {
             BuildRailroads();
 
-            owner = new Player("owner", new RandomlyMortgage(), new RandomlyPay());
-            renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+            var strategies = new StrategyCollection();
+            strategies.JailStrategy = new RandomlyPay();
+            strategies.MortgageStrategy = new RandomlyMortgage();
+            strategies.RealEstateStrategy = new RandomlyBuy();
+
+            owner = new Player("owner", strategies);
+            renter = new Player("renter", strategies);
 
             railroads[0].LandOn(owner);
         }

@@ -62,6 +62,8 @@
     <Compile Include="Board\Spaces\Property.cs" />
     <Compile Include="PlayerOrderRandomizer.cs" />
     <Compile Include="Handlers\TurnHandler.cs" />
+    <Compile Include="Strategies\IRealEstateStrategy.cs" />
+    <Compile Include="Strategies\IStrategyCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Cards\Chance\" />

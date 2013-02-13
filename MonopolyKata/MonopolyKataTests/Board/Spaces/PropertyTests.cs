@@ -343,9 +343,5 @@ namespace Monopoly.Tests.Board.Spaces
             Assert.IsFalse(property.Mortgaged);
             Assert.AreEqual(previousPlayerMoney, player.Money);
         }
-
-        //mortgaging sells houses
-        //add RealEstateStrategy [buy realestate, buy housesOrHotels]
-        //add StrategyCollection
     }
 }

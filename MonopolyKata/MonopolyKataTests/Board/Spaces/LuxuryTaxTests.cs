@@ -3,6 +3,8 @@ using Monopoly.Board.Spaces;
 using Monopoly;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Strategies;
+using Monopoly.Tests.Strategies.RealEstateStrategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -13,9 +15,15 @@ namespace Monopoly.Tests.Board.Spaces
         public void LandOnLuxuryTax_PlayerPays75()
         {
             var luxuryTax = new LuxuryTax();
-            var player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
 
+            var strategies = new StrategyCollection();
+            strategies.JailStrategy = new RandomlyPay();
+            strategies.MortgageStrategy = new RandomlyMortgage();
+            strategies.RealEstateStrategy = new RandomlyBuy();
+
+            var player = new Player("name", strategies);
             var playerMoney = player.Money;
+
             luxuryTax.LandOn(player);
 
             Assert.AreEqual(playerMoney - LuxuryTax.LUXURY_TAX, player.Money);

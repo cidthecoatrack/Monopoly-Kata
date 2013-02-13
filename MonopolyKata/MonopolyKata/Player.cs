@@ -16,16 +16,19 @@ namespace Monopoly
 
         private IJailStrategy jailStrategy;
         private IMortgageStrategy mortgageStrategy;
+        private IRealEstateStrategy realEstateStrategy;
         private List<RealEstate> ownedRealEstate;
 
-        public Player(String name, IMortgageStrategy mortgageStrategy, IJailStrategy jailStrategy)
+        public Player(String name, IStrategyCollection strategies)
         {
             Name = name;
             Position = 0;
             Money = 1500;
             ownedRealEstate = new List<RealEstate>();
-            this.mortgageStrategy = mortgageStrategy;
-            this.jailStrategy = jailStrategy;
+
+            mortgageStrategy = strategies.MortgageStrategy;
+            jailStrategy = strategies.JailStrategy;
+            realEstateStrategy = strategies.RealEstateStrategy;
         }
 
         public void Move(Int32 amountToMove)
@@ -55,8 +58,11 @@ namespace Monopoly
 
         public void Buy(RealEstate realEstate)
         {
-            Pay(realEstate.Price);
-            ownedRealEstate.Add(realEstate);
+            if (CanAfford(realEstate.Price) && realEstateStrategy.ShouldBuy(Money))
+            {
+                Pay(realEstate.Price);
+                ownedRealEstate.Add(realEstate);
+            }
         }
 
         public void HandleMortgages()
@@ -77,13 +83,21 @@ namespace Monopoly
         {
             var propertiesToPayOff = ownedRealEstate.Where(x => x.Mortgaged);
             foreach(var property in propertiesToPayOff)
-                if (mortgageStrategy.ShouldPayOffMortgage(Money, property))
+                if (CanAfford(property.Price) && mortgageStrategy.ShouldPayOffMortgage(Money, property))
                     property.PayOffMortgage();
         }
 
         public Boolean WillPayToGetOutOfJail()
         {
-            return jailStrategy.SaysIShouldPayToGetOutOfJail(Money) && CanAfford(GameConstants.COST_TO_GET_OUT_OF_JAIL);
+            return jailStrategy.ShouldPay(Money) && CanAfford(GameConstants.COST_TO_GET_OUT_OF_JAIL);
+        }
+
+        public void DevelopProperties()
+        {
+            var propertiesToDevelop = ownedRealEstate.OfType<Property>().Where(x => x.CanBuyHouseOrHotel());
+            foreach (var property in propertiesToDevelop)
+                if (CanAfford(property.HousePrice) && realEstateStrategy.ShouldDevelop(Money))
+                    property.BuyHouse();
         }
     }
 }
