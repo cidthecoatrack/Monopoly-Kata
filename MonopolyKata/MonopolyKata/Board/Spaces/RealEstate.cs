@@ -48,7 +48,7 @@ namespace Monopoly.Board.Spaces
 
         protected abstract Int32 GetRent();
 
-        public void Mortgage()
+        public virtual void Mortgage()
         {
             if (Owned && !Mortgaged)
             {

@@ -44,7 +44,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerDoesNotOwnAllPropertiesInGroup_RentIsNormal()
+        public void DoNotOwnAllPropertiesInGroup_RentIsNormal()
         {
             property.LandOn(player);
             var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
@@ -64,7 +64,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerOwnsAllPropertiesInGroup_RentIsDoubled()
+        public void OwnAllPropertiesInGroup_RentIsDoubled()
         {
             property.LandOn(player);
             otherProperty.LandOn(player);
@@ -82,7 +82,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerLandsOnOthersOwnedProperty_PaysRent()
+        public void LandOnOthersOwnedProperty_PaysRent()
         {
             property.LandOn(player);
             var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
@@ -292,6 +292,55 @@ namespace Monopoly.Tests.Board.Spaces
             previousPlayerMoney = player.Money;
             property.BuyHouse();
 
+            Assert.AreEqual(previousPlayerMoney, player.Money);
+        }
+
+        [TestMethod]
+        public void MortgagingSellsHousesAtHalfPrice()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
+
+            property.BuyHouse();
+            
+            var previousPlayerMoney = player.Money;
+            property.Mortgage();
+
+            Assert.IsFalse(property.Mortgaged);
+            Assert.AreEqual(previousPlayerMoney + HOUSE_COST / 2, player.Money);
+        }
+
+        [TestMethod]
+        public void SellingHousesEnforcesEvenBuild()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
+
+            for (var i = 0; i < 2; i++)
+            {
+                property.BuyHouse();
+                otherProperty.BuyHouse();
+            }
+
+            var previousPlayerMoney = player.Money;
+            property.Mortgage();
+            property.Mortgage();
+
+            Assert.IsFalse(property.Mortgaged);
+            Assert.AreEqual(previousPlayerMoney + HOUSE_COST / 2, player.Money);
+        }
+
+        [TestMethod]
+        public void CannotMortgagePropertyIfOtherPropertyInGroupHasHouses()
+        {
+            property.LandOn(player);
+            otherProperty.LandOn(player);
+
+            otherProperty.BuyHouse();
+            var previousPlayerMoney = player.Money;
+            property.Mortgage();
+
+            Assert.IsFalse(property.Mortgaged);
             Assert.AreEqual(previousPlayerMoney, player.Money);
         }
 

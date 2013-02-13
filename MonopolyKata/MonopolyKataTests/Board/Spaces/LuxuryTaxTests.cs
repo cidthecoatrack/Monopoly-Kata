@@ -10,7 +10,7 @@ namespace Monopoly.Tests.Board.Spaces
     public class LuxuryTaxTests
     {
         [TestMethod]
-        public void PlayerLandsOnLuxuryTax_PlayerPays75()
+        public void LandOnLuxuryTax_PlayerPays75()
         {
             var luxuryTax = new LuxuryTax();
             var player = new Player("name", new RandomlyMortgage(), new RandomlyPay());

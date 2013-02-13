@@ -57,11 +57,13 @@
     <Compile Include="Board\Spaces\PropertyTests.cs" />
     <Compile Include="Board\Spaces\RailroadTests.cs" />
     <Compile Include="Board\Spaces\RealEstateTests.cs" />
+    <Compile Include="Board\Spaces\TestRealEstate.cs" />
     <Compile Include="Board\Spaces\UtilityTests.cs" />
     <Compile Include="Handlers\GoHandlerTests.cs" />
     <Compile Include="Strategies\JailStrategies\AlwaysPay.cs" />
     <Compile Include="Strategies\JailStrategies\NeverPay.cs" />
     <Compile Include="Strategies\JailStrategies\RandomlyPay.cs" />
+    <Compile Include="Strategies\JailStrategies\JailStrategiesTests.cs" />
     <Compile Include="Strategies\MortgageStrategies\AlwaysMortgage.cs" />
     <Compile Include="Dice\ControlledDice.cs" />
     <Compile Include="Dice\DiceTests.cs" />
@@ -72,7 +74,7 @@
     <Compile Include="PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlayerOrderRandomizerTests.cs" />
-    <Compile Include="Strategies\StrategyTests.cs" />
+    <Compile Include="Strategies\MortgageStrategies\MortgageStrategyTests.cs" />
     <Compile Include="Handlers\TurnHandlerTests.cs" />
     <Compile Include="Handlers\JailHandlerTests.cs" />
   </ItemGroup>

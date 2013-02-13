@@ -35,7 +35,7 @@ namespace Monopoly.Tests.Handlers
         }
 
         [TestMethod]
-        public void PlayerRollsDoubles_GoesAgain()
+        public void RollDoubles_GoesAgain()
         {
             var jailHandler = new JailHandler(dice);
             var board = boardFactory.CreateMonopolyBoard(dice, jailHandler);
@@ -50,7 +50,7 @@ namespace Monopoly.Tests.Handlers
         }
 
         [TestMethod]
-        public void PlayerDoesNotRollDoubles_OnlyMovesOneRoll()
+        public void DoNotRollDoubles_OnlyMovesOneRoll()
         {
             dice.SetPredeterminedDieValues(4, 2, 1, 1);
             turnTaker.TakeTurn(player);
@@ -59,7 +59,7 @@ namespace Monopoly.Tests.Handlers
         }
 
         [TestMethod]
-        public void PlayerRolls2Doubles_Moves3Times()
+        public void RollTwoDoubles_MovesThreeTimes()
         {
             var jailHandler = new JailHandler(dice);
             var board = boardFactory.CreateMonopolyBoard(dice, jailHandler);
@@ -76,7 +76,7 @@ namespace Monopoly.Tests.Handlers
         }
 
         [TestMethod]
-        public void IfPlayerLandsOnGoToJail_DoesNotGoAgain()
+        public void LandOnGoToJail_DoesNotGoAgain()
         {
             var jailHandler = new JailHandler(dice);
             var board = boardFactory.CreateMonopolyBoard(dice, jailHandler);

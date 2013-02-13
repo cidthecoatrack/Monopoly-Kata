@@ -13,12 +13,6 @@ namespace Monopoly.Tests.Board.Spaces
         RealEstate realEstate;
         Player player;
         private const Int32 PRICE = 50;
-
-        private class TestRealEstate : RealEstate
-        {
-            public TestRealEstate(String name, Int32 price) : base(name, price) { }
-            protected override Int32 GetRent() { return 0; }
-        }
         
         [TestInitialize]
         public void Setup()
@@ -30,16 +24,18 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void OwnerLandsOnTheirRealEstate_NothingHappens()
         {
-            player.ReceiveMoney(PRICE);
             realEstate.LandOn(player);
+
             Assert.IsTrue(player.Owns(realEstate));
+
             var previousPlayer = player;
             realEstate.LandOn(player);
+
             Assert.AreEqual(player, previousPlayer);
         }
 
         [TestMethod]
-        public void PlayerDoesNotBuyUnaffordableRealEstate()
+        public void DoNotBuyUnaffordableRealEstate()
         {
             player.Pay(player.Money - realEstate.Price + 1);
             realEstate.LandOn(player);
@@ -50,7 +46,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerMortgagesPropertyFor90PercentPurchasePrice()
+        public void MortgagePropertyFor90PercentPurchasePrice()
         {
             realEstate.LandOn(player);
             var previousMoney = player.Money;
@@ -76,7 +72,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerCanPayOffMortgage()
+        public void PayOffMortgage()
         {
             player.ReceiveMoney(PRICE);
             realEstate.LandOn(player);
@@ -89,7 +85,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerCantPayOffUnmortgagedProperty()
+        public void CantPayOffUnmortgagedProperty()
         {
             realEstate.LandOn(player);
             var playerMoney = player.Money;

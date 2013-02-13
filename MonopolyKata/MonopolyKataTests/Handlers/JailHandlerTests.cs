@@ -24,7 +24,7 @@ namespace Monopoly.Tests.Hendlers
         }
 
         [TestMethod]
-        public void PlayerRolls3Doubles_GoesToJail()
+        public void RollThreeDoubles_GoToJail()
         {
             jailHandler.HandleJail(3, player);
 

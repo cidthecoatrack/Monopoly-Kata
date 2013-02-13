@@ -35,7 +35,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
         
         [TestMethod]
-        public void PlayerLandsOnOwnedUtility_PlayerPays4xDieRoll()
+        public void LandOnOwnedUtility_PlayerPays4xDieRoll()
         {
             var ownerMoney = owner.Money;
             var renterMoney = renter.Money;
@@ -46,7 +46,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerLandsOnOwnedUtilityx2_PlayerPays10xDieRoll()
+        public void LandOnOwnedUtilityx2_PlayerPays10xDieRoll()
         {
             var otherOwner = new Player("other owner", new RandomlyMortgage(), new RandomlyPay());
             otherUtility.LandOn(otherOwner);

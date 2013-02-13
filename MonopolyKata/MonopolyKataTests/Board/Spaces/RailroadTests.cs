@@ -38,7 +38,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
         
         [TestMethod]
-        public void PlayerLandsOnOwnedRailroadx1_Pays25()
+        public void LandOnOwnedRailroadx1_Pays25()
         {
             var renterMoney = renter.Money;
             var ownerMoney = owner.Money;
@@ -49,7 +49,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerLandsOnOwnedRailroadx2_Pays50()
+        public void LandOnOwnedRailroadx2_Pays50()
         {
             railroads[1].LandOn(owner);
 
@@ -62,7 +62,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerLandsOnOwnedRailroadx3_Pays100()
+        public void LandOnOwnedRailroadx3_Pays100()
         {
             railroads[1].LandOn(owner);
             railroads[2].LandOn(owner);
@@ -76,7 +76,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerLandsOnOwnedRailroadx4_Pays200()
+        public void LandOnOwnedRailroadx4_Pays200()
         {
             railroads[1].LandOn(owner);
             railroads[2].LandOn(owner);

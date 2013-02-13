@@ -21,7 +21,7 @@ namespace Monopoly.Tests.Handlers
         }
         
         [TestMethod]
-        public void PlayerCannotMoveOffOfBoard()
+        public void CannotMoveOffOfBoard()
         {
             player.Move(BoardConstants.BOARD_SIZE + 5);
             goHandler.HandleGo();
@@ -29,7 +29,7 @@ namespace Monopoly.Tests.Handlers
         }
 
         [TestMethod]
-        public void PlayersReceive200ForLandingOnGo()
+        public void Receive200ForLandingOnGo()
         {
             var previousMoney = player.Money;
             player.Move(BoardConstants.BOARD_SIZE);
@@ -38,7 +38,7 @@ namespace Monopoly.Tests.Handlers
         }
 
         [TestMethod]
-        public void PlayersReceive200ForPassingGo()
+        public void Receive200ForPassingGo()
         {
             var previousMoney = player.Money;
             player.Move(BoardConstants.BOARD_SIZE + 1);
@@ -47,7 +47,7 @@ namespace Monopoly.Tests.Handlers
         }
 
         [TestMethod]
-        public void PlayersDoNotReceiveMoneyFromLeavingGo()
+        public void DoNotReceiveMoneyFromLeavingGo()
         {
             var previousMoney = player.Money;
             Assert.AreEqual(0, player.Position);

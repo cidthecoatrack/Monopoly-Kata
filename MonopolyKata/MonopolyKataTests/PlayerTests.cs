@@ -18,46 +18,36 @@ namespace Monopoly.Tests
         }
 
         [TestMethod]
-        public void PlayersNamePassedInCorrectly()
+        public void Initialize()
         {
             Assert.AreEqual("Name", player.Name);
-        }
-
-        [TestMethod]
-        public void PlayersInitializedToStartingPosition()
-        {
             Assert.AreEqual(0, player.Position);
-        }
-
-        [TestMethod]
-        public void PlayerMoneyInitializedTo1500()
-        {
             Assert.AreEqual(1500, player.Money);
         }
 
         [TestMethod]
-        public void TellPlayerToMoveSevenSpaces_PlayerMovesSevenSpaces()
+        public void MoveSevenSpaces()
         {
             player.Move(7);
             Assert.AreEqual(7, player.Position);
         }
 
         [TestMethod]
-        public void GivePlayerTwoHundred_PlayerReceivesTwoHundred()
+        public void GiveTwoHundred()
         {
             player.ReceiveMoney(200);
             Assert.AreEqual(1700, player.Money);
         }
 
         [TestMethod]
-        public void TellPlayerToPayOneHundred_PlayerPaysOneHundred()
+        public void PayOneHundred()
         {
             player.Pay(100);
             Assert.AreEqual(1400, player.Money);
         }
 
         [TestMethod]
-        public void PlayerPaysUnaffordableAmount_PlayerLoses()
+        public void PayUnaffordableAmount_Lose()
         {
             player.Pay(player.Money + 1);
             Assert.IsTrue(player.Money < 0);
@@ -65,13 +55,13 @@ namespace Monopoly.Tests
         }
 
         [TestMethod]
-        public void PlayerHasNotLostTheGameAtStart()
+        public void NotLostTheGameAtStart()
         {
             Assert.IsFalse(player.LostTheGame);
         }
 
         [TestMethod]
-        public void PlayerCanBuyProperty()
+        public void BuyProperty()
         {
             var property = new Property("property", 5, 1, GROUPING.DARK_BLUE, 4, new[] { 25, 75, 225, 400, 500 });
             var playerMoney = player.Money;

@@ -25,14 +25,14 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerLandsOnGoToJail_PlayerGoesToJustVisiting()
+        public void LandOnGoToJail_PlayerGoesToJustVisiting()
         {
             goToJail.LandOn(player);
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
         }
 
         [TestMethod]
-        public void PlayerGoesToJail_MoneyUnaffected()
+        public void GoToJail_MoneyUnaffected()
         {
             var playerMoney = player.Money;
             goToJail.LandOn(player);
@@ -40,7 +40,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void PlayerGoesToJail_PlayerIsInJail()
+        public void GoToJail_PlayerIsInJail()
         {
             goToJail.LandOn(player);
             Assert.IsTrue(jailHandler.HasImprisoned(player));
