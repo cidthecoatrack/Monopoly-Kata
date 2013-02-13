@@ -12,7 +12,7 @@ namespace Monopoly.Tests.Strategies.RealEstateStrategies
     {
         public Boolean ShouldBuy(Int32 moneyOnHand)
         {
-            return false;
+            return true;
         }
 
         public Boolean ShouldDevelop(Int32 moneyOnHand)

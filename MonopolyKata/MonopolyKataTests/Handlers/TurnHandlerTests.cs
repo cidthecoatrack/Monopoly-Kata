@@ -5,6 +5,7 @@ using Monopoly.Board.Spaces;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests.Handlers
 {
@@ -22,7 +23,10 @@ namespace Monopoly.Tests.Handlers
             dice = new ControlledDice();
             boardFactory = new BoardFactory();
             turnTaker = new TurnHandler(dice, boardFactory.CreateBoardOfNormalSpaces(), new JailHandler(dice));
-            player = new Player("Player", new NeverMortgage(), new NeverPay());
+
+            var strategies = new StrategyCollection();
+            strategies.CreateNeverStrategyCollection();
+            player = new Player("Player", strategies);
         }
         
         [TestMethod]

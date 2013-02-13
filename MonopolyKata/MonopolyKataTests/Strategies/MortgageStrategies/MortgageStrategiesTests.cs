@@ -13,6 +13,8 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
         private RealEstate firstRealEstate;
         private RealEstate secondRealEstate;
         private RealEstate thirdRealEstate;
+        private Player player;
+        private StrategyCollection strategies;
 
         [TestInitialize]
         public void Setup()
@@ -20,23 +22,20 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
             firstRealEstate = new TestRealEstate("first", 50);
             secondRealEstate = new TestRealEstate("second", 50);
             thirdRealEstate = new TestRealEstate("third", 50);
-        }
 
-        private Player CreatePlayer(IMortgageStrategy mortgageStrategy)
-        {
-            var player = new Player("name", mortgageStrategy, new RandomlyPay());
-
-            firstRealEstate.LandOn(player);
-            secondRealEstate.LandOn(player);
-            thirdRealEstate.LandOn(player);
-
-            return player;
+            strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();  
         }
 
         [TestMethod]
         public void NeverMortgage()
         {
-            var player = CreatePlayer(new NeverMortgage());
+            strategies.MortgageStrategy = new NeverMortgage();
+            player = new Player("name", strategies);
+
+            firstRealEstate.LandOn(player);
+            secondRealEstate.LandOn(player);
+            thirdRealEstate.LandOn(player);
 
             player.HandleMortgages();
 
@@ -55,7 +54,12 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
         [TestMethod]
         public void MortgageWhenSheHasLessThan500()
         {
-            var player = CreatePlayer(new MortgageIfMoneyLessThanFiveHundred());
+            strategies.MortgageStrategy = new MortgageIfMoneyLessThanFiveHundred();
+            player = new Player("name", strategies);
+
+            firstRealEstate.LandOn(player);
+            secondRealEstate.LandOn(player);
+            thirdRealEstate.LandOn(player);
 
             player.Pay(player.Money - 440);
             player.HandleMortgages();
@@ -75,7 +79,12 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
         [TestMethod]
         public void AlwaysMortgage()
         {
-            var player = CreatePlayer(new AlwaysMortgage());
+            strategies.MortgageStrategy = new AlwaysMortgage();
+            player = new Player("name", strategies);
+
+            firstRealEstate.LandOn(player);
+            secondRealEstate.LandOn(player);
+            thirdRealEstate.LandOn(player);
 
             player.HandleMortgages();
 

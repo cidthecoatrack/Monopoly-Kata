@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Strategies;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 
@@ -17,9 +19,12 @@ namespace Monopoly.Tests
         [TestInitialize]
         public void Setup()
         {
+            var strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();
+            
             nonRandomizedPlayers = new List<Player>();
             for (var i = 0; i < 8; i++)
-                nonRandomizedPlayers.Add(new Player(i.ToString(), new RandomlyMortgage(), new RandomlyPay()));
+                nonRandomizedPlayers.Add(new Player(Convert.ToString(i), strategies));
 
             var randomizer = new PlayerOrderRandomizer();
             randomizedPlayers = randomizer.Execute(nonRandomizedPlayers, new ControlledDice());

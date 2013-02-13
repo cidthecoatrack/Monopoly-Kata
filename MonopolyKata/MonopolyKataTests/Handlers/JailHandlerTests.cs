@@ -5,6 +5,7 @@ using Monopoly.Board;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests.Hendlers
 {
@@ -19,8 +20,11 @@ namespace Monopoly.Tests.Hendlers
         public void Setup()
         {
             dice = new ControlledDice();
-            player = new Player("name", new NeverMortgage(), new NeverPay());
             jailHandler = new JailHandler(dice);
+
+            var strategies = new StrategyCollection();
+            strategies.CreateNeverStrategyCollection();
+            player = new Player("name", strategies);
         }
 
         [TestMethod]

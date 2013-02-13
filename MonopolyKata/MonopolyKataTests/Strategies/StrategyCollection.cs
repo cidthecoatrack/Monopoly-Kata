@@ -12,8 +12,8 @@ namespace Monopoly.Tests.Strategies
 {
     public class StrategyCollection : IStrategyCollection
     {
-        public IJailStrategy JailStrategy {get; set;}
-        public IMortgageStrategy MortgageStrategy {get; set;}
+        public IJailStrategy JailStrategy { get; set; }
+        public IMortgageStrategy MortgageStrategy { get; set; }
         public IRealEstateStrategy RealEstateStrategy { get; set; }
 
         public void CreateRandomStrategyCollection()
@@ -21,6 +21,13 @@ namespace Monopoly.Tests.Strategies
             JailStrategy = new RandomlyPay();
             MortgageStrategy = new RandomlyMortgage();
             RealEstateStrategy = new RandomlyBuy();
+        }
+
+        public void CreateNeverStrategyCollection()
+        {
+            JailStrategy = new NeverPay();
+            MortgageStrategy = new NeverMortgage();
+            RealEstateStrategy = new NeverBuy();
         }
     }
 }

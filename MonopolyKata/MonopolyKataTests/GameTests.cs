@@ -8,6 +8,7 @@ using Monopoly.Board.Spaces;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests
 {
@@ -24,8 +25,11 @@ namespace Monopoly.Tests
         {
             var playerList = new List<Player>();
 
+            var strategies = new StrategyCollection();
+            strategies.CreateNeverStrategyCollection();
+
             while (NumberOfPlayers-- > 0)
-                playerList.Add(new Player("Player " + NumberOfPlayers, new NeverMortgage(), new NeverPay()));
+                playerList.Add(new Player("Player " + NumberOfPlayers, strategies));
 
             return playerList;
         }

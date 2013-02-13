@@ -4,6 +4,7 @@ using Monopoly.Board.Spaces;
 using Monopoly;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -13,6 +14,8 @@ namespace Monopoly.Tests.Board.Spaces
         private Property property;
         private Property otherProperty;
         private Player player;
+        private Player renter;
+        private Player otherPlayer;
         private const Int32 PRICE = 50;
         private const Int32 RENT = 5;
         private const Int32 HOUSE_COST = 30;
@@ -23,8 +26,16 @@ namespace Monopoly.Tests.Board.Spaces
         {
             houseRents = new Int32[] { 25, 75, 225, 400, 500 };
             property = new Property("property", PRICE, RENT, GROUPING.DARK_BLUE, HOUSE_COST, houseRents);
-            player = new Player("player", new RandomlyMortgage(), new RandomlyPay());
             SetUpGroup();
+
+            var strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();
+
+            player = new Player("player", strategies);
+            renter = new Player("renter", strategies);
+            otherPlayer = new Player("other name", strategies);
+
+            property.LandOn(player);
         }
 
         private void SetUpGroup()
@@ -46,15 +57,11 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void DoNotOwnAllPropertiesInGroup_RentIsNormal()
         {
-            property.LandOn(player);
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
-
             var renterMoney = renter.Money;
             property.LandOn(renter);
 
             Assert.AreEqual(renterMoney - RENT, renter.Money);
 
-            var otherPlayer = new Player("other name", new RandomlyMortgage(), new RandomlyPay());
             otherProperty.LandOn(otherPlayer);
 
             renterMoney = renter.Money;
@@ -66,10 +73,8 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void OwnAllPropertiesInGroup_RentIsDoubled()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
 
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
             var previousMoney = renter.Money;
             property.LandOn(renter);
 
@@ -84,9 +89,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void LandOnOthersOwnedProperty_PaysRent()
         {
-            property.LandOn(player);
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
-
             var renterMoney = renter.Money;
             var playerMoney = player.Money;
             property.LandOn(renter);
@@ -98,7 +100,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void BuyHouse()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
 
             var playerMoney = player.Money;
@@ -110,8 +111,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void CantBuyHouseIfDontOwnMonopoly()
         {
-            property.LandOn(player);
-            var otherPlayer = new Player("other player", new RandomlyMortgage(), new RandomlyPay());
             otherProperty.LandOn(otherPlayer);
 
             var playerMoney = player.Money;
@@ -123,7 +122,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void EvenBuildEnforced()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
 
             var playerMoney = player.Money;
@@ -136,10 +134,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void HousesIncreaseRent()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
-
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
             BuyHousesAndAssertRent(1, renter);
             BuyHousesAndAssertRent(2, renter);
@@ -166,10 +161,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void CannotBuyMoreThan4Houses()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
-
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
             for (var i = 4; i > 0; i--)
             {
@@ -199,10 +191,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void BuyHotel()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
-
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
             for (var i = 4; i > 0; i--)
             {
@@ -224,10 +213,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void EvenBuildEnforcedOnHotels()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
-
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
             for (var i = 3; i > 0; i--)
             {
@@ -250,10 +236,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void CantBuyMoreThanOneHotel()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
-
-            var renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
 
             for (var i = 4; i > 0; i--)
             {
@@ -276,7 +259,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void CantBuyHousesIfAnyPropertyInGroupIsMortgaged()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
 
             property.Mortgage();
@@ -298,7 +280,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void MortgagingSellsHousesAtHalfPrice()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
 
             property.BuyHouse();
@@ -313,7 +294,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void SellingHousesEnforcesEvenBuild()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
 
             for (var i = 0; i < 2; i++)
@@ -333,7 +313,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void CannotMortgagePropertyIfOtherPropertyInGroupHasHouses()
         {
-            property.LandOn(player);
             otherProperty.LandOn(player);
 
             otherProperty.BuyHouse();

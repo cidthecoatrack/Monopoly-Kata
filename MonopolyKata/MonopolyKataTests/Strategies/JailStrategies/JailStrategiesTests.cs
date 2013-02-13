@@ -11,8 +11,11 @@ namespace Monopoly.Tests.Strategies.JailStrategies
     public class JailStrategiesTests
     {
         private ControlledDice dice;
-        private JailHandler jailHandler;
         private GoToJail goToJail;
+        private JailHandler jailHandler;
+        private Player player;
+        private StrategyCollection strategies;
+        private Int32 playerMoney;
 
         [TestInitialize]
         public void Setup()
@@ -20,16 +23,22 @@ namespace Monopoly.Tests.Strategies.JailStrategies
             dice = new ControlledDice();
             jailHandler = new JailHandler(dice);
             goToJail = new GoToJail(jailHandler);
+
+            strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();
         }
         
         [TestMethod]
         public void NeverPay()
         {
-            var player = new Player("name", new RandomlyMortgage(), new NeverPay());
-            var playerMoney = player.Money;
+            strategies.JailStrategy = new NeverPay();
+
+            player = new Player("name", strategies);
+            playerMoney = player.Money;
 
             dice.RollTwoDice();
             goToJail.LandOn(player);
+
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(playerMoney, player.Money);
@@ -39,11 +48,14 @@ namespace Monopoly.Tests.Strategies.JailStrategies
         [TestMethod]
         public void AlwaysPay()
         {
-            var player = new Player("name", new RandomlyMortgage(), new AlwaysPay());
-            var playerMoney = player.Money;
+            strategies.JailStrategy = new AlwaysPay();
+
+            player = new Player("name", strategies);
+            playerMoney = player.Money;
 
             dice.RollTwoDice();
             goToJail.LandOn(player);
+
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);

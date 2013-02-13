@@ -4,16 +4,18 @@ using Monopoly;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
     [TestClass]
     public class UtilityTests
     {
-        Utility utility;
-        Utility otherUtility;
-        Player owner;
-        Player renter;
+        private Utility utility;
+        private Utility otherUtility;
+        private Player owner;
+        private Player otherOwner;
+        private Player renter;
 
         [TestInitialize]
         public void Setup()
@@ -23,8 +25,13 @@ namespace Monopoly.Tests.Board.Spaces
             utility = new Utility("utility", dice);
             otherUtility = new Utility("other utility", dice);
             var utilities = new Utility[] { utility, otherUtility };
-            owner = new Player("owner", new RandomlyMortgage(), new RandomlyPay());
-            renter = new Player("renter", new RandomlyMortgage(), new RandomlyPay());
+
+            var strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();
+
+            owner = new Player("owner", strategies);
+            renter = new Player("renter", strategies);
+            otherOwner = new Player("other owner", strategies);
 
             utility.SetUtilities(utilities);
             otherUtility.SetUtilities(utilities);
@@ -48,7 +55,6 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void LandOnOwnedUtilityx2_PlayerPays10xDieRoll()
         {
-            var otherOwner = new Player("other owner", new RandomlyMortgage(), new RandomlyPay());
             otherUtility.LandOn(otherOwner);
 
             var ownerMoney = owner.Money;

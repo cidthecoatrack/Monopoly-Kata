@@ -6,6 +6,7 @@ using Monopoly;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -21,7 +22,10 @@ namespace Monopoly.Tests.Board.Spaces
         {
             jailHandler = new JailHandler(new ControlledDice());
             goToJail = new GoToJail(jailHandler);
-            player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
+
+            var strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();
+            player = new Player("name", strategies);
         }
 
         [TestMethod]

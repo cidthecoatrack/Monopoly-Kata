@@ -4,6 +4,7 @@ using Monopoly.Board.Spaces;
 using Monopoly;
 using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -22,7 +23,10 @@ namespace Monopoly.Tests.Board.Spaces
         private void TestIncomeTaxWith(Int32 thisMuchMoney)
         {
             var incomeTax = new IncomeTax();
-            var player = new Player("name", new RandomlyMortgage(), new RandomlyPay());
+
+            var strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();
+            var player = new Player("name", strategies);
 
             player.Pay(player.Money - thisMuchMoney);
             incomeTax.LandOn(player);
