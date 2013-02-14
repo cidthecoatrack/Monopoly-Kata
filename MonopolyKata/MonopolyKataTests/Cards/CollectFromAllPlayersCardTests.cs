@@ -7,9 +7,9 @@ using Monopoly.Tests.Strategies;
 namespace Monopoly.Tests.Cards
 {
     [TestClass]
-    public class AllPlayersCardTests
+    public class CollectFromAllPlayersCardTests
     {
-        AllPlayersCard card;
+        CollectFromAllPlayersCard card;
         Player player;
 
         [TestInitialize]
@@ -24,7 +24,7 @@ namespace Monopoly.Tests.Cards
             for (var i = 0; i < 8; i++)
                 players.Add(new Player("player " + i, strategies));
 
-            card = new AllPlayersCard("all players", 10, players);
+            card = new CollectFromAllPlayersCard(players);
         }
 
         [TestMethod]

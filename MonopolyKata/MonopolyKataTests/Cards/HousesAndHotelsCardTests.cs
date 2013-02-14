@@ -19,7 +19,7 @@ namespace Monopoly.Tests.Cards
             strategies.CreateRandomStrategyCollection();
 
             player = new Player("name", strategies);
-            card = new HousesAndHotelsCard();
+            card = new HousesAndHotelsCard(40, 115);
 
             SetUpProperties();
         }

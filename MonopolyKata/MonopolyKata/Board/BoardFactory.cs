@@ -3,6 +3,7 @@ using System.Linq;
 using Monopoly.Handlers;
 using Monopoly.Board.Spaces;
 using Monopoly.Dice;
+using System;
 
 namespace Monopoly.Board
 {
@@ -111,7 +112,7 @@ namespace Monopoly.Board
             var board = new List<ISpace>();
 
             for (var i = 0; i < BoardConstants.BOARD_SIZE; i++)
-                board.Add(new NormalSpace(i.ToString()));
+                board.Add(new NormalSpace(Convert.ToString(i)));
 
             return board;
         }

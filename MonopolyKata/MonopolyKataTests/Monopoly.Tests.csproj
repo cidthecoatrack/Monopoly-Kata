@@ -61,11 +61,16 @@
     <Compile Include="Board\Spaces\UtilityTests.cs" />
     <Compile Include="Cards\FlatCollectCardTests.cs" />
     <Compile Include="Cards\FlatPayCardTests.cs" />
-    <Compile Include="Cards\AllPlayersCardTests.cs" />
+    <Compile Include="Cards\CollectFromAllPlayersCardTests.cs" />
     <Compile Include="Cards\MoveAndPassGoCardTests.cs" />
     <Compile Include="Cards\GetOutOfJailFreeCardTests.cs" />
     <Compile Include="Cards\HousesAndHotelsCardTests.cs" />
     <Compile Include="Cards\CommunityChestTests.cs" />
+    <Compile Include="Cards\ChanceTests.cs" />
+    <Compile Include="Cards\MoveBackThreeCardTests.cs" />
+    <Compile Include="Cards\PayAllPlayersCardTests.cs" />
+    <Compile Include="Cards\MoveToNearestRailroadCardTests.cs" />
+    <Compile Include="Cards\MoveToNearestUtilityCardTests.cs" />
     <Compile Include="Handlers\GoHandlerTests.cs" />
     <Compile Include="Strategies\JailStrategies\AlwaysPay.cs" />
     <Compile Include="Strategies\JailStrategies\NeverPay.cs" />

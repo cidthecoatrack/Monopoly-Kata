@@ -6,18 +6,16 @@ using System.Threading.Tasks;
 
 namespace Monopoly.Cards
 {
-    public class AllPlayersCard : ICard
+    public class CollectFromAllPlayersCard : ICard
     {
         public readonly String Name;
         public Boolean Held { get; private set; }
 
-        private readonly Int32 paymentPerPlayer;
         private IEnumerable<Player> players;
 
-        public AllPlayersCard(String name, Int32 paymentPerPlayer, IEnumerable<Player> players)
+        public CollectFromAllPlayersCard(IEnumerable<Player> players)
         {
-            Name = name;
-            this.paymentPerPlayer = paymentPerPlayer;
+            Name = "Grand Opera Opening: Every Player Pays For Opening Night Seats";
             this.players = players;
         }
 
@@ -25,8 +23,8 @@ namespace Monopoly.Cards
         {
             foreach (var otherPlayer in players)
             {
-                otherPlayer.Pay(paymentPerPlayer);
-                player.Collect(paymentPerPlayer);
+                otherPlayer.Pay(50);
+                player.Collect(50);
             }
         }
     }

@@ -11,9 +11,14 @@ namespace Monopoly.Cards
         public Boolean Held {get; private set;}
         public readonly String Name;
 
-        public HousesAndHotelsCard()
+        private readonly Int32 houseCost;
+        private readonly Int32 hotelPremium;
+
+        public HousesAndHotelsCard(Int32 houseCost, Int32 hotelCost)
         {
             Name = "You Are Assessed For Street Repairs";
+            this.houseCost = houseCost;
+            hotelPremium = hotelCost - houseCost;
         }
 
         public void Execute(Player player)
@@ -21,7 +26,7 @@ namespace Monopoly.Cards
             var houses = player.GetNumberOfHouses();
             var hotels = player.GetNumberOfHotels();
 
-            var payment = houses * 40 + hotels * 75;
+            var payment = houses * houseCost + hotels * hotelPremium;
             player.Pay(payment);
         }
     }

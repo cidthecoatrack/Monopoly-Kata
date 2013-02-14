@@ -18,8 +18,6 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var deckFactory = new DeckFactory();
-
             var dice = new ControlledDice();
             var jailHandler = new JailHandler(dice);
 
@@ -36,7 +34,8 @@ namespace Monopoly.Tests.Cards
 
             var go = new NormalSpace("go");
 
-            deck = deckFactory.BuildCommunityChestDeck(jailHandler, players, go);
+            var deckFactory = new DeckFactory(jailHandler, players, go);
+            deck = deckFactory.BuildCommunityChestDeck();
         }
 
         [TestMethod]
@@ -69,7 +68,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void OneAllPlayersCard()
         {
-            var getOutOfJailFreeCards = deck.OfType<AllPlayersCard>();
+            var getOutOfJailFreeCards = deck.OfType<CollectFromAllPlayersCard>();
             Assert.AreEqual(1, getOutOfJailFreeCards.Count());
         }
 
