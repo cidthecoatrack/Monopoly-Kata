@@ -188,7 +188,7 @@ namespace Monopoly.Tests
             game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces(), jailHandler);
             var theChosenOne = game.CurrentPlayer;
 
-            theChosenOne.ReceiveMoney(9266);
+            theChosenOne.Collect(9266);
             game.Play();
             Assert.AreEqual(theChosenOne, game.Winner);
         }

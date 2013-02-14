@@ -54,7 +54,7 @@ namespace Monopoly.Tests.Strategies.RealEstateStrategies
 
             Assert.IsFalse(player.Owns(property));
 
-            player.ReceiveMoney(1);
+            player.Collect(1);
             property.LandOn(player);
 
             Assert.IsTrue(player.Owns(property));
@@ -65,7 +65,7 @@ namespace Monopoly.Tests.Strategies.RealEstateStrategies
 
             Assert.AreEqual(previousRenterMoney, renter.Money);
 
-            player.ReceiveMoney(1);
+            player.Collect(1);
             player.DevelopProperties();
             property.LandOn(renter);
 

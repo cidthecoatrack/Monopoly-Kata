@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
+using Monopoly.Cards;
 using Monopoly.Handlers;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies.MortgageStrategies;
@@ -15,7 +16,6 @@ namespace Monopoly.Tests.Strategies.JailStrategies
         private JailHandler jailHandler;
         private Player player;
         private StrategyCollection strategies;
-        private Int32 playerMoney;
 
         [TestInitialize]
         public void Setup()
@@ -34,7 +34,9 @@ namespace Monopoly.Tests.Strategies.JailStrategies
             strategies.JailStrategy = new NeverPay();
 
             player = new Player("name", strategies);
-            playerMoney = player.Money;
+            Assert.IsFalse(player.WillUseGetOutOfJailCard());
+
+            var playerMoney = player.Money;
 
             dice.RollTwoDice();
             goToJail.LandOn(player);
@@ -51,7 +53,9 @@ namespace Monopoly.Tests.Strategies.JailStrategies
             strategies.JailStrategy = new AlwaysPay();
 
             player = new Player("name", strategies);
-            playerMoney = player.Money;
+            Assert.IsTrue(player.WillUseGetOutOfJailCard());
+
+            var playerMoney = player.Money;
 
             dice.RollTwoDice();
             goToJail.LandOn(player);

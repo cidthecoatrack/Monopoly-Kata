@@ -81,10 +81,10 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void PayOffMortgage()
         {
-            player.ReceiveMoney(PRICE);
+            player.Collect(PRICE);
             realEstate.LandOn(player);
             realEstate.Mortgage();
-            player.ReceiveMoney(PRICE - player.Money);
+            player.Collect(PRICE - player.Money);
             realEstate.PayOffMortgage();
 
             Assert.AreEqual(0, player.Money);
@@ -105,7 +105,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void LosingPlayerDoesNotOwnPropertyAnymore()
         {
-            player.ReceiveMoney(PRICE);
+            player.Collect(PRICE);
             realEstate.LandOn(player);
 
             Assert.IsTrue(realEstate.Owned);

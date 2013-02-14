@@ -41,9 +41,9 @@ namespace Monopoly.Tests
         }
 
         [TestMethod]
-        public void GiveTwoHundred()
+        public void CollectTwoHundred()
         {
-            player.ReceiveMoney(200);
+            player.Collect(200);
             Assert.AreEqual(1700, player.Money);
         }
 

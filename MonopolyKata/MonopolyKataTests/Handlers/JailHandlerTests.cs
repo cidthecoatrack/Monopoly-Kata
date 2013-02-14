@@ -6,15 +6,16 @@ using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
+using Monopoly.Cards;
 
 namespace Monopoly.Tests.Hendlers
 {
     [TestClass]
     public class JailHandlerTests
     {
-        ControlledDice dice;
-        JailHandler jailHandler;
-        Player player;
+        private ControlledDice dice;
+        private JailHandler jailHandler;
+        private Player player;
 
         [TestInitialize]
         public void Setup()
@@ -80,6 +81,45 @@ namespace Monopoly.Tests.Hendlers
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
+            Assert.IsFalse(jailHandler.HasImprisoned(player));
+        }
+
+        [TestMethod]
+        public void PayToGetOut()
+        {
+            var strategies = new StrategyCollection();
+            strategies.CreateNeverStrategyCollection();
+            strategies.JailStrategy = new AlwaysPay();
+            player = new Player("name", strategies);
+
+            var playerMoney = player.Money;
+            jailHandler.Imprison(player);
+
+            dice.RollTwoDice();
+            jailHandler.HandleJail(0, player);
+
+            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
+            Assert.IsFalse(jailHandler.HasImprisoned(player));
+        }
+
+        [TestMethod]
+        public void UseGetOutOfJailCard()
+        {
+            var strategies = new StrategyCollection();
+            strategies.CreateNeverStrategyCollection();
+            strategies.JailStrategy = new AlwaysPay();
+            player = new Player("name", strategies);
+
+            var card = new GetOutOfJailFreeCard(jailHandler);
+            card.Execute(player);
+
+            var playerMoney = player.Money;
+            jailHandler.Imprison(player);
+
+            dice.RollTwoDice();
+            jailHandler.HandleJail(0, player);
+
+            Assert.AreEqual(playerMoney, player.Money);
             Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
     }

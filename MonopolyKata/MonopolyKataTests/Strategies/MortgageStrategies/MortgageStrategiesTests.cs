@@ -68,7 +68,7 @@ namespace Monopoly.Tests.Strategies.MortgageStrategies
             Assert.IsTrue(secondRealEstate.Mortgaged);
             Assert.IsFalse(thirdRealEstate.Mortgaged);
 
-            player.ReceiveMoney(551 - player.Money);
+            player.Collect(551 - player.Money);
             player.HandleMortgages();
 
             Assert.IsFalse(firstRealEstate.Mortgaged);

@@ -9,5 +9,10 @@ namespace Monopoly.Tests.Strategies.JailStrategies
         {
             return false;
         }
+
+        public Boolean UseCard()
+        {
+            return false;
+        }
     }
 }

@@ -39,6 +39,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cards\AllPlayersCard.cs" />
+    <Compile Include="Cards\DeckFactory.cs" />
+    <Compile Include="Cards\FlatCollectCard.cs" />
+    <Compile Include="Cards\FlatPayCard.cs" />
+    <Compile Include="Cards\GetOutOfJailFreeCard.cs" />
+    <Compile Include="Cards\GoToJailCard.cs" />
+    <Compile Include="Cards\HousesAndHotelsCard.cs" />
+    <Compile Include="Cards\ICard.cs" />
+    <Compile Include="Cards\MoveAndPassGoCard.cs" />
     <Compile Include="GameConstants.cs" />
     <Compile Include="Handlers\GoHandler.cs" />
     <Compile Include="Handlers\JailHandler.cs" />
@@ -65,10 +74,7 @@
     <Compile Include="Strategies\IRealEstateStrategy.cs" />
     <Compile Include="Strategies\IStrategyCollection.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Cards\Chance\" />
-    <Folder Include="Cards\CommunityChest\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

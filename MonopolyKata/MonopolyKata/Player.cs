@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Monopoly.Board;
 using Monopoly.Board.Spaces;
+using Monopoly.Cards;
 using Monopoly.Strategies;
 
 namespace Monopoly
@@ -46,9 +47,9 @@ namespace Monopoly
             return Money >= amountToPay;
         }
 
-        public void ReceiveMoney(Int32 AmountToReceive)
+        public void Collect(Int32 amountToCollect)
         {
-            Money += AmountToReceive;
+            Money += amountToCollect;
         }
 
         public Boolean Owns(RealEstate realEstate)
@@ -92,12 +93,27 @@ namespace Monopoly
             return jailStrategy.ShouldPay(Money) && CanAfford(GameConstants.COST_TO_GET_OUT_OF_JAIL);
         }
 
+        public Boolean WillUseGetOutOfJailCard()
+        {
+            return jailStrategy.UseCard();
+        }
+
         public void DevelopProperties()
         {
             var propertiesToDevelop = ownedRealEstate.OfType<Property>().Where(x => x.CanBuyHouseOrHotel());
             foreach (var property in propertiesToDevelop)
                 if (CanAfford(property.HousePrice) && realEstateStrategy.ShouldDevelop(Money))
                     property.BuyHouse();
+        }
+
+        public Int32 GetNumberOfHouses()
+        {
+            return ownedRealEstate.OfType<Property>().Sum(x => x.Houses);
+        }
+
+        public Int32 GetNumberOfHotels()
+        {
+            return ownedRealEstate.OfType<Property>().Where(x => x.Houses == 5).Count();
         }
     }
 }

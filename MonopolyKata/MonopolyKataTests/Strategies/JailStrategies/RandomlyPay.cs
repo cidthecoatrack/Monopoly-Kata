@@ -11,5 +11,10 @@ namespace Monopoly.Tests.Strategies.JailStrategies
         {
             return Convert.ToBoolean(random.Next());
         }
+
+        public Boolean UseCard()
+        {
+            return Convert.ToBoolean(random.Next());
+        }
     }
 }

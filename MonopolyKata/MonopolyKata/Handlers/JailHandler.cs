@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Monopoly.Board;
 using Monopoly.Dice;
 using Monopoly;
+using Monopoly.Cards;
 
 namespace Monopoly.Handlers
 {
@@ -11,11 +13,18 @@ namespace Monopoly.Handlers
         private IDice dice;
         private Dictionary<Player, Int16> turnsInJail;
         private Player player;
+        private Dictionary<Player, GetOutOfJailFreeCard> cards;
 
         public JailHandler(IDice dice)
         {
             this.dice = dice;
             turnsInJail = new Dictionary<Player, Int16>();
+            cards = new Dictionary<Player, GetOutOfJailFreeCard>(2);
+        }
+
+        public void AddCardHolder(Player player, GetOutOfJailFreeCard card)
+        {
+            cards.Add(player, card);
         }
 
         public Boolean HasImprisoned(Player player)
@@ -47,17 +56,25 @@ namespace Monopoly.Handlers
 
         public void Liberate(Player playerToLiberate)
         {
-            turnsInJail.Remove(player);
+            turnsInJail.Remove(playerToLiberate);
         }
 
         private void DoTime()
         {
             turnsInJail[player]++;
-            
+
             if (dice.Doubles)
                 turnsInJail.Remove(player);
+            else if (cards.ContainsKey(player) && player.WillUseGetOutOfJailCard())
+                UseGetOutOfJailCard();
             else if (turnsInJail[player] >= GameConstants.TURNS_IN_JAIL_LIMIT || player.WillPayToGetOutOfJail())
-                PayToLiberate(player); 
+                PayToLiberate(player);
+        }
+
+        private void UseGetOutOfJailCard()
+        {
+            turnsInJail.Remove(player);
+            cards[player].Use();
         }
     }
 }

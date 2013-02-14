@@ -41,7 +41,7 @@ namespace Monopoly.Board.Spaces
         {
             var rent = GetRent();
             player.Pay(rent);
-            Owner.ReceiveMoney(rent);
+            Owner.Collect(rent);
         }
 
         protected abstract Int32 GetRent();
@@ -51,7 +51,7 @@ namespace Monopoly.Board.Spaces
             if (Owned && !Mortgaged)
             {
                 Mortgaged = true;
-                Owner.ReceiveMoney(Convert.ToInt32(Price * .9));
+                Owner.Collect(Convert.ToInt32(Price * .9));
             }
         }
 

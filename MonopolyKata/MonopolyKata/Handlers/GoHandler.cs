@@ -17,7 +17,7 @@ namespace Monopoly.Handlers
         {
             var timesPassGo = (player.Position - (player.Position % BoardConstants.BOARD_SIZE)) / BoardConstants.BOARD_SIZE;
             player.Move(-BoardConstants.BOARD_SIZE * timesPassGo);
-            player.ReceiveMoney(GameConstants.PASS_GO_PAYMENT * timesPassGo);
+            player.Collect(GameConstants.PASS_GO_PAYMENT * timesPassGo);
         }
     }
 }
