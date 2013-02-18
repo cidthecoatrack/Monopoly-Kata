@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Board\Spaces\CommunityChest.cs" />
     <Compile Include="Cards\CollectFromAllPlayersCard.cs" />
     <Compile Include="Cards\DeckFactory.cs" />
     <Compile Include="Cards\FlatCollectCard.cs" />
@@ -53,10 +54,9 @@
     <Compile Include="Cards\MoveToNearestUtilityCard.cs" />
     <Compile Include="Cards\PayAllPlayersCard.cs" />
     <Compile Include="GameConstants.cs" />
-    <Compile Include="Handlers\GoHandler.cs" />
+    <Compile Include="Handlers\BoardHandler.cs" />
     <Compile Include="Handlers\JailHandler.cs" />
     <Compile Include="Board\BoardConstants.cs" />
-    <Compile Include="Board\Spaces\GoToJail.cs" />
     <Compile Include="Board\Spaces\IncomeTax.cs" />
     <Compile Include="Board\Spaces\LuxuryTax.cs" />
     <Compile Include="Board\Spaces\RealEstate.cs" />

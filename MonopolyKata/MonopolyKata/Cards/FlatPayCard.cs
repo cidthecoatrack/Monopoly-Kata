@@ -8,9 +8,9 @@ namespace Monopoly.Cards
 {
     public class FlatPayCard : ICard
     {
-        public readonly String Name;
         public Boolean Held { get; private set; }
 
+        private readonly String Name; 
         private readonly Int32 payment;
 
         public FlatPayCard(String name, Int32 payment)
@@ -22,6 +22,11 @@ namespace Monopoly.Cards
         public void Execute(Player player)
         {
             player.Pay(payment);
+        }
+
+        public override String ToString()
+        {
+            return Name;
         }
     }
 }

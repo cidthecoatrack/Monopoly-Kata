@@ -11,34 +11,27 @@ namespace Monopoly.Cards
 {
     public class MoveAndPassGoCard : ICard
     {
-        public readonly String Name;
         public Boolean Held { get; private set; }
 
+        private readonly String name;
         private readonly Int32 position;
-        private ISpace destination;
+        private BoardHandler boardHandler;
 
-        public MoveAndPassGoCard(String name, Int32 position, ISpace destination)
+        public MoveAndPassGoCard(String name, Int32 position, BoardHandler boardHandler)
         {
-            Name = name;
+            this.name = name;
             this.position = position;
-            this.destination = destination;
+            this.boardHandler = boardHandler;
         }
 
         public void Execute(Player player)
         {
-            if (position < player.Position)
-                MovePlayerToGo(player);
-
-            player.Move(position);
-            destination.LandOn(player);
+            boardHandler.MoveTo(player, position);
         }
 
-        private void MovePlayerToGo(Player player)
+        public override String ToString()
         {
-            player.Move(BoardConstants.BOARD_SIZE - player.Position);
-            
-            var goHandler = new GoHandler(player);
-            goHandler.HandleGo();
+            return name;
         }
     }
 }

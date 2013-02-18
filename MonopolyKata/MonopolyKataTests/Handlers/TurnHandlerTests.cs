@@ -6,50 +6,63 @@ using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
+using Monopoly.Tests.Board;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Monopoly.Tests.Handlers
 {
     [TestClass]
     public class TurnHandlerTests
     {
-        private TurnHandler turnTaker;
+        private TurnHandler turnHandler;
+        private BoardHandler boardHandler;
+        private JailHandler jailHandler;
         private Player player;
-        private BoardFactory boardFactory;
         private ControlledDice dice;
+        private IEnumerable<Player> players;
+        private RealEstate realEstate;
+        private RealEstate otherRealEstate;
 
         [TestInitialize]
         public void Setup()
         {
-            dice = new ControlledDice();
-            boardFactory = new BoardFactory();
-            turnTaker = new TurnHandler(dice, boardFactory.CreateBoardOfNormalSpaces(), new JailHandler(dice));
-
             var strategies = new StrategyCollection();
             strategies.CreateNeverStrategyCollection();
             player = new Player("Player", strategies);
+
+            players = new[]
+                {
+                    player,
+                    new Player("other player", strategies)
+                };
+
+            dice = new ControlledDice();
+            var board = BoardFactory.CreateMonopolyBoard(dice);
+            boardHandler = new BoardHandler(players, board);
+            jailHandler = new JailHandler(dice, boardHandler);
+            turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
+
+            realEstate = board.ElementAt(6) as RealEstate;
+            otherRealEstate = board.ElementAt(14) as RealEstate;
         }
         
         [TestMethod]
         public void OnTurn_PlayerMoves()
         {
             dice.SetPredeterminedRollValue(3);
-            turnTaker.TakeTurn(player);
+            turnHandler.TakeTurn(player);
 
-            Assert.AreEqual(3, player.Position);
+            Assert.AreEqual(3, boardHandler.PositionOf[player]);
         }
 
         [TestMethod]
         public void RollDoubles_GoesAgain()
         {
-            var jailHandler = new JailHandler(dice);
-            var board = boardFactory.CreateMonopolyBoard(dice, jailHandler);
-            var realEstate = board[6] as RealEstate;
-            turnTaker = new TurnHandler(dice, board, jailHandler);
             dice.SetPredeterminedDieValues(3, 3, 3, 1);
+            turnHandler.TakeTurn(player);
 
-            turnTaker.TakeTurn(player);
-
-            Assert.AreEqual(10, player.Position);
+            Assert.AreEqual(10, boardHandler.PositionOf[player]);
             Assert.IsTrue(player.Owns(realEstate));
         }
 
@@ -57,24 +70,18 @@ namespace Monopoly.Tests.Handlers
         public void DoNotRollDoubles_OnlyMovesOneRoll()
         {
             dice.SetPredeterminedDieValues(4, 2, 1, 1);
-            turnTaker.TakeTurn(player);
+            turnHandler.TakeTurn(player);
 
-            Assert.AreEqual(6, player.Position);
+            Assert.AreEqual(6, boardHandler.PositionOf[player]);
         }
 
         [TestMethod]
         public void RollTwoDoubles_MovesThreeTimes()
         {
-            var jailHandler = new JailHandler(dice);
-            var board = boardFactory.CreateMonopolyBoard(dice, jailHandler);
-            turnTaker = new TurnHandler(dice, board, jailHandler);
             dice.SetPredeterminedDieValues(3, 3, 4, 4, 4, 2);
-            var realEstate = board[6] as RealEstate;
-            var otherRealEstate = board[14] as RealEstate;
+            turnHandler.TakeTurn(player);
 
-            turnTaker.TakeTurn(player);
-
-            Assert.AreEqual(20, player.Position);
+            Assert.AreEqual(20, boardHandler.PositionOf[player]);
             Assert.IsTrue(player.Owns(realEstate));
             Assert.IsTrue(player.Owns(otherRealEstate));
         }
@@ -82,14 +89,10 @@ namespace Monopoly.Tests.Handlers
         [TestMethod]
         public void LandOnGoToJail_DoesNotGoAgain()
         {
-            var jailHandler = new JailHandler(dice);
-            var board = boardFactory.CreateMonopolyBoard(dice, jailHandler);
-            turnTaker = new TurnHandler(dice, board, jailHandler);
             dice.SetPredeterminedDieValues(BoardConstants.GO_TO_JAIL / 2, BoardConstants.GO_TO_JAIL / 2, 4, 1);
+            turnHandler.TakeTurn(player);
 
-            turnTaker.TakeTurn(player);
-
-            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
+            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
             Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
     }

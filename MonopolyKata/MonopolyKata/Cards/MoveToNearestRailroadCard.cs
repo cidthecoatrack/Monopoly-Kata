@@ -3,31 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Monopoly.Board;
 using Monopoly.Board.Spaces;
+using Monopoly.Handlers;
 
 namespace Monopoly.Cards
 {
     public class MoveToNearestRailroadCard : ICard
     {
         public Boolean Held { get; private set; }
-        public readonly String Name;
 
-        private ISpace shortRailroad;
-        private ISpace pennsylvaniaRailroad;
-        private ISpace readingRailroad;
-        private ISpace bandORailroad;
+        private BoardHandler boardHandler;
 
-        public MoveToNearestRailroadCard(IEnumerable<ISpace> railroads)
+        public MoveToNearestRailroadCard(BoardHandler boardHandler)
         {
-            shortRailroad = railroads.First(x => x.Name == "");
-            pennsylvaniaRailroad = railroads.First(x => x.Name == "Pennsylvania Railroad");
-            readingRailroad = railroads.First(x => x.Name == "");
-            bandORailroad = railroads.First(x => x.Name == "");
+            this.boardHandler = boardHandler;
         }
 
         public void Execute(Player player)
         {
-            throw new NotImplementedException();
+            var location = boardHandler.PositionOf[player];
+
+            if (location <= BoardConstants.READING_RAILROAD || location > BoardConstants.SHORT_LINE)
+                MoveTo(player, BoardConstants.READING_RAILROAD);
+            else if (location <= BoardConstants.PENNSYLVANIA_RAILROAD)
+                MoveTo(player, BoardConstants.PENNSYLVANIA_RAILROAD);
+            else if (location <= BoardConstants.BandO_RAILROAD)
+                MoveTo(player, BoardConstants.BandO_RAILROAD);
+            else
+                MoveTo(player, BoardConstants.SHORT_LINE);
+        }
+
+        private void MoveTo(Player player, Int32 position)
+        {
+            boardHandler.MoveTo(player, position);
+            boardHandler.MoveTo(player, position);
+        }
+
+        public override String ToString()
+        {
+            return "Advance to the nearest Railroad and pay the owner twice the normal rent";
         }
     }
 }

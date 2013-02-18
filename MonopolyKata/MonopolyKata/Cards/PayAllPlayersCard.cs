@@ -9,19 +9,26 @@ namespace Monopoly.Cards
     public class PayAllPlayersCard : ICard
     {
         public Boolean Held { get; private set; }
-        public readonly String Name;
 
         private IEnumerable<Player> players;
 
         public PayAllPlayersCard(IEnumerable<Player> players)
         {
-            Name = "You Have Been Elected Chairman Of The Board";
             this.players = players;
         }
 
         public void Execute(Player player)
         {
-            throw new NotImplementedException();
+            foreach (var otherPlayer in players)
+            {
+                player.Pay(50);
+                otherPlayer.Collect(50);
+            }
+        }
+
+        public override String ToString()
+        {
+            return "You Have Been Elected Chairman Of The Board";
         }
     }
 }

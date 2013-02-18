@@ -5,10 +5,15 @@ namespace Monopoly.Board.Spaces
 {
     public class NormalSpace : ISpace
     {
-        public String Name { get; private set; }
+        private readonly String Name;
 
         public NormalSpace(String name) { Name = name; }
 
         public void LandOn(Player player) { }
+
+        public override String ToString()
+        {
+            return Name;
+        }
     }
 }

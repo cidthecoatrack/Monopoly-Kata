@@ -27,7 +27,7 @@ namespace Monopoly.Tests
                 nonRandomizedPlayers.Add(new Player(Convert.ToString(i), strategies));
 
             var randomizer = new PlayerOrderRandomizer();
-            randomizedPlayers = randomizer.Execute(nonRandomizedPlayers, new ControlledDice());
+            randomizedPlayers = randomizer.Execute(nonRandomizedPlayers);
         }
         
         [TestMethod]

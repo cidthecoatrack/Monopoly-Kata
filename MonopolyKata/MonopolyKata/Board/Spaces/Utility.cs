@@ -7,6 +7,8 @@ namespace Monopoly.Board.Spaces
 {
     public class Utility : RealEstate
     {
+        public Boolean Force10xRent { get; set; }
+
         private IEnumerable<Utility> utilities;
         private IDice dice;
 
@@ -22,7 +24,7 @@ namespace Monopoly.Board.Spaces
 
         protected override Int32 GetRent()
         {
-            if (TwoUtilitiesAreOwned())
+            if (TwoUtilitiesAreOwned() || Force10xRent)
                 return 10 * dice.Value;
             return 4 * dice.Value;
         }

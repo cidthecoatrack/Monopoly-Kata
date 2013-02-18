@@ -9,20 +9,23 @@ namespace Monopoly.Cards
 {
     public class GoToJailCard : ICard
     {
-        public readonly String Name;
         public Boolean Held { get; private set; }
 
         private JailHandler jailHandler;
 
         public GoToJailCard(JailHandler jailHandler)
         {
-            Name = "Go To Jail";
             this.jailHandler = jailHandler;
         }
 
         public void Execute(Player player)
         {
             jailHandler.Imprison(player);
+        }
+
+        public override String ToString()
+        {
+            return "Go To Jail";
         }
     }
 }

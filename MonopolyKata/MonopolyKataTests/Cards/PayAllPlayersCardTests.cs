@@ -30,16 +30,14 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Initialize()
         {
-            Assert.AreEqual("all players", card.Name);
+            Assert.AreEqual("You Have Been Elected Chairman Of The Board", card.ToString());
         }
 
         [TestMethod]
         public void Pay()
         {
             var playerMoney = player.Money;
-
             card.Execute(player);
-
             Assert.AreEqual(playerMoney - 400, player.Money);
         }
     }

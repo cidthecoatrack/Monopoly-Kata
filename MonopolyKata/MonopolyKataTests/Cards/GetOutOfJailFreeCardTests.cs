@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Monopoly.Board.Spaces;
 using Monopoly.Cards;
 using Monopoly.Handlers;
 using Monopoly.Tests.Dice;
@@ -20,7 +22,8 @@ namespace Monopoly.Tests.Cards
             var player = new Player("name", strategies);
 
             var dice = new ControlledDice();
-            var jailHandler = new JailHandler(dice);
+            var boardHandler = new BoardHandler(Enumerable.Empty<Player>(), Enumerable.Empty<ISpace>());
+            var jailHandler = new JailHandler(dice, boardHandler);
             card = new GetOutOfJailFreeCard(jailHandler);
 
             card.Execute(player);
@@ -29,7 +32,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Initialize()
         {
-            Assert.AreEqual("Get Out Of Jail, Free", card.Name);
+            Assert.AreEqual("Get Out Of Jail, Free", card.ToString());
         }
 
         [TestMethod]

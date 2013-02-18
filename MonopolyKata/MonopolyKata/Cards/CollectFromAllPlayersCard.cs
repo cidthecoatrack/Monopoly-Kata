@@ -8,14 +8,12 @@ namespace Monopoly.Cards
 {
     public class CollectFromAllPlayersCard : ICard
     {
-        public readonly String Name;
         public Boolean Held { get; private set; }
 
         private IEnumerable<Player> players;
 
         public CollectFromAllPlayersCard(IEnumerable<Player> players)
         {
-            Name = "Grand Opera Opening: Every Player Pays For Opening Night Seats";
             this.players = players;
         }
 
@@ -26,6 +24,11 @@ namespace Monopoly.Cards
                 otherPlayer.Pay(50);
                 player.Collect(50);
             }
+        }
+
+        public override String ToString()
+        {
+            return "Grand Opera Opening: Every Player Pays For Opening Night Seats";
         }
     }
 }

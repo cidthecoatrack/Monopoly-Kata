@@ -9,6 +9,7 @@ using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
+using Monopoly.Tests.Board;
 
 namespace Monopoly.Tests
 {
@@ -16,10 +17,27 @@ namespace Monopoly.Tests
     public class GameTests
     {
         private Game game;
-        private BoardFactory boardFactory;
-        private List<ISpace> board;
         private ControlledDice dice;
-        private JailHandler jailHandler;
+        private BoardHandler boardHandler;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            SetupGameWithPlayers(8);
+        }
+
+        private void SetupGameWithPlayers(Int32 numberOfPlayers)
+        {
+            var players = GeneratePlayerIEnumerable(numberOfPlayers);
+            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
+            boardHandler = new BoardHandler(players, board);
+
+            dice = new ControlledDice();
+            var jailHandler = new JailHandler(dice, boardHandler);
+            var turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
+
+            game = new Game(players, turnHandler);
+        }
 
         private IEnumerable<Player> GeneratePlayerIEnumerable(Int32 NumberOfPlayers)
         {
@@ -34,33 +52,22 @@ namespace Monopoly.Tests
             return playerList;
         }
 
-        [TestInitialize]
-        public void Setup()
-        {
-            dice = new ControlledDice();
-            boardFactory = new BoardFactory();
-            jailHandler = new JailHandler(dice);
-            board = boardFactory.CreateMonopolyBoard(dice, jailHandler);
-            game = new Game(GeneratePlayerIEnumerable(8), dice, board, jailHandler);
-        }
-
         [TestMethod]
-        public void CreateTwoPlayerGame_GameHasTwoPlayers()
+        public void GameHasEightPlayers()
         {
-            game = new Game(GeneratePlayerIEnumerable(2), dice, board, jailHandler);
-            Assert.AreEqual(2, game.NumberOfActivePlayers);
+            Assert.AreEqual(8, game.NumberOfActivePlayers);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void FewerThanTwoPlayers_MonopolyWillNotPlay()
+        public void FewerThanTwoPlayers()
         {
-            game = new Game(GeneratePlayerIEnumerable(1), dice, board, jailHandler);
+            SetupGameWithPlayers(1);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void MoreThanEightPlayers_MonopolyWillNotPlay()
+        public void MoreThanEightPlayers()
         {
-            game = new Game(GeneratePlayerIEnumerable(9), dice, board, jailHandler);
+            SetupGameWithPlayers(9);
         }
 
         [TestMethod]
@@ -74,14 +81,15 @@ namespace Monopoly.Tests
         [TestMethod]
         public void AllPlayersTakeATurnInARound()
         {
-            dice.SetPredeterminedRollValue(3);
-
+            var players = new List<Player>();
             while (game.Round == 1)
             {
-                var player = game.CurrentPlayer;
+                players.Add(game.CurrentPlayer);
                 game.TakeTurn();
-                Assert.AreEqual(3, player.Position);
             }
+
+            foreach (var player in players)
+                Assert.AreNotEqual(0, player);
         }
 
         [TestMethod]
@@ -110,7 +118,6 @@ namespace Monopoly.Tests
         [TestMethod]
         public void PlayersPlayInSameOrderEveryRound()
         {
-            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces(), jailHandler);
             dice.SetPredeterminedDieValues(1, 1, 2, 3, 4, 5, 6);
             var playerVerificationList = new List<Player>();
 
@@ -133,7 +140,7 @@ namespace Monopoly.Tests
         [TestMethod]
         public void OnePlayerLosesInTwoPlayerGame_OtherPlayerWins()
         {
-            game = new Game(GeneratePlayerIEnumerable(2), dice, board, jailHandler);
+            SetupGameWithPlayers(2);
             var winner = game.CurrentPlayer;
 
             game.TakeTurn();
@@ -147,7 +154,7 @@ namespace Monopoly.Tests
         [TestMethod]
         public void OnePlayerLosesInThreePlayerGame_OtherTwoKeepPlaying()
         {
-            game = new Game(GeneratePlayerIEnumerable(3), dice, board, jailHandler);
+            SetupGameWithPlayers(3);
             var loser = game.CurrentPlayer;
             loser.Pay(loser.Money + 1);
             game.TakeTurn();
@@ -165,7 +172,6 @@ namespace Monopoly.Tests
         [TestMethod]
         public void OnePlayerLosesEachTurn_RemainingPlayerIsWinner()
         {
-            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces(), jailHandler);
             var theChosenOne = game.CurrentPlayer;
 
             while (!game.Finished)
@@ -185,7 +191,6 @@ namespace Monopoly.Tests
         [TestMethod]
         public void AtEndOfGame_PlayerWithMostMoneyWins()
         {
-            game = new Game(GeneratePlayerIEnumerable(8), dice, boardFactory.CreateBoardOfNormalSpaces(), jailHandler);
             var theChosenOne = game.CurrentPlayer;
 
             theChosenOne.Collect(9266);

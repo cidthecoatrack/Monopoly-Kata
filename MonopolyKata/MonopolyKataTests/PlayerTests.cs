@@ -18,26 +18,15 @@ namespace Monopoly.Tests
         public void Setup()
         {
             var strategies = new StrategyCollection();
-            strategies.JailStrategy = new RandomlyPay();
-            strategies.MortgageStrategy = new RandomlyMortgage();
-            strategies.RealEstateStrategy = new RandomlyBuy();
-
+            strategies.CreateRandomStrategyCollection();
             player = new Player("Name", strategies);
         }
 
         [TestMethod]
         public void Initialize()
         {
-            Assert.AreEqual("Name", player.Name);
-            Assert.AreEqual(0, player.Position);
+            Assert.AreEqual("Name", player.ToString());
             Assert.AreEqual(1500, player.Money);
-        }
-
-        [TestMethod]
-        public void MoveSevenSpaces()
-        {
-            player.Move(7);
-            Assert.AreEqual(7, player.Position);
         }
 
         [TestMethod]

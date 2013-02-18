@@ -1,8 +1,11 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Monopoly.Board;
 using Monopoly.Board.Spaces;
 using Monopoly.Cards;
 using Monopoly.Handlers;
+using Monopoly.Strategies;
+using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 
@@ -12,35 +15,43 @@ namespace Monopoly.Tests.Strategies.JailStrategies
     public class JailStrategiesTests
     {
         private ControlledDice dice;
-        private GoToJail goToJail;
         private JailHandler jailHandler;
+        private BoardHandler boardHandler;
         private Player player;
-        private StrategyCollection strategies;
 
-        [TestInitialize]
-        public void Setup()
+        private void SetupPlayerWithStrategy(IJailStrategy strategy)
         {
             dice = new ControlledDice();
-            jailHandler = new JailHandler(dice);
-            goToJail = new GoToJail(jailHandler);
-
-            strategies = new StrategyCollection();
+            
+            var strategies = new StrategyCollection();
             strategies.CreateRandomStrategyCollection();
+            strategies.JailStrategy = strategy;
+
+            player = new Player("name", strategies);
+
+            var players = new[]
+                {
+                    player,
+                    new Player("other player", strategies)
+                };
+
+            var emptyBoard = FakeBoardFactory.CreateBoardOfNormalSpaces();
+            boardHandler = new BoardHandler(players, emptyBoard);
+            jailHandler = new JailHandler(dice, boardHandler);
         }
         
         [TestMethod]
         public void NeverPay()
         {
-            strategies.JailStrategy = new NeverPay();
+            SetupPlayerWithStrategy(new NeverPay());
 
-            player = new Player("name", strategies);
             Assert.IsFalse(player.WillUseGetOutOfJailCard());
 
             var playerMoney = player.Money;
 
             dice.RollTwoDice();
-            goToJail.LandOn(player);
-
+            boardHandler.MoveTo(player, BoardConstants.GO_TO_JAIL);
+            jailHandler.HandleJail(0, player);
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(playerMoney, player.Money);
@@ -50,16 +61,15 @@ namespace Monopoly.Tests.Strategies.JailStrategies
         [TestMethod]
         public void AlwaysPay()
         {
-            strategies.JailStrategy = new AlwaysPay();
+            SetupPlayerWithStrategy(new AlwaysPay());
 
-            player = new Player("name", strategies);
             Assert.IsTrue(player.WillUseGetOutOfJailCard());
 
             var playerMoney = player.Money;
 
             dice.RollTwoDice();
-            goToJail.LandOn(player);
-
+            boardHandler.MoveTo(player, BoardConstants.GO_TO_JAIL);
+            jailHandler.HandleJail(0, player);
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);

@@ -11,10 +11,9 @@ namespace Monopoly
     public class Player
     {
         public Int32 Money { get; private set; }
-        public String Name { get; private set; }
-        public Int32 Position { get; private set; }
         public Boolean LostTheGame { get { return (Money < 0); } }
 
+        private readonly String Name;
         private IJailStrategy jailStrategy;
         private IMortgageStrategy mortgageStrategy;
         private IRealEstateStrategy realEstateStrategy;
@@ -23,18 +22,12 @@ namespace Monopoly
         public Player(String name, IStrategyCollection strategies)
         {
             Name = name;
-            Position = 0;
             Money = 1500;
             ownedRealEstate = new List<RealEstate>();
 
             mortgageStrategy = strategies.MortgageStrategy;
             jailStrategy = strategies.JailStrategy;
             realEstateStrategy = strategies.RealEstateStrategy;
-        }
-
-        public void Move(Int32 amountToMove)
-        {
-            Position += amountToMove;
         }
 
         public void Pay(Int32 amountToPay)
@@ -114,6 +107,11 @@ namespace Monopoly
         public Int32 GetNumberOfHotels()
         {
             return ownedRealEstate.OfType<Property>().Where(x => x.Houses == 5).Count();
+        }
+
+        public override String ToString()
+        {
+            return Name;
         }
     }
 }

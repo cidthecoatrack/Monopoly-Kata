@@ -30,17 +30,15 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Initialize()
         {
-            Assert.AreEqual("all players", card.Name);
+            Assert.AreEqual("Grand Opera Opening: Every Player Pays For Opening Night Seats", card.ToString());
         }
 
         [TestMethod]
         public void Pay()
         {
             var playerMoney = player.Money;
-
             card.Execute(player);
-
-            Assert.AreEqual(playerMoney + 80, player.Money);
+            Assert.AreEqual(playerMoney + 400, player.Money);
         }
     }
 }

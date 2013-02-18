@@ -34,15 +34,15 @@ namespace Monopoly
             }
         }
 
-        public Game(IEnumerable<Player> newPlayers, IDice dice, List<ISpace> board, JailHandler jailHandler)
+        public Game(IEnumerable<Player> newPlayers, TurnHandler turnHandler)
         {
             CheckNumberOfPlayers(newPlayers);
 
             var randomizer = new PlayerOrderRandomizer();
-            var randomizedPlayers = randomizer.Execute(newPlayers, dice);
+            var randomizedPlayers = randomizer.Execute(newPlayers);
             players = new LinkedList<Player>(randomizedPlayers);
 
-            turnHandler = new TurnHandler(dice, board, jailHandler);
+            this.turnHandler = turnHandler;
             currentPlayerPointer = players.First;
             Round = 1;
         }

@@ -25,7 +25,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Initialize()
         {
-            Assert.AreEqual("pay", card.Name);
+            Assert.AreEqual("pay", card.ToString());
         }
         
         [TestMethod]

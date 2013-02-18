@@ -9,14 +9,14 @@ namespace Monopoly.Cards
     public class HousesAndHotelsCard : ICard
     {
         public Boolean Held {get; private set;}
-        public readonly String Name;
 
+        private readonly String Name; 
         private readonly Int32 houseCost;
         private readonly Int32 hotelPremium;
 
-        public HousesAndHotelsCard(Int32 houseCost, Int32 hotelCost)
+        public HousesAndHotelsCard(String name, Int32 houseCost, Int32 hotelCost)
         {
-            Name = "You Are Assessed For Street Repairs";
+            Name = name;
             this.houseCost = houseCost;
             hotelPremium = hotelCost - houseCost;
         }
@@ -28,6 +28,11 @@ namespace Monopoly.Cards
 
             var payment = houses * houseCost + hotels * hotelPremium;
             player.Pay(payment);
+        }
+
+        public override String ToString()
+        {
+            return Name;
         }
     }
 }

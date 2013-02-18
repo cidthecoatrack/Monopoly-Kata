@@ -10,7 +10,6 @@ namespace Monopoly.Cards
 {
     public class GetOutOfJailFreeCard : ICard
     {
-        public readonly String Name;
         public Player Owner { get; private set; }
         public Boolean Held { get; private set; }
 
@@ -18,7 +17,6 @@ namespace Monopoly.Cards
 
         public GetOutOfJailFreeCard(JailHandler jailHandler)
         {
-            Name = "Get Out Of Jail, Free";
             this.jailHandler = jailHandler;
         }
 
@@ -31,6 +29,11 @@ namespace Monopoly.Cards
         public void Use()
         {
             Held = false;
+        }
+
+        public override String ToString()
+        {
+            return "Get Out Of Jail, Free";
         }
     }
 }

@@ -7,6 +7,7 @@ using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
 using Monopoly.Cards;
+using Monopoly.Tests.Board;
 
 namespace Monopoly.Tests.Hendlers
 {
@@ -15,17 +16,29 @@ namespace Monopoly.Tests.Hendlers
     {
         private ControlledDice dice;
         private JailHandler jailHandler;
+        private BoardHandler boardHandler;
         private Player player;
 
         [TestInitialize]
         public void Setup()
         {
-            dice = new ControlledDice();
-            jailHandler = new JailHandler(dice);
-
             var strategies = new StrategyCollection();
             strategies.CreateNeverStrategyCollection();
             player = new Player("name", strategies);
+
+            dice = new ControlledDice();
+            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
+            var players = new[]
+                {
+                    player,
+                    new Player("Player 1", strategies),
+                    new Player("Player 2", strategies),
+                    new Player("Player 3", strategies),
+                    new Player("Player 4", strategies)
+                };
+            boardHandler = new BoardHandler(players, board);
+            jailHandler = new JailHandler(dice, boardHandler);
+
         }
 
         [TestMethod]
@@ -33,7 +46,7 @@ namespace Monopoly.Tests.Hendlers
         {
             jailHandler.HandleJail(3, player);
 
-            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
+            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
             Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
 
@@ -57,14 +70,14 @@ namespace Monopoly.Tests.Hendlers
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
 
-            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
+            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
             Assert.AreEqual(playerMoney, player.Money);
             Assert.IsTrue(jailHandler.HasImprisoned(player), "first turn");
 
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
 
-            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, player.Position);
+            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
             Assert.AreEqual(playerMoney, player.Money);
             Assert.IsTrue(jailHandler.HasImprisoned(player), "second turn");
         }

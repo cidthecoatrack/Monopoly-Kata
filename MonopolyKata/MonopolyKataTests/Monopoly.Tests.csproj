@@ -51,13 +51,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Board\BoardFactoryTests.cs" />
-    <Compile Include="Board\Spaces\GoToJailTests.cs" />
+    <Compile Include="Board\FakeBoardFactory.cs" />
     <Compile Include="Board\Spaces\IncomeTaxTests.cs" />
     <Compile Include="Board\Spaces\LuxuryTaxTests.cs" />
     <Compile Include="Board\Spaces\PropertyTests.cs" />
     <Compile Include="Board\Spaces\RailroadTests.cs" />
     <Compile Include="Board\Spaces\RealEstateTests.cs" />
     <Compile Include="Board\Spaces\TestRealEstate.cs" />
+    <Compile Include="Board\Spaces\NormalSpaceTests.cs" />
+    <Compile Include="Board\Spaces\CommunityChestTests.cs" />
     <Compile Include="Board\Spaces\UtilityTests.cs" />
     <Compile Include="Cards\FlatCollectCardTests.cs" />
     <Compile Include="Cards\FlatPayCardTests.cs" />
@@ -71,7 +73,7 @@
     <Compile Include="Cards\PayAllPlayersCardTests.cs" />
     <Compile Include="Cards\MoveToNearestRailroadCardTests.cs" />
     <Compile Include="Cards\MoveToNearestUtilityCardTests.cs" />
-    <Compile Include="Handlers\GoHandlerTests.cs" />
+    <Compile Include="Handlers\BoardHandlerTests.cs" />
     <Compile Include="Strategies\JailStrategies\AlwaysPay.cs" />
     <Compile Include="Strategies\JailStrategies\NeverPay.cs" />
     <Compile Include="Strategies\JailStrategies\RandomlyPay.cs" />

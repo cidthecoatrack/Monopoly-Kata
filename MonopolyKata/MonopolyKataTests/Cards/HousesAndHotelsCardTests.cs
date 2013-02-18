@@ -11,6 +11,8 @@ namespace Monopoly.Tests.Cards
     {
         HousesAndHotelsCard card;
         Player player;
+        Property property;
+        Property otherProperty;
 
         [TestInitialize]
         public void Setup()
@@ -19,15 +21,15 @@ namespace Monopoly.Tests.Cards
             strategies.CreateRandomStrategyCollection();
 
             player = new Player("name", strategies);
-            card = new HousesAndHotelsCard(40, 115);
+            card = new HousesAndHotelsCard("card", 40, 115);
 
             SetUpProperties();
         }
 
         private void SetUpProperties()
         {
-            var property = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
-            var otherProperty = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
+            property = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
+            otherProperty = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
 
             var group = new[] { property, otherProperty };
             property.SetPropertiesInGroup(group);
@@ -35,7 +37,10 @@ namespace Monopoly.Tests.Cards
 
             property.LandOn(player);
             otherProperty.LandOn(player);
+        }
 
+        private void BuyHousesAndHotel()
+        {
             for (var i = 0; i < 4; i++)
             {
                 property.BuyHouse();
@@ -48,17 +53,27 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Initialize()
         {
-            Assert.AreEqual("You Are Assessed For Street Repairs", card.Name);
+            Assert.AreEqual("card", card.ToString());
         }
 
         [TestMethod]
         public void Pay()
         {
-            var playerMoney = player.Money;
+            BuyHousesAndHotel();
 
+            var playerMoney = player.Money;
             card.Execute(player);
 
             Assert.AreEqual(playerMoney - 435, player.Money);
+        }
+
+        [TestMethod]
+        public void NoHousesPays0()
+        {
+            var playerMoney = player.Money;
+            card.Execute(player);
+
+            Assert.AreEqual(playerMoney, player.Money);
         }
     }
 }

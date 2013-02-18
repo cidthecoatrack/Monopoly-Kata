@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Monopoly.Board.Spaces;
 using Monopoly.Dice;
 using Monopoly;
@@ -9,32 +10,30 @@ namespace Monopoly.Handlers
     public class TurnHandler
     {
         private IDice dice;
-        private List<ISpace> board;
-        private Player player;
         private Int32 doublesCount;
+        private BoardHandler boardHandler;
         private JailHandler jailHandler;
 
-        public TurnHandler(IDice dice, List<ISpace> board, JailHandler jailHandler)
+        public TurnHandler(IDice dice, BoardHandler boardHandler, JailHandler jailHandler)
         {
             this.dice = dice;
-            this.board = board;
+            this.boardHandler = boardHandler;
             this.jailHandler = jailHandler;
         }
 
-        public void TakeTurn(Player p)
+        public void TakeTurn(Player player)
         {
-            player = p;
             doublesCount = 0;
 
             player.HandleMortgages();
 
-            do RollAndMove();
-            while (CanGoAgain());
+            do RollAndMove(player);
+            while (CanGoAgain(player));
 
             player.HandleMortgages();
         }
 
-        private void RollAndMove()
+        private void RollAndMove(Player player)
         {
             dice.RollTwoDice();
             if (dice.Doubles)
@@ -43,20 +42,12 @@ namespace Monopoly.Handlers
             jailHandler.HandleJail(doublesCount, player);
 
             if (!jailHandler.HasImprisoned(player))
-                MoveForward();
+                boardHandler.Move(player, dice.Value);
         }
 
-        private Boolean CanGoAgain()
+        private Boolean CanGoAgain(Player player)
         {
             return dice.Doubles && !player.LostTheGame && !jailHandler.HasImprisoned(player);
-        }
-
-        private void MoveForward()
-        {
-            player.Move(dice.Value);
-            var goHandler = new GoHandler(player);
-            goHandler.HandleGo();
-            board[player.Position].LandOn(player);
         }
     }
 }

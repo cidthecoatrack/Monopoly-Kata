@@ -3,22 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Monopoly.Board;
+using Monopoly.Handlers;
 
 namespace Monopoly.Cards
 {
     public class MoveBackThreeCard : ICard
     {
         public Boolean Held { get; private set; }
-        public readonly String Name;
 
-        public MoveBackThreeCard()
+        private BoardHandler boardHandler;
+
+        public MoveBackThreeCard(BoardHandler boardHandler)
         {
-            Name = "Go Back 3 Spaces";
+            this.boardHandler = boardHandler;
         }
 
         public void Execute(Player player)
         {
-            throw new NotImplementedException();
+            var newPosition = (boardHandler.PositionOf[player] - 3 + BoardConstants.BOARD_SIZE) % BoardConstants.BOARD_SIZE;
+            boardHandler.MoveToAndDontPassGo(player, newPosition);
+        }
+
+        public override String ToString()
+        {
+            return "Go Back 3 Spaces";
         }
     }
 }

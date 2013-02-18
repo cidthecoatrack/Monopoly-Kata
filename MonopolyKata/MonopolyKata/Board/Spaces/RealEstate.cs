@@ -6,10 +6,11 @@ namespace Monopoly.Board.Spaces
     public abstract class RealEstate : ISpace
     {
         public Boolean Mortgaged { get; protected set; }
-        public String Name { get; protected set; }
         public Boolean Owned { get { return Owner != null && !Owner.LostTheGame; } }
         public Player Owner { get; protected set; }
         public Int32 Price { get; protected set; }
+
+        private readonly String Name;
 
         public RealEstate(String name, Int32 price)
         {
@@ -62,6 +63,11 @@ namespace Monopoly.Board.Spaces
                 Owner.Pay(Price);
                 Mortgaged = false;
             }
+        }
+
+        public override String ToString()
+        {
+            return Name;
         }
     }
 }

@@ -5,6 +5,7 @@ using Monopoly.Tests.Strategies.JailStrategies;
 using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
+using System;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -16,12 +17,13 @@ namespace Monopoly.Tests.Board.Spaces
         private Player owner;
         private Player otherOwner;
         private Player renter;
+        private const Int32 ROLL = 4;
 
         [TestInitialize]
         public void Setup()
         {
             var dice = new ControlledDice();
-            dice.SetPredeterminedRollValue(4);
+            dice.SetPredeterminedRollValue(ROLL);
             utility = new Utility("utility", dice);
             otherUtility = new Utility("other utility", dice);
             var utilities = new Utility[] { utility, otherUtility };
@@ -38,7 +40,6 @@ namespace Monopoly.Tests.Board.Spaces
 
             dice.RollTwoDice();
             utility.LandOn(owner);
-            renter.Move(dice.Value);
         }
         
         [TestMethod]
@@ -48,8 +49,8 @@ namespace Monopoly.Tests.Board.Spaces
             var renterMoney = renter.Money;
             utility.LandOn(renter);
 
-            Assert.AreEqual(renterMoney - 16, renter.Money);
-            Assert.AreEqual(ownerMoney + 16, owner.Money);
+            Assert.AreEqual(renterMoney - ROLL * 4, renter.Money);
+            Assert.AreEqual(ownerMoney + ROLL * 4, owner.Money);
         }
 
         [TestMethod]
@@ -61,8 +62,21 @@ namespace Monopoly.Tests.Board.Spaces
             var renterMoney = renter.Money;
             utility.LandOn(renter);
 
-            Assert.AreEqual(renterMoney - 40, renter.Money);
-            Assert.AreEqual(ownerMoney + 40, owner.Money);
+            Assert.AreEqual(renterMoney - ROLL * 10, renter.Money);
+            Assert.AreEqual(ownerMoney + ROLL * 10, owner.Money);
+        }
+
+        [TestMethod]
+        public void ForceFlag()
+        {
+            utility.Force10xRent = true;
+
+            var ownerMoney = owner.Money;
+            var renterMoney = renter.Money;
+            utility.LandOn(renter);
+
+            Assert.AreEqual(renterMoney - ROLL * 10, renter.Money);
+            Assert.AreEqual(ownerMoney + ROLL * 10, owner.Money);
         }
     }
 }

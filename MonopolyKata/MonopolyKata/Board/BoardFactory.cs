@@ -8,11 +8,10 @@ using System;
 namespace Monopoly.Board
 {
     public class BoardFactory
-    {
-        public List<ISpace> CreateMonopolyBoard(IDice dice, JailHandler jailHandler)
+    {        
+        public static IEnumerable<ISpace> CreateMonopolyBoard(IDice dice)
         {
             var board = new List<ISpace>();
-            board.Capacity = BoardConstants.BOARD_SIZE;
 
             var mediteranean = new Property("Mediteranean Avenue", 60, 2, GROUPING.PURPLE, 50, new[] { 10, 30, 90, 160, 250 });
             var baltic = new Property("Baltic Avenue", 60, 4, GROUPING.PURPLE, 50, new[] { 20, 60, 180, 320, 450 });
@@ -93,7 +92,7 @@ namespace Monopoly.Board
             board.Add(ventnor);
             board.Add(water);
             board.Add(marvin);
-            board.Add(new GoToJail(jailHandler));
+            board.Add(new NormalSpace("Go To Jail"));
             board.Add(pacific);
             board.Add(northCarolina);
             board.Add(new NormalSpace("Community Chest"));
@@ -103,16 +102,6 @@ namespace Monopoly.Board
             board.Add(park);
             board.Add(new LuxuryTax());
             board.Add(boardwalk);
-
-            return board;
-        }
-
-        public List<ISpace> CreateBoardOfNormalSpaces()
-        {
-            var board = new List<ISpace>();
-
-            for (var i = 0; i < BoardConstants.BOARD_SIZE; i++)
-                board.Add(new NormalSpace(Convert.ToString(i)));
 
             return board;
         }

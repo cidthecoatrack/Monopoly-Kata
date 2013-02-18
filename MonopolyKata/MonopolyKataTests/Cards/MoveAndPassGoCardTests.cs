@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board;
 using Monopoly.Board.Spaces;
 using Monopoly.Cards;
+using Monopoly.Handlers;
+using Monopoly.Tests.Board;
 using Monopoly.Tests.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -10,8 +12,9 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class MoveAndPassGoCardTests
     {
-        MoveAndPassGoCard card;
-        Player player;
+        private MoveAndPassGoCard card;
+        private Player player;
+        private BoardHandler boardHandler;
 
         [TestInitialize]
         public void Setup()
@@ -19,16 +22,17 @@ namespace Monopoly.Tests.Cards
             var strategies = new StrategyCollection();
             strategies.CreateRandomStrategyCollection();
             player = new Player("name", strategies);
+            var players = new[] { player };
+            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
+            boardHandler = new BoardHandler(players, board);
 
-            var space = new NormalSpace("space");
-
-            card = new MoveAndPassGoCard("move", 10, space);
+            card = new MoveAndPassGoCard("move", BoardConstants.ATLANTIC_AVENUE, boardHandler);
         }
 
         [TestMethod]
         public void Initialize()
         {
-            Assert.AreEqual("move", card.Name);
+            Assert.AreEqual("move", card.ToString());
         }
 
         [TestMethod]
@@ -36,17 +40,17 @@ namespace Monopoly.Tests.Cards
         {
             card.Execute(player);
 
-            Assert.AreEqual(10, player.Position);
+            Assert.AreEqual(BoardConstants.ATLANTIC_AVENUE, boardHandler.PositionOf[player]);
         }
 
         [TestMethod]
         public void MoveAndPassGo()
         {
             var playerMoney = player.Money;
-            player.Move(11);
+            boardHandler.MoveTo(player, BoardConstants.ATLANTIC_AVENUE + 1);
             card.Execute(player);
 
-            Assert.AreEqual(10, player.Position);
+            Assert.AreEqual(BoardConstants.ATLANTIC_AVENUE, boardHandler.PositionOf[player]);
             Assert.AreEqual(playerMoney + GameConstants.PASS_GO_PAYMENT, player.Money);
         }
     }

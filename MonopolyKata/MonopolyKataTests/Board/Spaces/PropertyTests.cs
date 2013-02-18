@@ -49,7 +49,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void InitializeProperty()
         {
-            Assert.AreEqual("property", property.Name);
+            Assert.AreEqual("property", property.ToString());
             Assert.AreEqual(PRICE, property.Price);
             Assert.AreEqual(GROUPING.DARK_BLUE, property.Grouping);
         }
