@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Monopoly.Board;
-using Monopoly.Board.Spaces;
 using Monopoly.Handlers;
 
 namespace Monopoly.Cards

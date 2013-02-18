@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Monopoly.Board;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Handlers;
 using Monopoly.Tests.Board;
 using Monopoly.Tests.Strategies;

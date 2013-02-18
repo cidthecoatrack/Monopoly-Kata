@@ -1,5 +1,4 @@
 ﻿using System;
-using Monopoly;
 
 namespace Monopoly.Board.Spaces
 {

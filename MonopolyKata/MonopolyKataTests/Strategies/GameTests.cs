@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Monopoly;
 using Monopoly.Handlers;
-using Monopoly.Board;
-using Monopoly.Board.Spaces;
-using Monopoly.Tests.Strategies.JailStrategies;
-using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
-using Monopoly.Tests.Board;
-using Monopoly.Cards;
 
 namespace Monopoly.Tests
 {
@@ -160,11 +154,6 @@ namespace Monopoly.Tests
             loser.Pay(loser.Money + 1);
             game.TakeTurn();
 
-            Assert.IsTrue(loser.LostTheGame);
-            Assert.IsFalse(game.Finished);
-            Assert.AreEqual(2, game.NumberOfActivePlayers);
-
-            game.TakeTurn();
             Assert.IsTrue(loser.LostTheGame);
             Assert.IsFalse(game.Finished);
             Assert.AreEqual(2, game.NumberOfActivePlayers);

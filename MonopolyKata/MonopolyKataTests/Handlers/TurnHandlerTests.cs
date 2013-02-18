@@ -1,14 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Monopoly.Handlers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board;
 using Monopoly.Board.Spaces;
-using Monopoly.Tests.Strategies.JailStrategies;
-using Monopoly.Tests.Strategies.MortgageStrategies;
+using Monopoly.Handlers;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
-using Monopoly.Tests.Board;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Monopoly.Tests.Handlers
 {

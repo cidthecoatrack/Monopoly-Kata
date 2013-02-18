@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Monopoly.Board.Spaces
 {
     public interface ISpace

@@ -1,11 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
-using Monopoly;
-using Monopoly.Tests.Strategies.JailStrategies;
-using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
-using System;
 
 namespace Monopoly.Tests.Board.Spaces
 {

@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Monopoly;
-using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
-using Monopoly.Tests.Strategies.JailStrategies;
-using Monopoly.Tests.Strategies.MortgageStrategies;
 
 namespace Monopoly.Tests
 {

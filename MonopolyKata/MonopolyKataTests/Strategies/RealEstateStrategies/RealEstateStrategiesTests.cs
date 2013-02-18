@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
-using Monopoly.Strategies;
-using Monopoly.Tests.Board.Spaces;
 
 namespace Monopoly.Tests.Strategies.RealEstateStrategies
 {

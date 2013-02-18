@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Monopoly.Handlers;
 using Monopoly.Board;
 using Monopoly.Board.Spaces;
 using Monopoly.Tests.Dice;
-using System;
 
 namespace Monopoly.Tests.Board
 {

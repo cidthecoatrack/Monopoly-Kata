@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Monopoly.Board;
-using Monopoly.Dice;
-using Monopoly;
 using Monopoly.Cards;
+using Monopoly.Dice;
 
 namespace Monopoly.Handlers
 {
