@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
 using Monopoly.Tests.Strategies;
@@ -49,6 +50,26 @@ namespace Monopoly.Tests.Board.Spaces
             Assert.AreEqual("property", property.ToString());
             Assert.AreEqual(PRICE, property.Price);
             Assert.AreEqual(GROUPING.DARK_BLUE, property.Grouping);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public void TooFewHouseRents()
+        {
+            var wrongRents = new List<Int32>();
+            for (var i = 0; i < 4; i++)
+                wrongRents.Add(i);
+
+            property = new Property("name", 0, 0, GROUPING.DARK_BLUE, 0, wrongRents);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public void TooManyHouseRents()
+        {
+            var wrongRents = new List<Int32>();
+            for (var i = 0; i < 6; i++)
+                wrongRents.Add(i);
+
+            property = new Property("name", 0, 0, GROUPING.DARK_BLUE, 0, wrongRents);
         }
 
         [TestMethod]

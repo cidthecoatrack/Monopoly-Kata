@@ -73,6 +73,7 @@
     <Compile Include="Cards\PayAllPlayersCardTests.cs" />
     <Compile Include="Cards\MoveToNearestRailroadCardTests.cs" />
     <Compile Include="Cards\MoveToNearestUtilityCardTests.cs" />
+    <Compile Include="Cards\GoToJailCardTests.cs" />
     <Compile Include="Handlers\BoardHandlerTests.cs" />
     <Compile Include="Strategies\JailStrategies\AlwaysPay.cs" />
     <Compile Include="Strategies\JailStrategies\NeverPay.cs" />
@@ -81,7 +82,7 @@
     <Compile Include="Strategies\MortgageStrategies\AlwaysMortgage.cs" />
     <Compile Include="Dice\ControlledDice.cs" />
     <Compile Include="Dice\DiceTests.cs" />
-    <Compile Include="Strategies\GameTests.cs" />
+    <Compile Include="GameTests.cs" />
     <Compile Include="Strategies\MortgageStrategies\MortgageIfMoneyLessThanFiveHundred.cs" />
     <Compile Include="Strategies\MortgageStrategies\NeverMortgage.cs" />
     <Compile Include="Strategies\MortgageStrategies\RandomlyMortgage.cs" />

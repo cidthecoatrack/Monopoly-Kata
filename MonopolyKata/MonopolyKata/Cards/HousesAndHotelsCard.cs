@@ -4,7 +4,7 @@ namespace Monopoly.Cards
 {
     public class HousesAndHotelsCard : ICard
     {
-        public Boolean Held {get; private set;}
+        public Boolean Held { get; private set; }
 
         private readonly String Name; 
         private readonly Int32 houseCost;

@@ -66,6 +66,12 @@ namespace Monopoly.Tests
         }
 
         [TestMethod]
+        public void NoWinnerAtStart()
+        {
+            Assert.IsNull(game.Winner);
+        }
+
+        [TestMethod]
         public void AfterFirstTurn_NextPlayerIsTheCurrentPlayer()
         {
             var firstPlayer = game.CurrentPlayer;
