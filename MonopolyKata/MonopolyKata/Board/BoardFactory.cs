@@ -64,12 +64,12 @@ namespace Monopoly.Board
 
             board.Add(new NormalSpace("GO"));
             board.Add(mediteranean);
-            board.Add(new NormalSpace("Community Chest"));
+            board.Add(new DrawCard("Community Chest"));
             board.Add(baltic);
             board.Add(new IncomeTax());
             board.Add(reading);
             board.Add(oriental);
-            board.Add(new NormalSpace("Chance"));
+            board.Add(new DrawCard("Chance"));
             board.Add(vermont);
             board.Add(connecticut);
             board.Add(new NormalSpace("Jail/Just Visiting"));
@@ -79,12 +79,12 @@ namespace Monopoly.Board
             board.Add(virginia);
             board.Add(pennsylvania);
             board.Add(stJames);
-            board.Add(new NormalSpace("Community Chest"));
+            board.Add(new DrawCard("Community Chest"));
             board.Add(tennessee);
             board.Add(newYork);
             board.Add(new NormalSpace("Free Parking"));
             board.Add(kentucky);
-            board.Add(new NormalSpace("Chance"));
+            board.Add(new DrawCard("Chance"));
             board.Add(indiana);
             board.Add(illinois);
             board.Add(bAndO);
@@ -95,10 +95,10 @@ namespace Monopoly.Board
             board.Add(new NormalSpace("Go To Jail"));
             board.Add(pacific);
             board.Add(northCarolina);
-            board.Add(new NormalSpace("Community Chest"));
+            board.Add(new DrawCard("Community Chest"));
             board.Add(pennsylvaniaAve);
             board.Add(shortLine);
-            board.Add(new NormalSpace("Chance"));
+            board.Add(new DrawCard("Chance"));
             board.Add(park);
             board.Add(new LuxuryTax());
             board.Add(boardwalk);

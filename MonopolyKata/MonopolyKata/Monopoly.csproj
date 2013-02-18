@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Board\Spaces\CommunityChest.cs" />
+    <Compile Include="Board\Spaces\DrawCard.cs" />
     <Compile Include="Cards\CollectFromAllPlayersCard.cs" />
     <Compile Include="Cards\DeckFactory.cs" />
     <Compile Include="Cards\FlatCollectCard.cs" />
@@ -54,6 +54,7 @@
     <Compile Include="Cards\MoveToNearestUtilityCard.cs" />
     <Compile Include="Cards\PayAllPlayersCard.cs" />
     <Compile Include="GameConstants.cs" />
+    <Compile Include="GameFactory.cs" />
     <Compile Include="Handlers\BoardHandler.cs" />
     <Compile Include="Handlers\JailHandler.cs" />
     <Compile Include="Board\BoardConstants.cs" />

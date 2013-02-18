@@ -23,7 +23,7 @@ namespace Monopoly.Tests
         }
 
         [TestMethod]
-        public void Initialize()
+        public void Constructor()
         {
             Assert.AreEqual("Name", player.ToString());
             Assert.AreEqual(1500, player.Money);

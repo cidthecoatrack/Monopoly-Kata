@@ -135,5 +135,15 @@ namespace Monopoly.Tests.Hendlers
             Assert.AreEqual(playerMoney, player.Money);
             Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
+
+        [TestMethod]
+        public void HoldMultipleGetOutOfJailFreeCards()
+        {
+            var card = new GetOutOfJailFreeCard(jailHandler);
+            card.Execute(player);
+
+            var secondCard = new GetOutOfJailFreeCard(jailHandler);
+            secondCard.Execute(player);
+        }
     }
 }

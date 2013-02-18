@@ -28,7 +28,7 @@ namespace Monopoly.Tests.Cards
         }
 
         [TestMethod]
-        public void Initialize()
+        public void Constructor()
         {
             Assert.AreEqual("You Have Been Elected Chairman Of The Board", card.ToString());
         }

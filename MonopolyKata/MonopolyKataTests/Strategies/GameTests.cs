@@ -10,6 +10,7 @@ using Monopoly.Tests.Strategies.MortgageStrategies;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Strategies;
 using Monopoly.Tests.Board;
+using Monopoly.Cards;
 
 namespace Monopoly.Tests
 {
@@ -31,7 +32,7 @@ namespace Monopoly.Tests
             var players = GeneratePlayerIEnumerable(numberOfPlayers);
             var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
             boardHandler = new BoardHandler(players, board);
-
+            
             dice = new ControlledDice();
             var jailHandler = new JailHandler(dice, boardHandler);
             var turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
@@ -196,6 +197,16 @@ namespace Monopoly.Tests
             theChosenOne.Collect(9266);
             game.Play();
             Assert.AreEqual(theChosenOne, game.Winner);
+        }
+
+        [TestMethod]
+        public void ExhaustiveRun()
+        {
+            for (var i = 0; i < 1000; i++)
+            {
+                game = GameFactory.CreateGame(GeneratePlayerIEnumerable(8));
+                game.Play();
+            }
         }
     }
 }

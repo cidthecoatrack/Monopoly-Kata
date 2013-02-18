@@ -47,7 +47,7 @@ namespace Monopoly.Tests.Board.Spaces
         }
 
         [TestMethod]
-        public void InitializeProperty()
+        public void Constructor()
         {
             Assert.AreEqual("property", property.ToString());
             Assert.AreEqual(PRICE, property.Price);

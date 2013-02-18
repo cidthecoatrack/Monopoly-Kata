@@ -28,7 +28,7 @@ namespace Monopoly.Tests.Cards
         }
 
         [TestMethod]
-        public void Initialize()
+        public void Constructor()
         {
             Assert.AreEqual("Go Back 3 Spaces", card.ToString());
         }

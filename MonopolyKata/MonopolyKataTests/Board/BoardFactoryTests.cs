@@ -180,10 +180,17 @@ namespace Monopoly.Tests.Board
         }
 
         [TestMethod]
-        public void NineNormalSpaces()
+        public void FourNormalSpaces()
         {
             var normals = board.Count(x => x is NormalSpace);
-            Assert.AreEqual(10, normals);
+            Assert.AreEqual(4, normals);
+        }
+
+        [TestMethod]
+        public void SixDrawCardSpaces()
+        {
+            var drawCards = board.Count(x => x is DrawCard);
+            Assert.AreEqual(6, drawCards);
         }
 
         [TestMethod]

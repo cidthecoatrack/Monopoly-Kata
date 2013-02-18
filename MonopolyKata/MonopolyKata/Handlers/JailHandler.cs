@@ -12,7 +12,7 @@ namespace Monopoly.Handlers
     {
         private IDice dice;
         private Dictionary<Player, Int16> turnsInJail;
-        private Dictionary<Player, GetOutOfJailFreeCard> cards;
+        private Dictionary<GetOutOfJailFreeCard, Player> cards;
         private BoardHandler boardHandler;
 
         public JailHandler(IDice dice, BoardHandler boardHandler)
@@ -21,12 +21,12 @@ namespace Monopoly.Handlers
             this.boardHandler = boardHandler;
 
             turnsInJail = new Dictionary<Player, Int16>();
-            cards = new Dictionary<Player, GetOutOfJailFreeCard>(2);
+            cards = new Dictionary<GetOutOfJailFreeCard, Player>(2);
         }
 
         public void AddCardHolder(Player player, GetOutOfJailFreeCard card)
         {
-            cards.Add(player, card);
+            cards.Add(card, player);
         }
 
         public Boolean HasImprisoned(Player player)
@@ -60,7 +60,7 @@ namespace Monopoly.Handlers
 
             if (dice.Doubles)
                 turnsInJail.Remove(player);
-            else if (cards.ContainsKey(player) && player.WillUseGetOutOfJailCard())
+            else if (cards.ContainsValue(player) && player.WillUseGetOutOfJailCard())
                 UseGetOutOfJailCard(player);
             else if (turnsInJail[player] >= GameConstants.TURNS_IN_JAIL_LIMIT || player.WillPayToGetOutOfJail())
                 PayToLiberate(player);
@@ -69,8 +69,9 @@ namespace Monopoly.Handlers
         private void UseGetOutOfJailCard(Player player)
         {
             turnsInJail.Remove(player);
-            cards[player].Use();
-            cards.Remove(player);
+            var card = cards.Keys.First(x => cards[x] == player);
+            card.Use();
+            cards.Remove(card);
         }
     }
 }

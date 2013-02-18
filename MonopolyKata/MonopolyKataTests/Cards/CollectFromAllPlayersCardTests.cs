@@ -28,7 +28,7 @@ namespace Monopoly.Tests.Cards
         }
 
         [TestMethod]
-        public void Initialize()
+        public void Constructor()
         {
             Assert.AreEqual("Grand Opera Opening: Every Player Pays For Opening Night Seats", card.ToString());
         }

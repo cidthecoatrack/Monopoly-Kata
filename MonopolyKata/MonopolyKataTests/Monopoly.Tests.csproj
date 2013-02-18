@@ -59,7 +59,7 @@
     <Compile Include="Board\Spaces\RealEstateTests.cs" />
     <Compile Include="Board\Spaces\TestRealEstate.cs" />
     <Compile Include="Board\Spaces\NormalSpaceTests.cs" />
-    <Compile Include="Board\Spaces\CommunityChestTests.cs" />
+    <Compile Include="Board\Spaces\DrawCardTests.cs" />
     <Compile Include="Board\Spaces\UtilityTests.cs" />
     <Compile Include="Cards\FlatCollectCardTests.cs" />
     <Compile Include="Cards\FlatPayCardTests.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Strategies\MortgageStrategies\AlwaysMortgage.cs" />
     <Compile Include="Dice\ControlledDice.cs" />
     <Compile Include="Dice\DiceTests.cs" />
-    <Compile Include="GameTests.cs" />
+    <Compile Include="Strategies\GameTests.cs" />
     <Compile Include="Strategies\MortgageStrategies\MortgageIfMoneyLessThanFiveHundred.cs" />
     <Compile Include="Strategies\MortgageStrategies\NeverMortgage.cs" />
     <Compile Include="Strategies\MortgageStrategies\RandomlyMortgage.cs" />

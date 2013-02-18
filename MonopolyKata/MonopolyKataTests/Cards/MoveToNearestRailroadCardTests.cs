@@ -43,7 +43,7 @@ namespace Monopoly.Tests.Cards
         }
 
         [TestMethod]
-        public void Initialize()
+        public void Constructor()
         {
             Assert.AreEqual("Advance to the nearest Railroad and pay the owner twice the normal rent", card.ToString());
         }
@@ -70,9 +70,9 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void MoveAndPassGo()
         {
-            var doubledRxRRent = 400;
-            var expectedMoney = player.Money + GameConstants.PASS_GO_PAYMENT - doubledRxRRent;
-            boardHandler.MoveTo(player, BoardConstants.SHORT_LINE + 1);
+            boardHandler.MoveTo(player, BoardConstants.SHORT_LINE + 2);
+
+            var expectedMoney = player.Money + GameConstants.PASS_GO_PAYMENT - 400;
             card.Execute(player);
 
             Assert.AreEqual(BoardConstants.READING_RAILROAD, boardHandler.PositionOf[player]);
