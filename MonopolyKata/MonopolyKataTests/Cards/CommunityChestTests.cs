@@ -3,9 +3,10 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Cards;
 using Monopoly.Handlers;
+using Monopoly.Players;
 using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
-using Monopoly.Tests.Strategies;
+using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
 {

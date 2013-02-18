@@ -4,6 +4,7 @@ using System.Linq;
 using Monopoly.Board;
 using Monopoly.Dice;
 using Monopoly.Handlers;
+using Monopoly.Players;
 
 namespace Monopoly.Cards
 {

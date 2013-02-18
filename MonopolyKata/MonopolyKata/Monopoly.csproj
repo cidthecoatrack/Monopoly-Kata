@@ -53,8 +53,8 @@
     <Compile Include="Cards\MoveToNearestRailroadCard.cs" />
     <Compile Include="Cards\MoveToNearestUtilityCard.cs" />
     <Compile Include="Cards\PayAllPlayersCard.cs" />
-    <Compile Include="GameConstants.cs" />
-    <Compile Include="GameFactory.cs" />
+    <Compile Include="Games\GameConstants.cs" />
+    <Compile Include="Games\GameFactory.cs" />
     <Compile Include="Handlers\BoardHandler.cs" />
     <Compile Include="Handlers\JailHandler.cs" />
     <Compile Include="Board\BoardConstants.cs" />
@@ -63,21 +63,21 @@
     <Compile Include="Board\Spaces\RealEstate.cs" />
     <Compile Include="Dice\MonopolyDice.cs" />
     <Compile Include="Dice\IDice.cs" />
-    <Compile Include="Strategies\IJailStrategy.cs" />
-    <Compile Include="Strategies\IMortgageStrategy.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="Players\Strategies\IJailStrategy.cs" />
+    <Compile Include="Players\Strategies\IMortgageStrategy.cs" />
+    <Compile Include="Games\Game.cs" />
     <Compile Include="Board\BoardFactory.cs" />
     <Compile Include="Board\Spaces\Railroad.cs" />
     <Compile Include="Board\Spaces\NormalSpace.cs" />
     <Compile Include="Board\Spaces\Utility.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Players\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Board\Spaces\ISpace.cs" />
     <Compile Include="Board\Spaces\Property.cs" />
-    <Compile Include="PlayerOrderRandomizer.cs" />
+    <Compile Include="Games\PlayerOrderRandomizer.cs" />
     <Compile Include="Handlers\TurnHandler.cs" />
-    <Compile Include="Strategies\IRealEstateStrategy.cs" />
-    <Compile Include="Strategies\IStrategyCollection.cs" />
+    <Compile Include="Players\Strategies\IRealEstateStrategy.cs" />
+    <Compile Include="Players\Strategies\IStrategyCollection.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

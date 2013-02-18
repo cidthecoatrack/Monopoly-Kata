@@ -1,5 +1,6 @@
 ﻿using System;
 using Monopoly.Dice;
+using Monopoly.Players;
 
 namespace Monopoly.Handlers
 {

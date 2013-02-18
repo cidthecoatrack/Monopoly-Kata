@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Cards;
-using Monopoly.Tests.Strategies;
+using Monopoly.Players;
+using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
 {

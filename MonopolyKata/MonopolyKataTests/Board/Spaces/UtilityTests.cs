@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
+using Monopoly.Players;
 using Monopoly.Tests.Dice;
-using Monopoly.Tests.Strategies;
+using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {

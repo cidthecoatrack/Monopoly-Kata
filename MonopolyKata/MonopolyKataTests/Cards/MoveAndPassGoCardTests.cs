@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board;
 using Monopoly.Cards;
+using Monopoly.Games;
 using Monopoly.Handlers;
+using Monopoly.Players;
 using Monopoly.Tests.Board;
-using Monopoly.Tests.Strategies;
+using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
 {

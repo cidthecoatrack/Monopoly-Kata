@@ -1,9 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
-using Monopoly.Tests.Strategies;
-using Monopoly.Tests.Strategies.JailStrategies;
-using Monopoly.Tests.Strategies.MortgageStrategies;
-using Monopoly.Tests.Strategies.RealEstateStrategies;
+using Monopoly.Players;
+using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -20,9 +18,7 @@ namespace Monopoly.Tests.Board.Spaces
             BuildRailroads();
 
             var strategies = new StrategyCollection();
-            strategies.JailStrategy = new RandomlyPay();
-            strategies.MortgageStrategy = new RandomlyMortgage();
-            strategies.RealEstateStrategy = new RandomlyBuy();
+            strategies.CreateRandomStrategyCollection();
 
             owner = new Player("owner", strategies);
             renter = new Player("renter", strategies);

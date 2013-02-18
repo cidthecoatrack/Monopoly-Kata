@@ -1,5 +1,6 @@
 ﻿using System;
 using Monopoly.Handlers;
+using Monopoly.Players;
 
 namespace Monopoly.Cards
 {

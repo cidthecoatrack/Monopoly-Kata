@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Monopoly.Cards;
+using Monopoly.Players;
 
 namespace Monopoly.Board.Spaces
 {
