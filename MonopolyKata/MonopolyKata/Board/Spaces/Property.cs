@@ -11,10 +11,10 @@ namespace Monopoly.Board.Spaces
         public readonly GROUPING Grouping;
         public readonly Int32 HousePrice;
         public Int32 Houses { get; private set; }
+        public Boolean PartOfMonopoly { get; set; }
 
-        private IEnumerable<Property> propertiesInGroup;
         private readonly Int32 baseRent;
-        private readonly List<Int32> houseRents;
+        private readonly IEnumerable<Int32> houseRents;
 
         public Property(String name, Int32 price, Int32 baseRent, GROUPING grouping, Int32 housePrice, IEnumerable<Int32> houseRents)
             : base(name, price)
@@ -26,84 +26,39 @@ namespace Monopoly.Board.Spaces
             Grouping = grouping;
             HousePrice = housePrice;
 
-            this.houseRents = new List<Int32>();
-            this.houseRents.Add(baseRent * 2);
-            this.houseRents.AddRange(houseRents);
-        }
-
-        public void SetPropertiesInGroup(IEnumerable<Property> propertiesInGroup)
-        {
-            this.propertiesInGroup = propertiesInGroup;
+            this.houseRents = houseRents.Union(new[] { baseRent * 2 }).OrderBy(r => r);
         }
 
         protected override Int32 GetRent()
         {
-            if (OwnerOwnsAllInGroup())
-                return houseRents[Houses];
+            if (PartOfMonopoly)
+                return houseRents.ElementAt(Houses);
             
             return baseRent;
         }
 
         public void BuyHouse()
         {
-            if (CanBuyHouseOrHotel() && Houses < 4)
-            {
-                Owner.Pay(HousePrice);
-                Houses++;
-            }
-        }
-
-        public Boolean CanBuyHouseOrHotel()
-        {
-            return OwnerOwnsAllInGroup() && !AnyPropertiesInGroupAreMortgaged() && EvenBuildAllowsANewHouseHere();
-        }
-
-        private Boolean AnyPropertiesInGroupAreMortgaged()
-        {
-            return propertiesInGroup.Any(x => x.Mortgaged);
-        }
-
-        private Boolean EvenBuildAllowsANewHouseHere()
-        {
-            return Houses == propertiesInGroup.Min(x => x.Houses);
-        }
-
-        private Boolean OwnerOwnsAllInGroup()
-        {
-            return Owned && propertiesInGroup.All(x => Owner.Owns(x));
+            Houses++;
         }
 
         public void BuyHotel()
         {
-            if (CanBuyHouseOrHotel() && Houses == 4)
-            {
-                Owner.Pay(HousePrice);
-                Houses++;
-            }
+            Houses++;
         }
 
         public override void Mortgage()
         {
-            if (Houses > 0 && EvenBuildAllowsSellingHouse())
+            if (Houses > 0)
             {
                 Houses--;
                 Owner.Collect(HousePrice / 2);
             }
-            else if (Houses == 0 && Owned && !Mortgaged && !AnyPropertiesInGroupHaveHouses())
+            else if (Houses == 0 && !Mortgaged)
             {
                 Mortgaged = true;
                 Owner.Collect(Convert.ToInt32(Price * .9));
             }
-        }
-
-        private Boolean AnyPropertiesInGroupHaveHouses()
-        {
-            return propertiesInGroup.Any(x => x.Houses > 0);
-        }
-
-        private Boolean EvenBuildAllowsSellingHouse()
-        {
-            return Houses == propertiesInGroup.Max(x => x.Houses);
         }
     }
 }

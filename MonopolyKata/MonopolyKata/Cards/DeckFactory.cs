@@ -14,13 +14,15 @@ namespace Monopoly.Cards
         private JailHandler jailHandler;
         private IEnumerable<Player> players;
         private BoardHandler boardHandler;
+        private RealEstateHandler realEstateHandler;
 
-        public DeckFactory(JailHandler jailHandler, IEnumerable<Player> players, BoardHandler boardHandler)
+        public DeckFactory(JailHandler jailHandler, IEnumerable<Player> players, BoardHandler boardHandler, RealEstateHandler realEstateHandler)
         {
             random = new Random();
             this.jailHandler = jailHandler;
             this.players = players;
             this.boardHandler = boardHandler;
+            this.realEstateHandler = realEstateHandler;
         }
         
         public Queue<ICard> BuildCommunityChestDeck()
@@ -36,7 +38,7 @@ namespace Monopoly.Cards
             deck.Add(new FlatCollectCard("Income Tax Refund", 20));
             deck.Add(new FlatCollectCard("Sell Stock", 45));
             deck.Add(new FlatPayCard("Pay School Tax", 150));
-            deck.Add(new HousesAndHotelsCard("You Are Assessed For Street Repairs", 40, 115));
+            deck.Add(new HousesAndHotelsCard("You Are Assessed For Street Repairs", 40, 115, realEstateHandler));
             deck.Add(new FlatCollectCard("Bank Error In Your Favor", 200));
             deck.Add(new MoveAndPassGoCard("Advance To Go", BoardConstants.GO, boardHandler));
             deck.Add(new FlatCollectCard("Life Insurance Matures", 50));
@@ -67,7 +69,7 @@ namespace Monopoly.Cards
             deck.Add(new FlatCollectCard("Your Building And Loan Matures", 150));
             deck.Add(new MoveAndPassGoCard("Advance to Illinois Avenue", BoardConstants.ILLINOIS_AVENUE, boardHandler));
             deck.Add(new GetOutOfJailFreeCard(jailHandler));
-            deck.Add(new HousesAndHotelsCard("Make General Repairs On All Your Property", 25, 100));
+            deck.Add(new HousesAndHotelsCard("Make General Repairs On All Your Property", 25, 100, realEstateHandler));
 
             var shuffledDeck = deck.OrderBy(x => random.Next());
             return new Queue<ICard>(shuffledDeck);

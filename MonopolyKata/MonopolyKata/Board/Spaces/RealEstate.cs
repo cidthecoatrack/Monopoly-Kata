@@ -1,4 +1,5 @@
 ﻿using System;
+using Monopoly.Handlers;
 using Monopoly.Players;
 
 namespace Monopoly.Board.Spaces
@@ -6,8 +7,7 @@ namespace Monopoly.Board.Spaces
     public abstract class RealEstate : ISpace
     {
         public Boolean Mortgaged { get; protected set; }
-        public Boolean Owned { get { return Owner != null && !Owner.LostTheGame; } }
-        public Player Owner { get; protected set; }
+        public Boolean Owned { get; set; }
         public Int32 Price { get; protected set; }
 
         private readonly String Name;

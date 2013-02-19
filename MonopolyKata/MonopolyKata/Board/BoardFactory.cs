@@ -34,31 +34,13 @@ namespace Monopoly.Board
             var park = new Property("Park Place", 350, 35, GROUPING.DARK_BLUE, 200, new[] { 175, 500, 1100, 1300, 1500 });
             var boardwalk = new Property("Boardwalk", 400, 50, GROUPING.DARK_BLUE, 200, new[] { 200, 600, 1400, 1700, 2000 });
 
-            var properties = new[] { mediteranean, baltic, oriental, vermont, connecticut, stCharles, states, virginia, stJames, tennessee,
-                                     newYork, kentucky, indiana, illinois, atlantic, ventnor, marvin, pacific, northCarolina, pennsylvaniaAve,
-                                     park, boardwalk };
-            foreach (var property in properties)
-            {
-                var groupProperties = properties.Where(x => x.Grouping == property.Grouping);
-                property.SetPropertiesInGroup(groupProperties);
-            }
-
             var shortLine = new Railroad("Short Line");
             var bAndO = new Railroad("B&O Railroad");
             var pennsylvania = new Railroad("Pennsylvania Railroad");
             var reading = new Railroad("Reading Railroad");
 
-            var railroads = new[] { shortLine, bAndO, pennsylvania, reading };
-            foreach (var railroad in railroads)
-                railroad.SetRailroads(railroads);
-
-
             var water = new Utility("Water Works", dice);
             var electric = new Utility("Electric Company", dice);
-
-            var utilities = new[] { water, electric };
-            foreach (var utility in utilities)
-                utility.SetUtilities(utilities);
 
             board.Add(new NormalSpace("GO"));
             board.Add(mediteranean);
