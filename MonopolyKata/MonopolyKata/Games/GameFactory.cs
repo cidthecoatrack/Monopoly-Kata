@@ -16,13 +16,10 @@ namespace Monopoly.Games
             var dice = new MonopolyDice();
             var board = BoardFactory.CreateMonopolyBoard(dice);
             var boardHandler = new BoardHandler(players, board);
-
             var jailHandler = new JailHandler(dice, boardHandler);
+            var turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
 
-            var realEstate = board.OfType<RealEstate>();
-            var realEstateHandler = new RealEstateHandler(realEstate, players);
-
-            var deckFactory = new DeckFactory(jailHandler, players, boardHandler, realEstateHandler);
+            var deckFactory = new DeckFactory(jailHandler, players, boardHandler);
             var communityChest = deckFactory.BuildCommunityChestDeck();
             var chance = deckFactory.BuildChanceDeck(dice);
 
@@ -33,8 +30,6 @@ namespace Monopoly.Games
                 else
                     space.AddDeck(chance);
             }
-
-            var turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
 
             return new Game(players, turnHandler);
         }

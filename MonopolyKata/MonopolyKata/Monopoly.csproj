@@ -63,7 +63,6 @@
     <Compile Include="Board\Spaces\RealEstate.cs" />
     <Compile Include="Dice\MonopolyDice.cs" />
     <Compile Include="Dice\IDice.cs" />
-    <Compile Include="Handlers\RealEstateHandler.cs" />
     <Compile Include="Players\Strategies\IJailStrategy.cs" />
     <Compile Include="Players\Strategies\IMortgageStrategy.cs" />
     <Compile Include="Games\Game.cs" />

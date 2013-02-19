@@ -6,13 +6,19 @@ namespace Monopoly.Board.Spaces
 {
     public class Railroad : RealEstate
     {
-        public Int32 ownedRailroads { get; set; }
+        private IEnumerable<Railroad> railroads;
 
         public Railroad(String name) : base(name, 200) { }
 
+        public void SetRailroads(IEnumerable<Railroad> railroads)
+        {
+            this.railroads = railroads;
+        }
+
         protected override Int32 GetRent()
         {
-            return 25 * Convert.ToInt32(Math.Pow(2, ownedRailroads - 1));
+            var RailroadCount = railroads.Count(x => Owner.Owns(x));
+            return 25 * Convert.ToInt32(Math.Pow(2, RailroadCount - 1));
         }
     }
 }
