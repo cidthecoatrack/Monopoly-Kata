@@ -10,11 +10,11 @@ namespace Monopoly.Handlers
 {
     public class SpaceHandler
     {
-        private Dictionary<Int32, ISpace> spaces;
-        private Dictionary<int, ISpace> dictionary;
+        private Dictionary<Int32, UnownableSpace> spaces;
+        private Dictionary<int, UnownableSpace> dictionary;
         private IEnumerable<Player> players;
 
-        public SpaceHandler(Dictionary<Int32, ISpace> spaces)
+        public SpaceHandler(Dictionary<Int32, UnownableSpace> spaces)
         {
             this.spaces = spaces;
         }

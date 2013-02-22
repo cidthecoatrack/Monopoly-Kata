@@ -11,7 +11,7 @@ namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
             return moneyOnHand < 500;
         }
 
-        public Boolean ShouldPayOffMortgage(Int32 moneyOnHand, RealEstate property)
+        public Boolean ShouldPayOffMortgage(Int32 moneyOnHand, OwnableSpace property)
         {
             return moneyOnHand - property.Price >= 500;
         }

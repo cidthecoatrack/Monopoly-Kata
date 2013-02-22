@@ -8,11 +8,11 @@ using Monopoly.Players;
 
 namespace Monopoly.Tests.Board.Spaces
 {
-    public class LandableSpace : ISpace
+    public class LandableSpace : UnownableSpace
     {
         public Boolean LandedOn { get; private set; }
 
-        public void LandOn(Player player)
+        public override void LandOn(Player player)
         {
             LandedOn = true;
         }

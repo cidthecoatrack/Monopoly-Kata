@@ -27,9 +27,9 @@ namespace Monopoly.Tests.Handlers
             var players = new[] { player };
 
             banker = new Banker(players);
-            var realEstateHandler = new RealEstateHandler(new Dictionary<Int32, RealEstate>(), players, banker);
+            var realEstateHandler = new RealEstateHandler(new Dictionary<Int32, OwnableSpace>(), players, banker);
             
-            var normalSpaces = new Dictionary<Int32, ISpace>();
+            var normalSpaces = new Dictionary<Int32, UnownableSpace>();
             for(var i = 0; i < BoardConstants.BOARD_SIZE; i++)
                 normalSpaces.Add(i, new NormalSpace("space " + i));
 

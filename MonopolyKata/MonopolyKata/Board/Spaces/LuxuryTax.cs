@@ -4,7 +4,7 @@ using Monopoly.Players;
 
 namespace Monopoly.Board.Spaces
 {
-    public class LuxuryTax : ISpace
+    public class LuxuryTax : UnownableSpace
     {
         public const Int16 LUXURY_TAX = 75;
 
@@ -15,7 +15,7 @@ namespace Monopoly.Board.Spaces
             this.banker = banker;
         }
 
-        public void LandOn(Player player)
+        public override void LandOn(Player player)
         {
             banker.Pay(player, LUXURY_TAX);
         }

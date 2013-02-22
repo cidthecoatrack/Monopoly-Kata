@@ -27,7 +27,7 @@ namespace Monopoly.Tests.Cards
             property = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
             otherProperty = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
 
-            var dict = new Dictionary<Int32, RealEstate>();
+            var dict = new Dictionary<Int32, OwnableSpace>();
             dict.Add(0, property);
             dict.Add(1, otherProperty);
 

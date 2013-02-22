@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Monopoly.Board.Spaces
 {
-    public class Railroad : RealEstate
+    public class Railroad : OwnableSpace
     {
         public Int32 RailroadCount { get; set; }
 

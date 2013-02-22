@@ -10,18 +10,18 @@ namespace Monopoly.Handlers
 {
     public class RealEstateHandler
     {
-        private Dictionary<Int32, RealEstate> allRealEstate;
-        private Dictionary<Player, List<RealEstate>> ownedRealEstate;
+        private Dictionary<Int32, OwnableSpace> allRealEstate;
+        private Dictionary<Player, List<OwnableSpace>> ownedRealEstate;
         private Banker banker;
 
-        public RealEstateHandler(Dictionary<Int32, RealEstate> realEstate, IEnumerable<Player> players, Banker banker)
+        public RealEstateHandler(Dictionary<Int32, OwnableSpace> realEstate, IEnumerable<Player> players, Banker banker)
         {
             allRealEstate = realEstate;
             this.banker = banker;
 
-            ownedRealEstate = new Dictionary<Player, List<RealEstate>>();
+            ownedRealEstate = new Dictionary<Player, List<OwnableSpace>>();
             foreach (var player in players)
-                ownedRealEstate.Add(player, new List<RealEstate>());
+                ownedRealEstate.Add(player, new List<OwnableSpace>());
         }
 
         public Boolean Contains(Int32 position)
@@ -40,7 +40,7 @@ namespace Monopoly.Handlers
                 Buy(player, realEstate);
         }
 
-        private void Buy(Player player, RealEstate realEstate)
+        private void Buy(Player player, OwnableSpace realEstate)
         {
             banker.Pay(player, realEstate.Price);
             ownedRealEstate[player].Add(realEstate);
@@ -81,7 +81,7 @@ namespace Monopoly.Handlers
                     groupProperty.PartOfMonopoly = true;
         }
 
-        private void PayRent(Player player, RealEstate realEstate)
+        private void PayRent(Player player, OwnableSpace realEstate)
         {
             var rent = realEstate.GetRent();
             var owner = GetOwner(realEstate);
@@ -89,14 +89,14 @@ namespace Monopoly.Handlers
             banker.Transact(player, owner, rent);
         }
 
-        private Boolean Owned(RealEstate realEstate)
+        private Boolean Owned(OwnableSpace realEstate)
         {
             if (ownedRealEstate.Any(o => o.Value.Contains(realEstate)))
             {
                 var owner = GetOwner(realEstate);
                 if (banker.IsBankrupt(owner))
                 {
-                    ownedRealEstate[owner] = new List<RealEstate>();
+                    ownedRealEstate[owner] = new List<OwnableSpace>();
                     return false;
                 }
                 return true;
@@ -118,12 +118,12 @@ namespace Monopoly.Handlers
                     PayOffMortgage(realEstate);
         }
 
-        public Player GetOwner(RealEstate realEstate)
+        public Player GetOwner(OwnableSpace realEstate)
         {
             return ownedRealEstate.Keys.First(p => ownedRealEstate[p].Contains(realEstate));
         }
 
-        private void CheckMortgage(RealEstate realEstate)
+        private void CheckMortgage(OwnableSpace realEstate)
         {
             if (realEstate is Property)
             {
@@ -159,14 +159,14 @@ namespace Monopoly.Handlers
             banker.Collect(owner, property.HousePrice / 2);
         }
 
-        private void Mortgage(RealEstate realEstate)
+        private void Mortgage(OwnableSpace realEstate)
         {
             var owner = GetOwner(realEstate);
             realEstate.Mortgaged = true;
             banker.Collect(owner, realEstate.Price / 10 * 9);
         }
 
-        private void PayOffMortgage(RealEstate realEstate)
+        private void PayOffMortgage(OwnableSpace realEstate)
         {
             var owner = GetOwner(realEstate);
             banker.Pay(owner, realEstate.Price);

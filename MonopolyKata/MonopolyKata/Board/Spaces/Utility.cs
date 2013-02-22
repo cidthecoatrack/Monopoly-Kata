@@ -5,7 +5,7 @@ using Monopoly.Dice;
 
 namespace Monopoly.Board.Spaces
 {
-    public class Utility : RealEstate
+    public class Utility : OwnableSpace
     {
         public Boolean Force10xRent { get; set; }
         public Boolean BothUtilitiesOwned { get; set; }

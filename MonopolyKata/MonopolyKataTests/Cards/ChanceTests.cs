@@ -34,7 +34,7 @@ namespace Monopoly.Tests.Cards
                 };
 
             var banker = new Banker(players);
-            var realEstateHandler = new RealEstateHandler(new Dictionary<Int32, RealEstate>(), players, banker);
+            var realEstateHandler = new RealEstateHandler(new Dictionary<Int32, OwnableSpace>(), players, banker);
             var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
             var dice = new ControlledDice();
             var jailHandler = new JailHandler(dice, boardHandler, banker);

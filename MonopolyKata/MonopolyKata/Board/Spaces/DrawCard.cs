@@ -5,7 +5,7 @@ using Monopoly.Players;
 
 namespace Monopoly.Board.Spaces
 {
-    public class DrawCard : ISpace
+    public class DrawCard : UnownableSpace
     {
         private Queue<ICard> deck;
 
@@ -21,7 +21,7 @@ namespace Monopoly.Board.Spaces
             this.deck = deck;
         }
         
-        public void LandOn(Player player)
+        public override void LandOn(Player player)
         {
             while (deck.Peek().Held)
                 deck.Enqueue(deck.Dequeue());

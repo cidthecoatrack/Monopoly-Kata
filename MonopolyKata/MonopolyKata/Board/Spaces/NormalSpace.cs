@@ -3,13 +3,13 @@ using Monopoly.Players;
 
 namespace Monopoly.Board.Spaces
 {
-    public class NormalSpace : ISpace
+    public class NormalSpace : UnownableSpace
     {
         private readonly String Name;
 
         public NormalSpace(String name) { Name = name; }
 
-        public void LandOn(Player player) { }
+        public override void LandOn(Player player) { }
 
         public override String ToString()
         {

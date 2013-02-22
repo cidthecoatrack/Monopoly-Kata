@@ -9,9 +9,9 @@ namespace Monopoly.Board
 {
     public class BoardFactory
     {
-        public static Dictionary<Int32, RealEstate> CreateRealEstate(IDice dice)
+        public static Dictionary<Int32, OwnableSpace> CreateRealEstate(IDice dice)
         {
-            var realEstate = new Dictionary<Int32, RealEstate>();
+            var realEstate = new Dictionary<Int32, OwnableSpace>();
 
             realEstate.Add(BoardConstants.MEDITERANEAN_AVENUE, new Property("Mediteranean Avenue", 60, 2, GROUPING.PURPLE, 50, new[] { 10, 30, 90, 160, 250 }));
             realEstate.Add(BoardConstants.BALTIC_AVENUE, new Property("Baltic Avenue", 60, 4, GROUPING.PURPLE, 50, new[] { 20, 60, 180, 320, 450 }));
@@ -45,9 +45,9 @@ namespace Monopoly.Board
             return realEstate;
         }
 
-        public static Dictionary<Int32, ISpace> CreateNonRealEstateSpaces(Banker banker)
+        public static Dictionary<Int32, UnownableSpace> CreateNonRealEstateSpaces(Banker banker)
         {
-            var spaces = new Dictionary<Int32, ISpace>();
+            var spaces = new Dictionary<Int32, UnownableSpace>();
             
             spaces.Add(BoardConstants.GO, new NormalSpace("GO"));
             spaces.Add(2, new DrawCard("Community Chest"));

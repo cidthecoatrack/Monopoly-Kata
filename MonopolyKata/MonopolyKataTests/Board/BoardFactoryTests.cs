@@ -14,8 +14,8 @@ namespace Monopoly.Tests.Board
     [TestClass]
     public class BoardFactoryTests
     {
-        private Dictionary<Int32, RealEstate> realEstate;
-        private Dictionary<Int32, ISpace> spaces;
+        private Dictionary<Int32, OwnableSpace> realEstate;
+        private Dictionary<Int32, UnownableSpace> spaces;
         
         [TestInitialize]
         public void Setup()

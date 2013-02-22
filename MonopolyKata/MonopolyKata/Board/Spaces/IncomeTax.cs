@@ -4,7 +4,7 @@ using Monopoly.Players;
 
 namespace Monopoly.Board.Spaces
 {
-    public class IncomeTax : ISpace
+    public class IncomeTax : UnownableSpace
     {
         public const Int16 INCOME_TAX_PERCENTAGE_DIVISOR = 10;
         public const Int16 INCOME_TAX_FLAT_RATE = 200;
@@ -16,7 +16,7 @@ namespace Monopoly.Board.Spaces
             this.banker = banker;
         }
 
-        public void LandOn(Player player)
+        public override void LandOn(Player player)
         {
             var amountToPay = Math.Min(banker.GetMoney(player) / INCOME_TAX_PERCENTAGE_DIVISOR, INCOME_TAX_FLAT_RATE);
             banker.Pay(player, amountToPay);

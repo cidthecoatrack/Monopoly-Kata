@@ -61,7 +61,7 @@
     <Compile Include="Board\BoardConstants.cs" />
     <Compile Include="Board\Spaces\IncomeTax.cs" />
     <Compile Include="Board\Spaces\LuxuryTax.cs" />
-    <Compile Include="Board\Spaces\RealEstate.cs" />
+    <Compile Include="Board\Spaces\OwnableSpace.cs" />
     <Compile Include="Dice\MonopolyDice.cs" />
     <Compile Include="Dice\IDice.cs" />
     <Compile Include="Handlers\RealEstateHandler.cs" />
@@ -75,7 +75,7 @@
     <Compile Include="Board\Spaces\Utility.cs" />
     <Compile Include="Players\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Board\Spaces\ISpace.cs" />
+    <Compile Include="Board\Spaces\UnownableSpace.cs" />
     <Compile Include="Board\Spaces\Property.cs" />
     <Compile Include="Games\PlayerOrderRandomizer.cs" />
     <Compile Include="Handlers\TurnHandler.cs" />

@@ -21,7 +21,7 @@ namespace Monopoly.Tests.Handlers
         private Player player;
         private ControlledDice dice;
         private IEnumerable<Player> players;
-        private Dictionary<Int32, ISpace> landableSpaces;
+        private Dictionary<Int32, UnownableSpace> landableSpaces;
         private LandableSpace space6;
         private LandableSpace space10;
 
@@ -36,7 +36,7 @@ namespace Monopoly.Tests.Handlers
             dice = new ControlledDice();
             var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
             
-            landableSpaces = new Dictionary<Int32, ISpace>();
+            landableSpaces = new Dictionary<Int32, UnownableSpace>();
 
             for (var i = 0; i < BoardConstants.BOARD_SIZE; i++)
                 landableSpaces.Add(i, new LandableSpace());

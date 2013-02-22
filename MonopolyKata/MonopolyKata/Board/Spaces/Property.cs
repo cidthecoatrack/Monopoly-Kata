@@ -6,7 +6,7 @@ namespace Monopoly.Board.Spaces
 {
     public enum GROUPING { PURPLE, LIGHT_BLUE, PINK, ORANGE, RED, YELLOW, GREEN, DARK_BLUE }
 
-    public class Property : RealEstate
+    public class Property : OwnableSpace
     {
         public readonly GROUPING Grouping;
         public readonly Int32 HousePrice;

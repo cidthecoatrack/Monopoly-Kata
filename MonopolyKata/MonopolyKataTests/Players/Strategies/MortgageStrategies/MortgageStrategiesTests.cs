@@ -10,9 +10,9 @@ namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
     [TestClass]
     public class MortgageStrategiesTests
     {
-        private RealEstate firstRealEstate;
-        private RealEstate secondRealEstate;
-        private RealEstate thirdRealEstate;
+        private OwnableSpace firstRealEstate;
+        private OwnableSpace secondRealEstate;
+        private OwnableSpace thirdRealEstate;
         private Player player;
         private RealEstateHandler realEstateHandler;
         private Banker banker;
