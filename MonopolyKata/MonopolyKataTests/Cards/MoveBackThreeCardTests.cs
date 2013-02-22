@@ -4,6 +4,7 @@ using Monopoly.Cards;
 using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -22,7 +23,10 @@ namespace Monopoly.Tests.Cards
             strategies.CreateRandomStrategyCollection();
 
             player = new Player("name", strategies);
-            boardHandler = new BoardHandler(new[] { player }, FakeBoardFactory.CreateBoardOfNormalSpaces());
+            var players = new[] { player };
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            var banker = new Banker(players);
+            boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
             card = new MoveBackThreeCard(boardHandler);
         }

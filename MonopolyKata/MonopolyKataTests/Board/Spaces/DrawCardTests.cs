@@ -6,6 +6,7 @@ using Monopoly.Cards;
 using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Board.Spaces
@@ -16,6 +17,7 @@ namespace Monopoly.Tests.Board.Spaces
         private Queue<ICard> deck;
         private DrawCard drawCard;
         private Player player;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -24,11 +26,12 @@ namespace Monopoly.Tests.Board.Spaces
             strategies.CreateRandomStrategyCollection();
             player = new Player("name", strategies);
             var players = new[] { player };
-            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
-            var boardHandler = new BoardHandler(players, board);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
             var dice = new ControlledDice();
-            var jailHandler = new JailHandler(dice, boardHandler);
-            var deckFactory = new DeckFactory(jailHandler, players, boardHandler);
+            banker = new Banker(players);
+            var jailHandler = new JailHandler(dice, boardHandler, banker);
+            var deckFactory = new DeckFactory(players, jailHandler, boardHandler, realEstateHandler, banker);
 
             deck = deckFactory.BuildCommunityChestDeck();
             drawCard = new DrawCard("draw card");
@@ -47,9 +50,9 @@ namespace Monopoly.Tests.Board.Spaces
             while (!(deck.Peek() is FlatPayCard))
                 deck.Enqueue(deck.Dequeue());
 
-            var money = player.Money;
+            var money = banker.GetMoney(player);
             drawCard.LandOn(player);
-            Assert.IsTrue(money > player.Money);
+            Assert.IsTrue(money > banker.GetMoney(player));
         }
 
         [TestMethod]

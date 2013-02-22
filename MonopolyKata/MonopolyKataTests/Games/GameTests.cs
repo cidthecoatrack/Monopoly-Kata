@@ -6,6 +6,7 @@ using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Games
@@ -16,6 +17,7 @@ namespace Monopoly.Tests.Games
         private Game game;
         private ControlledDice dice;
         private BoardHandler boardHandler;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -26,14 +28,15 @@ namespace Monopoly.Tests.Games
         private void SetupGameWithPlayers(Int32 numberOfPlayers)
         {
             var players = GeneratePlayerIEnumerable(numberOfPlayers);
-            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
-            boardHandler = new BoardHandler(players, board);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            banker = new Banker(players);
+            var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
             
             dice = new ControlledDice();
-            var jailHandler = new JailHandler(dice, boardHandler);
-            var turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
+            var jailHandler = new JailHandler(dice, boardHandler, banker);
+            var turnHandler = new TurnHandler(dice, boardHandler, jailHandler, realEstateHandler, banker);
 
-            game = new Game(players, turnHandler);
+            game = new Game(players, turnHandler, banker);
         }
 
         private IEnumerable<Player> GeneratePlayerIEnumerable(Int32 NumberOfPlayers)
@@ -148,7 +151,7 @@ namespace Monopoly.Tests.Games
 
             game.TakeTurn();
             var loser = game.CurrentPlayer;
-            loser.Pay(loser.Money + 1);
+            banker.Pay(loser, banker.GetMoney(loser) + 1);
             game.TakeTurn();
 
             Assert.AreEqual(winner, game.Winner);
@@ -159,10 +162,10 @@ namespace Monopoly.Tests.Games
         {
             SetupGameWithPlayers(3);
             var loser = game.CurrentPlayer;
-            loser.Pay(loser.Money + 1);
+            banker.Pay(loser, banker.GetMoney(loser) + 1);
             game.TakeTurn();
 
-            Assert.IsTrue(loser.LostTheGame);
+            Assert.IsTrue(banker.IsBankrupt(loser));
             Assert.IsFalse(game.Finished);
             Assert.AreEqual(2, game.NumberOfActivePlayers);
         }
@@ -176,8 +179,8 @@ namespace Monopoly.Tests.Games
             {
                 if (!theChosenOne.Equals(game.CurrentPlayer))
                 {
-                    var notTheChosenOne = game.CurrentPlayer;
-                    notTheChosenOne.Pay(notTheChosenOne.Money + 1);
+                    var loser = game.CurrentPlayer;
+                    banker.Pay(loser, banker.GetMoney(loser) + 1);
                 }
 
                 game.TakeTurn();
@@ -190,9 +193,10 @@ namespace Monopoly.Tests.Games
         public void AtEndOfGame_PlayerWithMostMoneyWins()
         {
             var theChosenOne = game.CurrentPlayer;
+            banker.Collect(theChosenOne, 9266);
 
-            theChosenOne.Collect(9266);
             game.Play();
+
             Assert.AreEqual(theChosenOne, game.Winner);
         }
 

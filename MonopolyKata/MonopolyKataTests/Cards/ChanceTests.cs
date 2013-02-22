@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Monopoly.Board.Spaces;
 using Monopoly.Cards;
 using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -30,11 +33,12 @@ namespace Monopoly.Tests.Cards
                     new Player("Player 4", strategies)
                 };
 
-            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
-            var boardHandler = new BoardHandler(players, board);
+            var banker = new Banker(players);
+            var realEstateHandler = new RealEstateHandler(new Dictionary<Int32, RealEstate>(), players, banker);
+            var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
             var dice = new ControlledDice();
-            var jailHandler = new JailHandler(dice, boardHandler);
-            var deckFactory = new DeckFactory(jailHandler, players, boardHandler);
+            var jailHandler = new JailHandler(dice, boardHandler, banker);
+            var deckFactory = new DeckFactory(players, jailHandler, boardHandler, realEstateHandler, banker);
 
             deck = deckFactory.BuildChanceDeck(dice);
         }

@@ -15,11 +15,13 @@ namespace Monopoly.Handlers
         private Dictionary<Player, Int16> turnsInJail;
         private Dictionary<GetOutOfJailFreeCard, Player> cards;
         private BoardHandler boardHandler;
+        private Banker banker;
 
-        public JailHandler(IDice dice, BoardHandler boardHandler)
+        public JailHandler(IDice dice, BoardHandler boardHandler, Banker banker)
         {
             this.dice = dice;
             this.boardHandler = boardHandler;
+            this.banker = banker;
 
             turnsInJail = new Dictionary<Player, Int16>();
             cards = new Dictionary<GetOutOfJailFreeCard, Player>(2);
@@ -49,9 +51,9 @@ namespace Monopoly.Handlers
             turnsInJail.Add(player, 0);
         }
 
-        private void PayToLiberate(Player player)
+        private void Bail(Player player)
         {
-            player.Pay(GameConstants.COST_TO_GET_OUT_OF_JAIL);
+            banker.Pay(player, GameConstants.COST_TO_GET_OUT_OF_JAIL);
             turnsInJail.Remove(player);
         }
 
@@ -63,8 +65,14 @@ namespace Monopoly.Handlers
                 turnsInJail.Remove(player);
             else if (cards.ContainsValue(player) && player.WillUseGetOutOfJailCard())
                 UseGetOutOfJailCard(player);
-            else if (turnsInJail[player] >= GameConstants.TURNS_IN_JAIL_LIMIT || player.WillPayToGetOutOfJail())
-                PayToLiberate(player);
+            else if (turnsInJail[player] >= GameConstants.TURNS_IN_JAIL_LIMIT || PlayerWillPayToGetOutOfJail(player))
+                Bail(player);
+        }
+
+        public Boolean PlayerWillPayToGetOutOfJail(Player player)
+        {
+            var money = banker.GetMoney(player);
+            return player.JailStrategy.ShouldPay(money) && banker.CanAfford(player, GameConstants.COST_TO_GET_OUT_OF_JAIL);
         }
 
         private void UseGetOutOfJailCard(Player player)

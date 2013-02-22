@@ -1,6 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
 using Monopoly.Cards;
+using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Players.Strategies;
 
@@ -9,10 +12,11 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class HousesAndHotelsCardTests
     {
-        HousesAndHotelsCard card;
-        Player player;
-        Property property;
-        Property otherProperty;
+        private HousesAndHotelsCard card;
+        private Player player;
+        private Property property;
+        private Property otherProperty;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -20,34 +24,21 @@ namespace Monopoly.Tests.Cards
             var strategies = new StrategyCollection();
             strategies.CreateRandomStrategyCollection();
 
-            player = new Player("name", strategies);
-            card = new HousesAndHotelsCard("card", 40, 115);
-
-            SetUpProperties();
-        }
-
-        private void SetUpProperties()
-        {
             property = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
             otherProperty = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
 
-            var group = new[] { property, otherProperty };
-            property.SetPropertiesInGroup(group);
-            otherProperty.SetPropertiesInGroup(group);
+            var dict = new Dictionary<Int32, RealEstate>();
+            dict.Add(0, property);
+            dict.Add(1, otherProperty);
 
-            property.LandOn(player);
-            otherProperty.LandOn(player);
-        }
+            player = new Player("name", strategies);
+            var players = new[] { player };
+            banker = new Banker(players);
+            var realEstateHandler = new RealEstateHandler(dict, players, banker);
+            card = new HousesAndHotelsCard("card", 40, 115, realEstateHandler, banker);
 
-        private void BuyHousesAndHotel()
-        {
-            for (var i = 0; i < 4; i++)
-            {
-                property.BuyHouse();
-                otherProperty.BuyHouse();
-            }
-
-            property.BuyHotel();
+            realEstateHandler.Land(player, 0);
+            realEstateHandler.Land(player, 1);
         }
 
         [TestMethod]
@@ -61,19 +52,30 @@ namespace Monopoly.Tests.Cards
         {
             BuyHousesAndHotel();
 
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             card.Execute(player);
 
-            Assert.AreEqual(playerMoney - 435, player.Money);
+            Assert.AreEqual(playerMoney - 435, banker.GetMoney(player));
+        }
+
+        private void BuyHousesAndHotel()
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                property.BuyHouseOrHotel();
+                otherProperty.BuyHouseOrHotel();
+            }
+
+            property.BuyHouseOrHotel();
         }
 
         [TestMethod]
         public void NoHousesPays0()
         {
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             card.Execute(player);
 
-            Assert.AreEqual(playerMoney, player.Money);
+            Assert.AreEqual(playerMoney, banker.GetMoney(player));
         }
     }
 }

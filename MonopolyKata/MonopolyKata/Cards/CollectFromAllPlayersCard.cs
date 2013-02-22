@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Monopoly.Handlers;
 using Monopoly.Players;
 
 namespace Monopoly.Cards
@@ -9,19 +11,18 @@ namespace Monopoly.Cards
         public Boolean Held { get; private set; }
 
         private IEnumerable<Player> players;
+        private Banker banker;
 
-        public CollectFromAllPlayersCard(IEnumerable<Player> players)
+        public CollectFromAllPlayersCard(IEnumerable<Player> players, Banker banker)
         {
             this.players = players;
+            this.banker = banker;
         }
 
         public void Execute(Player player)
         {
-            foreach (var otherPlayer in players)
-            {
-                otherPlayer.Pay(50);
-                player.Collect(50);
-            }
+            foreach (var payer in players.Where(p => !banker.IsBankrupt(p)))
+                banker.Transact(payer, player, 50);
         }
 
         public override String ToString()

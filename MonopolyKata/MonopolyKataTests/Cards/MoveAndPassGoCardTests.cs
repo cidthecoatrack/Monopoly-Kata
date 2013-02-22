@@ -5,6 +5,7 @@ using Monopoly.Games;
 using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -15,6 +16,7 @@ namespace Monopoly.Tests.Cards
         private MoveAndPassGoCard card;
         private Player player;
         private BoardHandler boardHandler;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -23,8 +25,9 @@ namespace Monopoly.Tests.Cards
             strategies.CreateRandomStrategyCollection();
             player = new Player("name", strategies);
             var players = new[] { player };
-            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
-            boardHandler = new BoardHandler(players, board);
+            banker = new Banker(players);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
             card = new MoveAndPassGoCard("move", BoardConstants.ATLANTIC_AVENUE, boardHandler);
         }
@@ -46,12 +49,12 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void MoveAndPassGo()
         {
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             boardHandler.MoveTo(player, BoardConstants.ATLANTIC_AVENUE + 1);
             card.Execute(player);
 
             Assert.AreEqual(BoardConstants.ATLANTIC_AVENUE, boardHandler.PositionOf[player]);
-            Assert.AreEqual(playerMoney + GameConstants.PASS_GO_PAYMENT, player.Money);
+            Assert.AreEqual(playerMoney + GameConstants.PASS_GO_PAYMENT, banker.GetMoney(player));
         }
     }
 }

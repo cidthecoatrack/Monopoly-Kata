@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
+using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Players.Strategies;
 using Monopoly.Tests.Players.Strategies.JailStrategies;
@@ -12,21 +13,19 @@ namespace Monopoly.Tests.Board.Spaces
     public class LuxuryTaxTests
     {
         [TestMethod]
-        public void LandOnLuxuryTax_PlayerPays75()
+        public void LuxuryTaxTest()
         {
-            var luxuryTax = new LuxuryTax();
-
             var strategies = new StrategyCollection();
-            strategies.JailStrategy = new RandomlyPay();
-            strategies.MortgageStrategy = new RandomlyMortgage();
-            strategies.RealEstateStrategy = new RandomlyBuy();
-
+            strategies.CreateRandomStrategyCollection();
             var player = new Player("name", strategies);
-            var playerMoney = player.Money;
 
+            var banker = new Banker(new[] { player });
+            var luxuryTax = new LuxuryTax(banker);
+
+            var playerMoney = banker.GetMoney(player);
             luxuryTax.LandOn(player);
 
-            Assert.AreEqual(playerMoney - LuxuryTax.LUXURY_TAX, player.Money);
+            Assert.AreEqual(playerMoney - LuxuryTax.LUXURY_TAX, banker.GetMoney(player));
         }
     }
 }

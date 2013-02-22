@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Cards;
+using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Players.Strategies;
 
@@ -8,8 +9,9 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class FlatCollectCardTests
     {
-        FlatCollectCard card;
-        Player player;
+        private FlatCollectCard card;
+        private Player player;
+        private Banker banker;
         
         [TestInitialize]
         public void Setup()
@@ -17,9 +19,10 @@ namespace Monopoly.Tests.Cards
             var strategies = new StrategyCollection();
             strategies.CreateRandomStrategyCollection();
 
-            player = new Player("name", strategies); 
+            player = new Player("name", strategies);
+            banker = new Banker(new[] { player });
             
-            card = new FlatCollectCard("collect", 10);
+            card = new FlatCollectCard("collect", 10, banker);
         }
         
         [TestMethod]
@@ -31,11 +34,9 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Collect()
         {
-            var playerMoney = player.Money;
-
+            var playerMoney = banker.GetMoney(player);
             card.Execute(player);
-
-            Assert.AreEqual(playerMoney + 10, player.Money);
+            Assert.AreEqual(playerMoney + 10, banker.GetMoney(player));
         }
     }
 }

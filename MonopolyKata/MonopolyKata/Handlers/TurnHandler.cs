@@ -10,24 +10,28 @@ namespace Monopoly.Handlers
         private Int32 doublesCount;
         private BoardHandler boardHandler;
         private JailHandler jailHandler;
+        private RealEstateHandler realEstateHandler;
+        private Banker banker;
 
-        public TurnHandler(IDice dice, BoardHandler boardHandler, JailHandler jailHandler)
+        public TurnHandler(IDice dice, BoardHandler boardHandler, JailHandler jailHandler, RealEstateHandler realEstateHandler, Banker banker)
         {
             this.dice = dice;
             this.boardHandler = boardHandler;
             this.jailHandler = jailHandler;
+            this.realEstateHandler = realEstateHandler;
+            this.banker = banker;
         }
 
         public void TakeTurn(Player player)
         {
             doublesCount = 0;
 
-            player.HandleMortgages();
+            realEstateHandler.HandleMortgages(player);
 
             do RollAndMove(player);
             while (CanGoAgain(player));
 
-            player.HandleMortgages();
+            realEstateHandler.HandleMortgages(player);
         }
 
         private void RollAndMove(Player player)
@@ -44,7 +48,7 @@ namespace Monopoly.Handlers
 
         private Boolean CanGoAgain(Player player)
         {
-            return dice.Doubles && !player.LostTheGame && !jailHandler.HasImprisoned(player);
+            return dice.Doubles && !banker.IsBankrupt(player) && !jailHandler.HasImprisoned(player);
         }
     }
 }

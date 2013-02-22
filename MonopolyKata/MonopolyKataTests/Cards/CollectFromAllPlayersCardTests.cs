@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Cards;
+using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Players.Strategies;
 
@@ -9,8 +10,10 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class CollectFromAllPlayersCardTests
     {
-        CollectFromAllPlayersCard card;
-        Player player;
+        private CollectFromAllPlayersCard card;
+        private Player player;
+        private Banker banker;
+        private Player loser;
 
         [TestInitialize]
         public void Setup()
@@ -19,12 +22,17 @@ namespace Monopoly.Tests.Cards
             strategies.CreateRandomStrategyCollection();
 
             player = new Player("name", strategies);
+            loser = new Player("loser", strategies);
 
             var players = new List<Player>();
             for (var i = 0; i < 8; i++)
                 players.Add(new Player("player " + i, strategies));
+            players.Add(player);
+            players.Add(loser);
 
-            card = new CollectFromAllPlayersCard(players);
+            banker = new Banker(players);
+
+            card = new CollectFromAllPlayersCard(players, banker);
         }
 
         [TestMethod]
@@ -36,9 +44,19 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Pay()
         {
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             card.Execute(player);
-            Assert.AreEqual(playerMoney + 400, player.Money);
+            Assert.AreEqual(playerMoney + 450, banker.GetMoney(player));
+        }
+
+        [TestMethod]
+        public void LosersDontPay()
+        {
+            banker.Pay(loser, banker.GetMoney(loser) + 1);
+            var playerMoney = banker.GetMoney(player);
+            card.Execute(player);
+
+            Assert.AreEqual(playerMoney + 400, banker.GetMoney(player));
         }
     }
 }

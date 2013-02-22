@@ -14,16 +14,21 @@ namespace Monopoly.Games
         public static Game CreateGame(IEnumerable<Player> players)
         {
             var dice = new MonopolyDice();
-            var board = BoardFactory.CreateMonopolyBoard(dice);
-            var boardHandler = new BoardHandler(players, board);
-            var jailHandler = new JailHandler(dice, boardHandler);
-            var turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
 
-            var deckFactory = new DeckFactory(jailHandler, players, boardHandler);
+            var banker = new Banker(players);
+            var realEstateHandler = new RealEstateHandler(BoardFactory.CreateRealEstate(dice), players, banker);
+            var spaces = BoardFactory.CreateNonRealEstateSpaces(banker);
+            var spaceHandler = new SpaceHandler(spaces);
+
+            var boardHandler = new BoardHandler(players, realEstateHandler, spaceHandler, banker);
+            var jailHandler = new JailHandler(dice, boardHandler, banker);
+            var turnHandler = new TurnHandler(dice, boardHandler, jailHandler, realEstateHandler, banker);
+
+            var deckFactory = new DeckFactory(players, jailHandler, boardHandler, realEstateHandler, banker);
             var communityChest = deckFactory.BuildCommunityChestDeck();
             var chance = deckFactory.BuildChanceDeck(dice);
 
-            foreach (var space in board.OfType<DrawCard>())
+            foreach (var space in spaces.Values.OfType<DrawCard>())
             {
                 if (space.ToString() == "Community Chest")
                     space.AddDeck(communityChest);
@@ -31,7 +36,7 @@ namespace Monopoly.Games
                     space.AddDeck(chance);
             }
 
-            return new Game(players, turnHandler);
+            return new Game(players, turnHandler, banker);
         }
     }
 }

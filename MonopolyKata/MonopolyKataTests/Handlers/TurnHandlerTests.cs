@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board;
 using Monopoly.Board.Spaces;
 using Monopoly.Handlers;
 using Monopoly.Players;
+using Monopoly.Tests.Board.Spaces;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Players.Strategies;
 
@@ -19,8 +21,9 @@ namespace Monopoly.Tests.Handlers
         private Player player;
         private ControlledDice dice;
         private IEnumerable<Player> players;
-        private RealEstate realEstate;
-        private RealEstate otherRealEstate;
+        private Dictionary<Int32, ISpace> landableSpaces;
+        private LandableSpace space6;
+        private LandableSpace space10;
 
         [TestInitialize]
         public void Setup()
@@ -28,21 +31,24 @@ namespace Monopoly.Tests.Handlers
             var strategies = new StrategyCollection();
             strategies.CreateNeverStrategyCollection();
             player = new Player("Player", strategies);
-
-            players = new[]
-                {
-                    player,
-                    new Player("other player", strategies)
-                };
+            var players = new[] { player };
 
             dice = new ControlledDice();
-            var board = BoardFactory.CreateMonopolyBoard(dice);
-            boardHandler = new BoardHandler(players, board);
-            jailHandler = new JailHandler(dice, boardHandler);
-            turnHandler = new TurnHandler(dice, boardHandler, jailHandler);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            
+            landableSpaces = new Dictionary<Int32, ISpace>();
 
-            realEstate = board.ElementAt(6) as RealEstate;
-            otherRealEstate = board.ElementAt(14) as RealEstate;
+            for (var i = 0; i < BoardConstants.BOARD_SIZE; i++)
+                landableSpaces.Add(i, new LandableSpace());
+
+            space6 = landableSpaces[6] as LandableSpace;
+            space10 = landableSpaces[10] as LandableSpace;
+
+            var spaceHandler = new SpaceHandler(landableSpaces);
+            var banker = new Banker(players);
+            boardHandler = new BoardHandler(players, realEstateHandler, spaceHandler, banker);
+            jailHandler = new JailHandler(dice, boardHandler, banker);
+            turnHandler = new TurnHandler(dice, boardHandler, jailHandler, realEstateHandler, banker);
         }
         
         [TestMethod]
@@ -61,7 +67,7 @@ namespace Monopoly.Tests.Handlers
             turnHandler.TakeTurn(player);
 
             Assert.AreEqual(10, boardHandler.PositionOf[player]);
-            Assert.IsTrue(player.Owns(realEstate));
+            Assert.IsTrue(space6.LandedOn);
         }
 
         [TestMethod]
@@ -76,12 +82,12 @@ namespace Monopoly.Tests.Handlers
         [TestMethod]
         public void RollTwoDoubles_MovesThreeTimes()
         {
-            dice.SetPredeterminedDieValues(3, 3, 4, 4, 4, 2);
+            dice.SetPredeterminedDieValues(3, 3, 2, 2, 4, 2);
             turnHandler.TakeTurn(player);
 
-            Assert.AreEqual(20, boardHandler.PositionOf[player]);
-            Assert.IsTrue(player.Owns(realEstate));
-            Assert.IsTrue(player.Owns(otherRealEstate));
+            Assert.AreEqual(16, boardHandler.PositionOf[player]);
+            Assert.IsTrue(space6.LandedOn);
+            Assert.IsTrue(space10.LandedOn);
         }
 
         [TestMethod]

@@ -7,6 +7,7 @@ using Monopoly.Games;
 using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -17,6 +18,7 @@ namespace Monopoly.Tests.Cards
         private MoveToNearestRailroadCard card;
         private BoardHandler boardHandler;
         private Player player;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -26,18 +28,16 @@ namespace Monopoly.Tests.Cards
             player = new Player("name", strategies);
             var owner = new Player("owner", strategies);
 
-            var players = new[]
-                {
-                    player,
-                    new Player("other player", strategies)
-                };
+            var players = new[] { player, owner };
 
             var dice = new ControlledDice();
-            var board = BoardFactory.CreateMonopolyBoard(dice);
-            boardHandler = new BoardHandler(players, board);
+            var realEstate = BoardFactory.CreateRealEstate(dice);
+            banker = new Banker(players);
+            var realEstateHandler = new RealEstateHandler(realEstate, players, banker);
+            boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
-            foreach (var rxr in board.OfType<Railroad>())
-                rxr.LandOn(owner);
+            foreach (var rxr in realEstate.Values.OfType<Railroad>())
+                realEstateHandler.Land(owner, realEstate.Keys.First(k => realEstate[k] == rxr));
 
             card = new MoveToNearestRailroadCard(boardHandler);
         }
@@ -54,15 +54,12 @@ namespace Monopoly.Tests.Cards
             card.Execute(player);
             Assert.AreEqual(BoardConstants.READING_RAILROAD, boardHandler.PositionOf[player]);
 
-            boardHandler.Move(player, 1);
             card.Execute(player);
             Assert.AreEqual(BoardConstants.PENNSYLVANIA_RAILROAD, boardHandler.PositionOf[player]);
 
-            boardHandler.Move(player, 1);
             card.Execute(player);
             Assert.AreEqual(BoardConstants.BandO_RAILROAD, boardHandler.PositionOf[player]);
 
-            boardHandler.Move(player, 1);
             card.Execute(player);
             Assert.AreEqual(BoardConstants.SHORT_LINE, boardHandler.PositionOf[player]);
         }
@@ -72,19 +69,19 @@ namespace Monopoly.Tests.Cards
         {
             boardHandler.MoveTo(player, BoardConstants.SHORT_LINE + 2);
 
-            var expectedMoney = player.Money + GameConstants.PASS_GO_PAYMENT - 400;
+            var expectedMoney = banker.GetMoney(player) + GameConstants.PASS_GO_PAYMENT - 400;
             card.Execute(player);
 
             Assert.AreEqual(BoardConstants.READING_RAILROAD, boardHandler.PositionOf[player]);
-            Assert.AreEqual(expectedMoney, player.Money);
+            Assert.AreEqual(expectedMoney, banker.GetMoney(player));
         }
 
         [TestMethod]
         public void PayTwiceNormalRent()
         {
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             card.Execute(player);
-            Assert.AreEqual(playerMoney - 400, player.Money);
+            Assert.AreEqual(playerMoney - 400, banker.GetMoney(player));
         }
     }
 }

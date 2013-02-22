@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board.Spaces;
+using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board.Spaces;
+using Monopoly.Tests.Handlers;
 
 namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
 {
@@ -12,7 +14,8 @@ namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
         private RealEstate secondRealEstate;
         private RealEstate thirdRealEstate;
         private Player player;
-        private StrategyCollection strategies;
+        private RealEstateHandler realEstateHandler;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -21,28 +24,37 @@ namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
             secondRealEstate = new TestRealEstate("second", 50);
             thirdRealEstate = new TestRealEstate("third", 50);
 
-            strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();  
+            var strategies = new StrategyCollection();
+            strategies.CreateRandomStrategyCollection();
+            player = new Player("name", strategies);
+            var players = new[] { player };
+            banker = new Banker(players);
+            var estates = new[]
+                {
+                    firstRealEstate,
+                    secondRealEstate,
+                    thirdRealEstate
+                };
+
+            realEstateHandler = FakeHandlerFactory.CreateRealEstateHandler(estates, players, banker);
+
+            realEstateHandler.Land(player, 0);
+            realEstateHandler.Land(player, 1);
+            realEstateHandler.Land(player, 2);
         }
 
         [TestMethod]
         public void NeverMortgage()
         {
-            strategies.MortgageStrategy = new NeverMortgage();
-            player = new Player("name", strategies);
-
-            firstRealEstate.LandOn(player);
-            secondRealEstate.LandOn(player);
-            thirdRealEstate.LandOn(player);
-
-            player.HandleMortgages();
+            player.MortgageStrategy = new NeverMortgageAlwaysPay();
+            realEstateHandler.HandleMortgages(player);
 
             Assert.IsFalse(firstRealEstate.Mortgaged);
             Assert.IsFalse(secondRealEstate.Mortgaged);
             Assert.IsFalse(thirdRealEstate.Mortgaged);
 
-            firstRealEstate.Mortgage();
-            player.HandleMortgages();
+            firstRealEstate.Mortgaged = true;
+            realEstateHandler.HandleMortgages(player);
 
             Assert.IsFalse(firstRealEstate.Mortgaged);
             Assert.IsFalse(secondRealEstate.Mortgaged);
@@ -52,45 +64,33 @@ namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
         [TestMethod]
         public void MortgageWhenSheHasLessThan500()
         {
-            strategies.MortgageStrategy = new MortgageIfMoneyLessThanFiveHundred();
-            player = new Player("name", strategies);
+            player.MortgageStrategy = new MortgageIfMoneyLessThanFiveHundred();
+            banker.Pay(player, banker.GetMoney(player) - 440);
+            realEstateHandler.HandleMortgages(player);
 
-            firstRealEstate.LandOn(player);
-            secondRealEstate.LandOn(player);
-            thirdRealEstate.LandOn(player);
+            Assert.IsTrue(firstRealEstate.Mortgaged, "first, mortgage");
+            Assert.IsTrue(secondRealEstate.Mortgaged, "second, mortgage");
+            Assert.IsFalse(thirdRealEstate.Mortgaged, "third, mortgage");
 
-            player.Pay(player.Money - 440);
-            player.HandleMortgages();
+            banker.Collect(player, 551 - banker.GetMoney(player));
+            realEstateHandler.HandleMortgages(player);
 
-            Assert.IsTrue(firstRealEstate.Mortgaged);
-            Assert.IsTrue(secondRealEstate.Mortgaged);
-            Assert.IsFalse(thirdRealEstate.Mortgaged);
-
-            player.Collect(551 - player.Money);
-            player.HandleMortgages();
-
-            Assert.IsFalse(firstRealEstate.Mortgaged);
-            Assert.IsTrue(secondRealEstate.Mortgaged);
-            Assert.IsFalse(thirdRealEstate.Mortgaged);
+            Assert.IsFalse(firstRealEstate.Mortgaged, "first, pay off");
+            Assert.IsTrue(secondRealEstate.Mortgaged, "second, pay off");
+            Assert.IsFalse(thirdRealEstate.Mortgaged, "third, pay off");
         }
 
         [TestMethod]
         public void AlwaysMortgage()
         {
-            strategies.MortgageStrategy = new AlwaysMortgage();
-            player = new Player("name", strategies);
-
-            firstRealEstate.LandOn(player);
-            secondRealEstate.LandOn(player);
-            thirdRealEstate.LandOn(player);
-
-            player.HandleMortgages();
+            player.MortgageStrategy = new AlwaysMortgageNeverPay();
+            realEstateHandler.HandleMortgages(player);
 
             Assert.IsTrue(firstRealEstate.Mortgaged);
             Assert.IsTrue(secondRealEstate.Mortgaged);
             Assert.IsTrue(thirdRealEstate.Mortgaged);
 
-            player.HandleMortgages();
+            realEstateHandler.HandleMortgages(player);
 
             Assert.IsTrue(firstRealEstate.Mortgaged);
             Assert.IsTrue(secondRealEstate.Mortgaged);

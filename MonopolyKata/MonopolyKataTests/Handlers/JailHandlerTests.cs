@@ -6,6 +6,7 @@ using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 using Monopoly.Tests.Players.Strategies.JailStrategies;
 
@@ -18,6 +19,7 @@ namespace Monopoly.Tests.Hendlers
         private JailHandler jailHandler;
         private BoardHandler boardHandler;
         private Player player;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -27,18 +29,11 @@ namespace Monopoly.Tests.Hendlers
             player = new Player("name", strategies);
 
             dice = new ControlledDice();
-            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
-            var players = new[]
-                {
-                    player,
-                    new Player("Player 1", strategies),
-                    new Player("Player 2", strategies),
-                    new Player("Player 3", strategies),
-                    new Player("Player 4", strategies)
-                };
-            boardHandler = new BoardHandler(players, board);
-            jailHandler = new JailHandler(dice, boardHandler);
-
+            var players = new[] { player };
+            banker = new Banker(players);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
+            jailHandler = new JailHandler(dice, boardHandler, banker);
         }
 
         [TestMethod]
@@ -65,27 +60,27 @@ namespace Monopoly.Tests.Hendlers
         [TestMethod]
         public void DontRollDoublesInJail_StillInJailAndNoTurn()
         {
-            var playerMoney = player.Money; 
+            var playerMoney = banker.GetMoney(player);
             jailHandler.Imprison(player);
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
-            Assert.AreEqual(playerMoney, player.Money);
+            Assert.AreEqual(playerMoney, banker.GetMoney(player));
             Assert.IsTrue(jailHandler.HasImprisoned(player), "first turn");
 
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
 
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
-            Assert.AreEqual(playerMoney, player.Money);
+            Assert.AreEqual(playerMoney, banker.GetMoney(player));
             Assert.IsTrue(jailHandler.HasImprisoned(player), "second turn");
         }
 
         [TestMethod]
         public void InJailThreeTurnsAndNoDoubles_Pay50AndGetOut()
         {
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             jailHandler.Imprison(player);
             
             dice.RollTwoDice();
@@ -93,46 +88,40 @@ namespace Monopoly.Tests.Hendlers
             jailHandler.HandleJail(0, player);
             jailHandler.HandleJail(0, player);
 
-            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
+            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, banker.GetMoney(player));
             Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
 
         [TestMethod]
         public void PayToGetOut()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateNeverStrategyCollection();
-            strategies.JailStrategy = new AlwaysPay();
-            player = new Player("name", strategies);
+            player.JailStrategy = new AlwaysPay();
 
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             jailHandler.Imprison(player);
 
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
 
-            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, player.Money);
+            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, banker.GetMoney(player));
             Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
 
         [TestMethod]
         public void UseGetOutOfJailCard()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateNeverStrategyCollection();
-            strategies.JailStrategy = new AlwaysPay();
-            player = new Player("name", strategies);
+            player.JailStrategy = new AlwaysPay();
 
             var card = new GetOutOfJailFreeCard(jailHandler);
             card.Execute(player);
 
-            var playerMoney = player.Money;
+            var playerMoney = banker.GetMoney(player);
             jailHandler.Imprison(player);
 
             dice.RollTwoDice();
             jailHandler.HandleJail(0, player);
 
-            Assert.AreEqual(playerMoney, player.Money);
+            Assert.AreEqual(playerMoney, banker.GetMoney(player));
             Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
 

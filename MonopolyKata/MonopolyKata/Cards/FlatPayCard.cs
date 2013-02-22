@@ -1,4 +1,5 @@
 ﻿using System;
+using Monopoly.Handlers;
 using Monopoly.Players;
 
 namespace Monopoly.Cards
@@ -9,16 +10,18 @@ namespace Monopoly.Cards
 
         private readonly String Name; 
         private readonly Int32 payment;
+        private Banker banker;
 
-        public FlatPayCard(String name, Int32 payment)
+        public FlatPayCard(String name, Int32 payment, Banker banker)
         {
             Name = name;
             this.payment = payment;
+            this.banker = banker;
         }
 
         public void Execute(Player player)
         {
-            player.Pay(payment);
+            banker.Pay(player, payment);
         }
 
         public override String ToString()

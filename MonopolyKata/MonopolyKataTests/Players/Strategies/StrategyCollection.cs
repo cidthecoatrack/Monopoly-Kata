@@ -21,8 +21,15 @@ namespace Monopoly.Tests.Players.Strategies
         public void CreateNeverStrategyCollection()
         {
             JailStrategy = new NeverPay();
-            MortgageStrategy = new NeverMortgage();
+            MortgageStrategy = new NeverMortgageAlwaysPay();
             RealEstateStrategy = new NeverBuy();
+        }
+
+        public void CreateAlwaysStrategyCollection()
+        {
+            JailStrategy = new AlwaysPay();
+            MortgageStrategy = new AlwaysMortgageNeverPay();
+            RealEstateStrategy = new AlwaysBuy();
         }
     }
 }

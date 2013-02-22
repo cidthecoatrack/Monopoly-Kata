@@ -11,11 +11,16 @@ namespace Monopoly.Handlers
     public class BoardHandler
     {
         public Dictionary<Player, Int32> PositionOf { get; private set; }
-        private IEnumerable<ISpace> board;
 
-        public BoardHandler(IEnumerable<Player> players, IEnumerable<ISpace> board)
+        private RealEstateHandler realEstateHandler;
+        private SpaceHandler spaceHandler;
+        private Banker banker;
+
+        public BoardHandler(IEnumerable<Player> players, RealEstateHandler realEstateHandler, SpaceHandler spaceHandler, Banker banker)
         {
-            this.board = board;
+            this.realEstateHandler = realEstateHandler;
+            this.spaceHandler = spaceHandler;
+            this.banker = banker;
 
             PositionOf = new Dictionary<Player, Int32>();
             foreach (var player in players)
@@ -31,29 +36,37 @@ namespace Monopoly.Handlers
         public void MoveTo(Player player, Int32 newPosition)
         {
             if (PositionOf[player] > newPosition)
-                player.Collect(GameConstants.PASS_GO_PAYMENT);
+                banker.Collect(player, GameConstants.PASS_GO_PAYMENT);
 
-            PositionOf[player] = newPosition;
-            board.ElementAt(newPosition).LandOn(player);
+            MoveToAndDontPassGo(player, newPosition);
         }
 
-        public void MoveToUtilityAndForce10xRent(Player player, Int32 newPosition)
+        private void Land(Player player)
         {
-            if (PositionOf[player] > newPosition)
-                player.Collect(GameConstants.PASS_GO_PAYMENT);
+            var position = PositionOf[player];
 
-            PositionOf[player] = newPosition;
+            if (realEstateHandler.Contains(position))
+                realEstateHandler.Land(player, position);
+            else
+                spaceHandler.Land(player, position);
+        }
 
-            var utility = board.ElementAt(newPosition) as Utility;
-            utility.Force10xRent = true;
-            utility.LandOn(player);
-            utility.Force10xRent = false;
+        public void MoveToUtilityAndForce10xRent(Player player, Int32 utilityPosition)
+        {
+            if (utilityPosition != BoardConstants.ELECTRIC_COMPANY && utilityPosition != BoardConstants.WATER_WORKS)
+                return;
+
+            if (PositionOf[player] > utilityPosition)
+                banker.Collect(player, GameConstants.PASS_GO_PAYMENT);
+
+            PositionOf[player] = utilityPosition;
+            realEstateHandler.LandAndForce10xUtilityRent(player, utilityPosition);
         }
 
         public void MoveToAndDontPassGo(Player player, Int32 newPosition)
         {
             PositionOf[player] = newPosition;
-            board.ElementAt(newPosition).LandOn(player);
+            Land(player);
         }
     }
 }

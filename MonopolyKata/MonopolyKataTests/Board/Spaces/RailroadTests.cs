@@ -8,88 +8,49 @@ namespace Monopoly.Tests.Board.Spaces
     [TestClass]
     public class RailroadTests
     {
-        Railroad[] railroads;
-        Player owner;
-        Player renter;
+        Railroad railroad;
 
         [TestInitialize]
         public void Setup()
         {
-            BuildRailroads();
-
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-
-            owner = new Player("owner", strategies);
-            renter = new Player("renter", strategies);
-
-            railroads[0].LandOn(owner);
+            railroad = new Railroad("RxR");
         }
 
-        private void BuildRailroads()
+        [TestMethod]
+        public void Constructor()
         {
-            var firstRxR = new Railroad("first railroad");
-            var secondRxR = new Railroad("second railroad");
-            var thirdRxR = new Railroad("third railroad");
-            var fourthRxR = new Railroad("fourth railroad");
-
-            railroads = new Railroad[] { firstRxR, secondRxR, thirdRxR, fourthRxR };
-
-            foreach (var railroad in railroads)
-                railroad.SetRailroads(railroads);
+            Assert.AreEqual("RxR", railroad.ToString());
+            Assert.AreEqual(0, railroad.RailroadCount);
+            Assert.AreEqual(200, railroad.Price);
+            Assert.IsFalse(railroad.Mortgaged);
         }
         
         [TestMethod]
         public void LandOnOwnedRailroadx1_Pays25()
         {
-            var renterMoney = renter.Money;
-            var ownerMoney = owner.Money;
-            railroads[0].LandOn(renter);
-
-            Assert.AreEqual(renterMoney - 25, renter.Money);
-            Assert.AreEqual(ownerMoney + 25, owner.Money);
+            railroad.RailroadCount = 1;
+            Assert.AreEqual(25, railroad.GetRent());
         }
 
         [TestMethod]
         public void LandOnOwnedRailroadx2_Pays50()
         {
-            railroads[1].LandOn(owner);
-
-            var renterMoney = renter.Money;
-            var ownerMoney = owner.Money;
-            railroads[0].LandOn(renter);
-
-            Assert.AreEqual(renterMoney - 50, renter.Money);
-            Assert.AreEqual(ownerMoney + 50, owner.Money);
+            railroad.RailroadCount = 2;
+            Assert.AreEqual(50, railroad.GetRent());
         }
 
         [TestMethod]
         public void LandOnOwnedRailroadx3_Pays100()
         {
-            railroads[1].LandOn(owner);
-            railroads[2].LandOn(owner);
-
-            var renterMoney = renter.Money;
-            var ownerMoney = owner.Money;
-            railroads[0].LandOn(renter);
-
-            Assert.AreEqual(renterMoney - 100, renter.Money);
-            Assert.AreEqual(ownerMoney + 100, owner.Money);
+            railroad.RailroadCount = 3;
+            Assert.AreEqual(100, railroad.GetRent());
         }
 
         [TestMethod]
         public void LandOnOwnedRailroadx4_Pays200()
         {
-            railroads[1].LandOn(owner);
-            railroads[2].LandOn(owner);
-            railroads[3].LandOn(owner);
-
-            var renterMoney = renter.Money;
-            var ownerMoney = owner.Money;
-            railroads[0].LandOn(renter);
-
-            Assert.AreEqual(renterMoney - 200, renter.Money);
-            Assert.AreEqual(ownerMoney + 200, owner.Money);
+            railroad.RailroadCount = 4;
+            Assert.AreEqual(200, railroad.GetRent());
         }
     }
 }

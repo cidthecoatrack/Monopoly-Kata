@@ -11,10 +11,11 @@ namespace Monopoly.Games
         private LinkedListNode<Player> currentPlayerPointer;
         private LinkedList<Player> players;
         private TurnHandler turnHandler;
+        private Banker banker;
 
         public Int16 Round { get; private set; }
         public Boolean Finished { get { return (Round > GameConstants.ROUND_LIMIT || NumberOfActivePlayers == 1); } }
-        public Int32 NumberOfActivePlayers { get { return players.Count; } }
+        public Int32 NumberOfActivePlayers { get { return banker.GetNumberOfActivePlayers(); } }
 
         public Player CurrentPlayer
         {
@@ -27,12 +28,12 @@ namespace Monopoly.Games
             get
             {
                 if (Finished)
-                    return players.OrderByDescending(x => x.Money).First();
+                    return banker.GetWinner();
                 return null;
             }
         }
 
-        public Game(IEnumerable<Player> newPlayers, TurnHandler turnHandler)
+        public Game(IEnumerable<Player> newPlayers, TurnHandler turnHandler, Banker banker)
         {
             CheckNumberOfPlayers(newPlayers);
 
@@ -41,6 +42,7 @@ namespace Monopoly.Games
             players = new LinkedList<Player>(randomizedPlayers);
 
             this.turnHandler = turnHandler;
+            this.banker = banker;
             currentPlayerPointer = players.First;
             Round = 1;
         }
@@ -67,29 +69,19 @@ namespace Monopoly.Games
         public void TakeTurn()
         {
             turnHandler.TakeTurn(CurrentPlayer);
-            EndTurn();
-        }
-
-        private void EndTurn()
-        {
-            if (CurrentPlayer.LostTheGame)
-                RemovePlayer();
-            else
-                ShiftToNextPlayer();
+            ShiftToNextPlayer();
         }
 
         private void ShiftToNextPlayer()
         {
-            currentPlayerPointer = currentPlayerPointer.Next ?? players.First;
+            var newPointer = currentPlayerPointer.Next ?? players.First;
+
+            if (banker.IsBankrupt(CurrentPlayer))
+                players.Remove(CurrentPlayer);
+
+            currentPlayerPointer = newPointer;
             if (currentPlayerPointer == players.First)
                 Round++;
-        }
-
-        private void RemovePlayer()
-        {
-            var newPointer = currentPlayerPointer.Next ?? players.First;
-            players.Remove(CurrentPlayer);
-            currentPlayerPointer = newPointer;
         }
     }
 }

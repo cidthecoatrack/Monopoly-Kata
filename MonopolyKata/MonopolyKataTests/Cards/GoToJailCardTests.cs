@@ -6,6 +6,7 @@ using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -27,8 +28,11 @@ namespace Monopoly.Tests.Cards
             player = new Player("name", strategies);
 
             var dice = new ControlledDice();
-            boardHandler = new BoardHandler(new[] { player }, FakeBoardFactory.CreateBoardOfNormalSpaces());
-            jailHandler = new JailHandler(dice, boardHandler);
+            var players = new[] { player };
+            var banker = new Banker(players);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
+            jailHandler = new JailHandler(dice, boardHandler, banker);
 
             card = new GoToJailCard(jailHandler);
         }

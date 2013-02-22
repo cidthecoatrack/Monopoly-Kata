@@ -1,4 +1,5 @@
 ﻿using System;
+using Monopoly.Handlers;
 using Monopoly.Players;
 
 namespace Monopoly.Board.Spaces
@@ -7,9 +8,16 @@ namespace Monopoly.Board.Spaces
     {
         public const Int16 LUXURY_TAX = 75;
 
+        private Banker banker;
+
+        public LuxuryTax(Banker banker)
+        {
+            this.banker = banker;
+        }
+
         public void LandOn(Player player)
         {
-            player.Pay(LUXURY_TAX);
+            banker.Pay(player, LUXURY_TAX);
         }
 
         public override String ToString()

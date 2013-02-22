@@ -20,11 +20,11 @@ namespace Monopoly.Cards
         {
             var location = boardHandler.PositionOf[player];
 
-            if (location <= BoardConstants.READING_RAILROAD || location > BoardConstants.SHORT_LINE)
+            if (location < BoardConstants.READING_RAILROAD || location >= BoardConstants.SHORT_LINE)
                 MoveTo(player, BoardConstants.READING_RAILROAD);
-            else if (location <= BoardConstants.PENNSYLVANIA_RAILROAD)
+            else if (location < BoardConstants.PENNSYLVANIA_RAILROAD)
                 MoveTo(player, BoardConstants.PENNSYLVANIA_RAILROAD);
-            else if (location <= BoardConstants.BandO_RAILROAD)
+            else if (location < BoardConstants.BandO_RAILROAD)
                 MoveTo(player, BoardConstants.BandO_RAILROAD);
             else
                 MoveTo(player, BoardConstants.SHORT_LINE);

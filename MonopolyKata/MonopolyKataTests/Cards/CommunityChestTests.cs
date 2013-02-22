@@ -6,6 +6,7 @@ using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -31,11 +32,11 @@ namespace Monopoly.Tests.Cards
                 };
 
             var dice = new ControlledDice();
-            var board = FakeBoardFactory.CreateBoardOfNormalSpaces();
-            var boardHandler = new BoardHandler(players, board);
-            var jailHandler = new JailHandler(dice, boardHandler);
-
-            var deckFactory = new DeckFactory(jailHandler, players, boardHandler);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            var banker = new Banker(players);
+            var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
+            var jailHandler = new JailHandler(dice, boardHandler, banker);
+            var deckFactory = new DeckFactory(players, jailHandler, boardHandler, realEstateHandler, banker);
             deck = deckFactory.BuildCommunityChestDeck();
         }
 

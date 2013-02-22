@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Board;
 using Monopoly.Board.Spaces;
@@ -7,6 +8,7 @@ using Monopoly.Games;
 using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Dice;
+using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
 
 namespace Monopoly.Tests.Cards
@@ -16,7 +18,11 @@ namespace Monopoly.Tests.Cards
     {
         private MoveToNearestUtilityCard card;
         private Player player;
+        private Player owner;
         private BoardHandler boardHandler;
+        private const Int32 ROLL = 10;
+        private const Int32 UTILITY_PRICE = 150;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -24,15 +30,15 @@ namespace Monopoly.Tests.Cards
             var strategies = new StrategyCollection();
             strategies.CreateRandomStrategyCollection();
             player = new Player("name", strategies);
-            var owner = new Player("owner", strategies);
+            owner = new Player("owner", strategies);
+            var players = new[] { player, owner };
 
+            banker = new Banker(players);
             var dice = new ControlledDice();
-            dice.SetPredeterminedRollValue(10);
-            var board = BoardFactory.CreateMonopolyBoard(dice);
-            boardHandler = new BoardHandler(new[] { player }, board);
-
-            var utilities = board.OfType<Utility>();
-            utilities.First().LandOn(owner);
+            dice.SetPredeterminedRollValue(ROLL);
+            var realEstate = BoardFactory.CreateRealEstate(dice);
+            var realEstateHandler = new RealEstateHandler(realEstate, players, banker);
+            boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
             card = new MoveToNearestUtilityCard(boardHandler, dice);
         }
@@ -59,21 +65,31 @@ namespace Monopoly.Tests.Cards
         {
             boardHandler.MoveTo(player, BoardConstants.WATER_WORKS + 1);
 
-            var x10Rent = 100;
-            var expectedMoney = player.Money + GameConstants.PASS_GO_PAYMENT - x10Rent;
-
+            var expectedMoney = banker.GetMoney(player) + GameConstants.PASS_GO_PAYMENT - UTILITY_PRICE;
             card.Execute(player);
 
             Assert.AreEqual(BoardConstants.ELECTRIC_COMPANY, boardHandler.PositionOf[player]);
-            Assert.AreEqual(expectedMoney, player.Money);
+            Assert.AreEqual(expectedMoney, banker.GetMoney(player));
+        }
+
+        [TestMethod]
+        public void Buy()
+        {
+            var ownerMoney = banker.GetMoney(owner);
+            card.Execute(owner);
+
+            Assert.AreEqual(ownerMoney - UTILITY_PRICE, banker.GetMoney(owner));
         }
 
         [TestMethod]
         public void Pay10xDieRoll()
         {
-            var playerMoney = player.Money;
+            Buy();
+
+            var playerMoney = banker.GetMoney(player);
             card.Execute(player);
-            Assert.AreEqual(playerMoney - 100, player.Money);
+
+            Assert.AreEqual(playerMoney - ROLL * 10, banker.GetMoney(player));
         }
     }
 }

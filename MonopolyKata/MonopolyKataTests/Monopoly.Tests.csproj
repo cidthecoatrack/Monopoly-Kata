@@ -51,8 +51,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Board\BoardFactoryTests.cs" />
-    <Compile Include="Board\FakeBoardFactory.cs" />
     <Compile Include="Board\Spaces\IncomeTaxTests.cs" />
+    <Compile Include="Board\Spaces\LandableSpace.cs" />
     <Compile Include="Board\Spaces\LuxuryTaxTests.cs" />
     <Compile Include="Board\Spaces\PropertyTests.cs" />
     <Compile Include="Board\Spaces\RailroadTests.cs" />
@@ -75,16 +75,19 @@
     <Compile Include="Cards\MoveToNearestUtilityCardTests.cs" />
     <Compile Include="Cards\GoToJailCardTests.cs" />
     <Compile Include="Handlers\BoardHandlerTests.cs" />
+    <Compile Include="Handlers\FakeHandlerFactory.cs" />
+    <Compile Include="Handlers\RealEstateHandlerTests.cs" />
+    <Compile Include="Handlers\BankerTests.cs" />
     <Compile Include="Players\Strategies\JailStrategies\AlwaysPay.cs" />
     <Compile Include="Players\Strategies\JailStrategies\NeverPay.cs" />
     <Compile Include="Players\Strategies\JailStrategies\RandomlyPay.cs" />
     <Compile Include="Players\Strategies\JailStrategies\JailStrategiesTests.cs" />
-    <Compile Include="Players\Strategies\MortgageStrategies\AlwaysMortgage.cs" />
+    <Compile Include="Players\Strategies\MortgageStrategies\AlwaysMortgageNeverPay.cs" />
     <Compile Include="Dice\ControlledDice.cs" />
     <Compile Include="Dice\DiceTests.cs" />
     <Compile Include="Games\GameTests.cs" />
     <Compile Include="Players\Strategies\MortgageStrategies\MortgageIfMoneyLessThanFiveHundred.cs" />
-    <Compile Include="Players\Strategies\MortgageStrategies\NeverMortgage.cs" />
+    <Compile Include="Players\Strategies\MortgageStrategies\NeverMortgageAlwaysPay.cs" />
     <Compile Include="Players\Strategies\MortgageStrategies\RandomlyMortgage.cs" />
     <Compile Include="Players\PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

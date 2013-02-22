@@ -4,16 +4,16 @@ using Monopoly.Players.Strategies;
 
 namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
 {
-    public class AlwaysMortgage : IMortgageStrategy
+    public class NeverMortgageAlwaysPay : IMortgageStrategy
     {
         public Boolean ShouldMortgage(Int32 moneyOnHand)
         {
-            return true;
+            return false;
         }
 
         public Boolean ShouldPayOffMortgage(Int32 moneyOnHand, RealEstate property)
         {
-            return false;
+            return true;
         }
     }
 }
