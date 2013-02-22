@@ -12,6 +12,8 @@ namespace Monopoly.Tests.Board.Spaces
     {
         public Boolean LandedOn { get; private set; }
 
+        public LandableSpace() : base("landable space") { }
+
         public override void LandOn(Player player)
         {
             LandedOn = true;

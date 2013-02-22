@@ -83,5 +83,13 @@ namespace Monopoly.Tests.Cards
             card.Execute(player);
             Assert.AreEqual(playerMoney - 400, banker.GetMoney(player));
         }
+
+        [TestMethod]
+        public void BankruptWhilePaying()
+        {
+            banker.Pay(player, banker.GetMoney(player) - 300);
+            card.Execute(player);
+            Assert.IsTrue(banker.IsBankrupt(player));
+        }
     }
 }

@@ -203,7 +203,7 @@ namespace Monopoly.Tests.Games
         [TestMethod]
         public void ExhaustiveRun()
         {
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000000; i++)
             {
                 game = GameFactory.CreateGame(GeneratePlayerIEnumerable(8));
                 game.Play();

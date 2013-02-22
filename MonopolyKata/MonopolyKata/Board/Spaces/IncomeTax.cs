@@ -11,7 +11,7 @@ namespace Monopoly.Board.Spaces
 
         private Banker banker;
 
-        public IncomeTax(Banker banker)
+        public IncomeTax(Banker banker) : base("Income Tax")
         {
             this.banker = banker;
         }
@@ -20,11 +20,6 @@ namespace Monopoly.Board.Spaces
         {
             var amountToPay = Math.Min(banker.GetMoney(player) / INCOME_TAX_PERCENTAGE_DIVISOR, INCOME_TAX_FLAT_RATE);
             banker.Pay(player, amountToPay);
-        }
-
-        public override String ToString()
-        {
-            return "Income Tax";
         }
     }
 }

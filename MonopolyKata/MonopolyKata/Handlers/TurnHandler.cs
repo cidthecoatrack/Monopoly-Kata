@@ -31,7 +31,8 @@ namespace Monopoly.Handlers
             do RollAndMove(player);
             while (CanGoAgain(player));
 
-            realEstateHandler.HandleMortgages(player);
+            if (!banker.IsBankrupt(player))
+                realEstateHandler.HandleMortgages(player);
         }
 
         private void RollAndMove(Player player)

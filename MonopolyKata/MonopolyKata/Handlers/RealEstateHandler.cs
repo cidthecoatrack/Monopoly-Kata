@@ -34,6 +34,8 @@ namespace Monopoly.Handlers
             var realEstate = allRealEstate[position];
             var money = banker.GetMoney(player);
 
+            CheckForBankruptcies();
+
             if (Owned(realEstate))
                 PayRent(player, realEstate);
             else if (banker.CanAfford(player, realEstate.Price) && player.RealEstateStrategy.ShouldBuy(money))
@@ -86,27 +88,28 @@ namespace Monopoly.Handlers
             var rent = realEstate.GetRent();
             var owner = GetOwner(realEstate);
 
+            CheckForBankruptcies();
+
             banker.Transact(player, owner, rent);
+        }
+
+        private void CheckForBankruptcies()
+        {
+            var bankruptcies = ownedRealEstate.Keys.Where(p => banker.IsBankrupt(p));
+            var toRemove = new List<Player>(bankruptcies);
+            foreach (var player in toRemove)
+                ownedRealEstate.Remove(player);
         }
 
         private Boolean Owned(OwnableSpace realEstate)
         {
-            if (ownedRealEstate.Any(o => o.Value.Contains(realEstate)))
-            {
-                var owner = GetOwner(realEstate);
-                if (banker.IsBankrupt(owner))
-                {
-                    ownedRealEstate[owner] = new List<OwnableSpace>();
-                    return false;
-                }
-                return true;
-            }
-
-            return false;
+            return ownedRealEstate.Any(o => o.Value.Contains(realEstate));
         }
 
         public void HandleMortgages(Player player)
         {
+            CheckForBankruptcies();
+
             var realEstateToMortgage = ownedRealEstate[player].Where(r => !r.Mortgaged);
             foreach (var realEstate in realEstateToMortgage)
                 if (player.MortgageStrategy.ShouldMortgage(banker.GetMoney(player)))
@@ -175,6 +178,8 @@ namespace Monopoly.Handlers
 
         public void DevelopProperties(Player player)
         {
+            CheckForBankruptcies();
+
             var money = banker.GetMoney(player);
             var propertiesToDevelop = ownedRealEstate[player].OfType<Property>().Where(p => CanBuyHouseOrHotel(p));
             foreach (var property in propertiesToDevelop)
@@ -206,17 +211,23 @@ namespace Monopoly.Handlers
 
         public Int32 GetNumberOfHouses(Player player)
         {
+            CheckForBankruptcies();
+
             return ownedRealEstate[player].OfType<Property>().Sum(x => x.Houses);
         }
 
         public Int32 GetNumberOfHotels(Player player)
         {
+            CheckForBankruptcies();
+
             return ownedRealEstate[player].OfType<Property>().Where(x => x.Houses == 5).Count();
         }
 
         public void LandAndForce10xUtilityRent(Player player, Int32 utilityPosition)
         {
             var utility = allRealEstate[utilityPosition] as Utility;
+
+            CheckForBankruptcies();
 
             utility.Force10xRent = true;
             Land(player, utilityPosition);

@@ -9,12 +9,7 @@ namespace Monopoly.Board.Spaces
     {
         private Queue<ICard> deck;
 
-        private readonly String name;
-
-        public DrawCard(String name)
-        {
-            this.name = name;
-        }
+        public DrawCard(String name) : base(name) { }
 
         public void AddDeck(Queue<ICard> deck)
         {
@@ -29,11 +24,6 @@ namespace Monopoly.Board.Spaces
             var card = deck.Dequeue();
             card.Execute(player);
             deck.Enqueue(card);
-        }
-
-        public override String ToString()
-        {
-            return name;
         }
     }
 }

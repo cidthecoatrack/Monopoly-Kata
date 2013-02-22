@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Monopoly.Handlers;
 using Monopoly.Players;
 
@@ -20,8 +21,10 @@ namespace Monopoly.Cards
 
         public void Execute(Player player)
         {
-            foreach (var collector in players)
-                banker.Transact(player, collector, 50);
+            var count = 0;
+            var eligiblePlayers = players.Where(p => !banker.IsBankrupt(p));
+            while (count < eligiblePlayers.Count() && !banker.IsBankrupt(player))
+                banker.Transact(player, eligiblePlayers.ElementAt(count++), 50);
         }
 
         public override String ToString()

@@ -10,7 +10,7 @@ namespace Monopoly.Board.Spaces
 
         private Banker banker;
 
-        public LuxuryTax(Banker banker)
+        public LuxuryTax(Banker banker) : base("Luxury Tax")
         {
             this.banker = banker;
         }
@@ -18,11 +18,6 @@ namespace Monopoly.Board.Spaces
         public override void LandOn(Player player)
         {
             banker.Pay(player, LUXURY_TAX);
-        }
-
-        public override String ToString()
-        {
-            return "Luxury Tax";
         }
     }
 }

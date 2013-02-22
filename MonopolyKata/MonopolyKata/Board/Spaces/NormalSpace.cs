@@ -5,15 +5,8 @@ namespace Monopoly.Board.Spaces
 {
     public class NormalSpace : UnownableSpace
     {
-        private readonly String Name;
-
-        public NormalSpace(String name) { Name = name; }
+        public NormalSpace(String name) : base(name) { }
 
         public override void LandOn(Player player) { }
-
-        public override String ToString()
-        {
-            return Name;
-        }
     }
 }
