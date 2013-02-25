@@ -22,7 +22,7 @@ namespace Monopoly.Cards
         public void Execute(Player player)
         {
             var count = 0;
-            var eligiblePlayers = players.Where(p => !banker.IsBankrupt(p));
+            var eligiblePlayers = players.Where(p => !banker.IsBankrupt(p)).ToList();
             while (count < eligiblePlayers.Count() && !banker.IsBankrupt(player))
                 banker.Transact(player, eligiblePlayers.ElementAt(count++), 50);
         }

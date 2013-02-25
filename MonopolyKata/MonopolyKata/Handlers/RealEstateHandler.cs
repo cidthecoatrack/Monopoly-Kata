@@ -34,7 +34,7 @@ namespace Monopoly.Handlers
             var realEstate = allRealEstate[position];
             var money = banker.GetMoney(player);
 
-            CheckForBankruptcies();
+            CheckForBankrupcies();
 
             if (Owned(realEstate))
                 PayRent(player, realEstate);
@@ -88,17 +88,20 @@ namespace Monopoly.Handlers
             var rent = realEstate.GetRent();
             var owner = GetOwner(realEstate);
 
-            CheckForBankruptcies();
+            CheckForBankrupcies();
 
             banker.Transact(player, owner, rent);
         }
 
-        private void CheckForBankruptcies()
+        private void CheckForBankrupcies()
         {
-            var bankruptcies = ownedRealEstate.Keys.Where(p => banker.IsBankrupt(p));
-            var toRemove = new List<Player>(bankruptcies);
-            foreach (var player in toRemove)
-                ownedRealEstate.Remove(player);
+            var bankrupcies = ownedRealEstate.Keys.Where(p => banker.IsBankrupt(p)).ToList();
+            if (bankrupcies.Any())
+            {
+                var toRemove = new List<Player>(bankrupcies);
+                foreach (var player in toRemove)
+                    ownedRealEstate.Remove(player);
+            }
         }
 
         private Boolean Owned(OwnableSpace realEstate)
@@ -108,17 +111,20 @@ namespace Monopoly.Handlers
 
         public void HandleMortgages(Player player)
         {
-            CheckForBankruptcies();
+            CheckForBankrupcies();
 
-            var realEstateToMortgage = ownedRealEstate[player].Where(r => !r.Mortgaged);
-            foreach (var realEstate in realEstateToMortgage)
-                if (player.MortgageStrategy.ShouldMortgage(banker.GetMoney(player)))
-                    CheckMortgage(realEstate);
+            if (ownedRealEstate.ContainsKey(player))
+            {
+                var realEstateToMortgage = ownedRealEstate[player].Where(r => !r.Mortgaged);
+                foreach (var realEstate in realEstateToMortgage)
+                    if (player.MortgageStrategy.ShouldMortgage(banker.GetMoney(player)))
+                        CheckMortgage(realEstate);
 
-            var realEstateToPayOff = ownedRealEstate[player].Where(r => r.Mortgaged);
-            foreach (var realEstate in realEstateToPayOff)
-                if (banker.CanAfford(player, realEstate.Price) && player.MortgageStrategy.ShouldPayOffMortgage(banker.GetMoney(player), realEstate))
-                    PayOffMortgage(realEstate);
+                var realEstateToPayOff = ownedRealEstate[player].Where(r => r.Mortgaged);
+                foreach (var realEstate in realEstateToPayOff)
+                    if (banker.CanAfford(player, realEstate.Price) && player.MortgageStrategy.ShouldPayOffMortgage(banker.GetMoney(player), realEstate))
+                        PayOffMortgage(realEstate);
+            }
         }
 
         public Player GetOwner(OwnableSpace realEstate)
@@ -178,7 +184,7 @@ namespace Monopoly.Handlers
 
         public void DevelopProperties(Player player)
         {
-            CheckForBankruptcies();
+            CheckForBankrupcies();
 
             var money = banker.GetMoney(player);
             var propertiesToDevelop = ownedRealEstate[player].OfType<Property>().Where(p => CanBuyHouseOrHotel(p));
@@ -211,14 +217,14 @@ namespace Monopoly.Handlers
 
         public Int32 GetNumberOfHouses(Player player)
         {
-            CheckForBankruptcies();
+            CheckForBankrupcies();
 
             return ownedRealEstate[player].OfType<Property>().Sum(x => x.Houses);
         }
 
         public Int32 GetNumberOfHotels(Player player)
         {
-            CheckForBankruptcies();
+            CheckForBankrupcies();
 
             return ownedRealEstate[player].OfType<Property>().Where(x => x.Houses == 5).Count();
         }
@@ -227,7 +233,7 @@ namespace Monopoly.Handlers
         {
             var utility = allRealEstate[utilityPosition] as Utility;
 
-            CheckForBankruptcies();
+            CheckForBankrupcies();
 
             utility.Force10xRent = true;
             Land(player, utilityPosition);

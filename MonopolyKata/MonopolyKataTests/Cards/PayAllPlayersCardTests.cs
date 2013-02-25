@@ -56,6 +56,7 @@ namespace Monopoly.Tests.Cards
             var playerMoney = banker.GetMoney(player);
             card.Execute(player);
 
+            Assert.IsTrue(banker.IsBankrupt(loser));
             Assert.AreEqual(playerMoney - 400, banker.GetMoney(player));
         }
 
