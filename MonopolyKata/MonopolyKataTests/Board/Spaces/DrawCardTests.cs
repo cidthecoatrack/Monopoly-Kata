@@ -22,9 +22,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
+            player = new Player("name");
             var players = new[] { player };
             var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
             var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);

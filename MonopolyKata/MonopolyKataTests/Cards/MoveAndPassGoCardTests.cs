@@ -21,9 +21,7 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
+            player = new Player("name");
             var players = new[] { player };
             banker = new Banker(players);
             var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);

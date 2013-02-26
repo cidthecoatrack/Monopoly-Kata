@@ -75,9 +75,20 @@ namespace Monopoly.Games
         private void ShiftToNextPlayer()
         {
             var newPointer = currentPlayerPointer.Next ?? players.First;
+            var losers = players.Where(p => banker.IsBankrupt(p)).ToList();
 
-            if (banker.IsBankrupt(CurrentPlayer))
-                players.Remove(CurrentPlayer);
+            foreach (var player in losers)
+            {
+                if (newPointer.Value == player)
+                {
+                    newPointer = newPointer.Next ?? players.First;
+
+                    if (newPointer == players.First)
+                        Round++;
+                }
+
+                players.Remove(player);
+            }
 
             currentPlayerPointer = newPointer;
             if (currentPlayerPointer == players.First)

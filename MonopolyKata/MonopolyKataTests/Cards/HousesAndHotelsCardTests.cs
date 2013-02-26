@@ -21,9 +21,6 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-
             property = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
             otherProperty = new Property("property", 0, 0, GROUPING.PURPLE, 0, new[] { 0, 0, 0, 0, 0 });
 
@@ -31,10 +28,10 @@ namespace Monopoly.Tests.Cards
             dict.Add(0, property);
             dict.Add(1, otherProperty);
 
-            player = new Player("name", strategies);
+            player = new Player("name");
             var players = new[] { player };
             banker = new Banker(players);
-            var realEstateHandler = new RealEstateHandler(dict, players, banker);
+            var realEstateHandler = new OwnableHandler(dict, banker);
             card = new HousesAndHotelsCard("card", 40, 115, realEstateHandler, banker);
 
             realEstateHandler.Land(player, 0);

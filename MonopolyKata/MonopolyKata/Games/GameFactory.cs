@@ -16,9 +16,9 @@ namespace Monopoly.Games
             var dice = new MonopolyDice();
 
             var banker = new Banker(players);
-            var realEstateHandler = new RealEstateHandler(BoardFactory.CreateRealEstate(dice), players, banker);
+            var realEstateHandler = new OwnableHandler(BoardFactory.CreateRealEstate(dice), banker);
             var spaces = BoardFactory.CreateNonRealEstateSpaces(banker);
-            var spaceHandler = new SpaceHandler(spaces);
+            var spaceHandler = new UnownableHandler(spaces);
 
             var boardHandler = new BoardHandler(players, realEstateHandler, spaceHandler, banker);
             var jailHandler = new JailHandler(dice, boardHandler, banker);

@@ -28,9 +28,7 @@ namespace Monopoly.Tests.Handlers
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateNeverStrategyCollection();
-            player = new Player("Player", strategies);
+            player = new Player("Player");
             var players = new[] { player };
 
             dice = new ControlledDice();
@@ -44,7 +42,7 @@ namespace Monopoly.Tests.Handlers
             space6 = landableSpaces[6] as LandableSpace;
             space10 = landableSpaces[10] as LandableSpace;
 
-            var spaceHandler = new SpaceHandler(landableSpaces);
+            var spaceHandler = new UnownableHandler(landableSpaces);
             var banker = new Banker(players);
             boardHandler = new BoardHandler(players, realEstateHandler, spaceHandler, banker);
             jailHandler = new JailHandler(dice, boardHandler, banker);

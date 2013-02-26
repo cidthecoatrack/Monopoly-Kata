@@ -12,29 +12,29 @@ namespace Monopoly.Tests.Handlers
 {
     public class FakeHandlerFactory
     {
-        public static BoardHandler CreateBoardHandlerForFakeBoard(IEnumerable<Player> players, RealEstateHandler realEstateHandler, Banker banker)
+        public static BoardHandler CreateBoardHandlerForFakeBoard(IEnumerable<Player> players, OwnableHandler realEstateHandler, Banker banker)
         {
             var normalSpaces = new Dictionary<Int32, UnownableSpace>();
             for (var i = 0; i < BoardConstants.BOARD_SIZE; i++)
                 normalSpaces.Add(i, new NormalSpace("space " + i));
 
-            var spaceHandler = new SpaceHandler(normalSpaces);
+            var spaceHandler = new UnownableHandler(normalSpaces);
 
             return new BoardHandler(players, realEstateHandler, spaceHandler, banker);
         }
 
-        public static RealEstateHandler CreateEmptyRealEstateHandler(IEnumerable<Player> players)
+        public static OwnableHandler CreateEmptyRealEstateHandler(IEnumerable<Player> players)
         {
-            return new RealEstateHandler(new Dictionary<Int32, OwnableSpace>(), players, new Banker(players));
+            return new OwnableHandler(new Dictionary<Int32, OwnableSpace>(), new Banker(players));
         }
 
-        public static RealEstateHandler CreateRealEstateHandler(IEnumerable<OwnableSpace> realEstate, IEnumerable<Player> players, Banker banker)
+        public static OwnableHandler CreateRealEstateHandler(IEnumerable<OwnableSpace> realEstate, IEnumerable<Player> players, Banker banker)
         {
             var dict = new Dictionary<Int32, OwnableSpace>();
             for (var i = 0; i < realEstate.Count(); i++)
                 dict.Add(i, realEstate.ElementAt(i));
 
-            return new RealEstateHandler(dict, players, banker);
+            return new OwnableHandler(dict, banker);
         }
     }
 }

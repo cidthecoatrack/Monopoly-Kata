@@ -21,10 +21,12 @@ namespace Monopoly.Cards
 
         public void Execute(Player player)
         {
+            var ineligiblePlayers = banker.GetBankrupcies(players);
+            players = players.Except(ineligiblePlayers);
+
             var count = 0;
-            var eligiblePlayers = players.Where(p => !banker.IsBankrupt(p)).ToList();
-            while (count < eligiblePlayers.Count() && !banker.IsBankrupt(player))
-                banker.Transact(player, eligiblePlayers.ElementAt(count++), 50);
+            while (count < players.Count() && !banker.IsBankrupt(player))
+                banker.Transact(player, players.ElementAt(count++), 50);
         }
 
         public override String ToString()

@@ -64,10 +64,9 @@
     <Compile Include="Board\Spaces\OwnableSpace.cs" />
     <Compile Include="Dice\MonopolyDice.cs" />
     <Compile Include="Dice\IDice.cs" />
-    <Compile Include="Handlers\RealEstateHandler.cs" />
-    <Compile Include="Handlers\SpaceHandler.cs" />
+    <Compile Include="Handlers\OwnableHandler.cs" />
+    <Compile Include="Handlers\UnownableHandler.cs" />
     <Compile Include="Players\Strategies\IJailStrategy.cs" />
-    <Compile Include="Players\Strategies\IMortgageStrategy.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Board\BoardFactory.cs" />
     <Compile Include="Board\Spaces\Railroad.cs" />
@@ -79,8 +78,7 @@
     <Compile Include="Board\Spaces\Property.cs" />
     <Compile Include="Games\PlayerOrderRandomizer.cs" />
     <Compile Include="Handlers\TurnHandler.cs" />
-    <Compile Include="Players\Strategies\IRealEstateStrategy.cs" />
-    <Compile Include="Players\Strategies\IStrategyCollection.cs" />
+    <Compile Include="Players\Strategies\IOwnableStrategy.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

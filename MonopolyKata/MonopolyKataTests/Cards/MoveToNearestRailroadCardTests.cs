@@ -23,17 +23,15 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
-            var owner = new Player("owner", strategies);
+            player = new Player("name");
+            var owner = new Player("owner");
 
             var players = new[] { player, owner };
 
             var dice = new ControlledDice();
             var realEstate = BoardFactory.CreateRealEstate(dice);
             banker = new Banker(players);
-            var realEstateHandler = new RealEstateHandler(realEstate, players, banker);
+            var realEstateHandler = new OwnableHandler(realEstate, banker);
             boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
             foreach (var rxr in realEstate.Values.OfType<Railroad>())
@@ -87,7 +85,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void BankruptWhilePaying()
         {
-            banker.Pay(player, banker.GetMoney(player) - 300);
+            banker.Pay(player, banker.GetMoney(player) - 1);
             card.Execute(player);
             Assert.IsTrue(banker.IsBankrupt(player));
         }

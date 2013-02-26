@@ -10,11 +10,9 @@ namespace Monopoly.Handlers
     public class Banker
     {
         private Dictionary<Player, Int32> money;
-        private List<Player> bankruptcies;
 
         public Banker(IEnumerable<Player> players)
         {
-            bankruptcies = new List<Player>();
             money = new Dictionary<Player, Int32>();
             foreach (var player in players)
                 money.Add(player, 1500);
@@ -38,7 +36,12 @@ namespace Monopoly.Handlers
 
         public Boolean IsBankrupt(Player player)
         {
-            return bankruptcies.Contains(player);
+            return !money.ContainsKey(player);
+        }
+
+        public IEnumerable<Player> GetBankrupcies(IEnumerable<Player> players)
+        {
+            return players.Where(p => IsBankrupt(p)).ToList();
         }
 
         public Boolean CanAfford(Player player, Int32 amount)
@@ -51,10 +54,7 @@ namespace Monopoly.Handlers
             money[player] -= amountToPay;
 
             if (money[player] < 0)
-            {
-                bankruptcies.Add(player);
                 money.Remove(player);
-            }
         }
 
         public void Collect(Player player, Int32 amountToCollect)

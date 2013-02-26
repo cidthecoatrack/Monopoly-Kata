@@ -24,9 +24,7 @@ namespace Monopoly.Tests.Players.Strategies.JailStrategies
         {
             dice = new ControlledDice();
             
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
+            player = new Player("name");
 
             var players = new[] { player };
             banker = new Banker(players);

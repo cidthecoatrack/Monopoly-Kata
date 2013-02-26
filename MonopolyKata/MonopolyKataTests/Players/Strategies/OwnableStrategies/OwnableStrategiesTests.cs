@@ -4,23 +4,21 @@ using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Handlers;
 
-namespace Monopoly.Tests.Players.Strategies.RealEstateStrategies
+namespace Monopoly.Tests.Players.Strategies.OwnableStrategies
 {
     [TestClass]
-    public class RealEstateStrategiesTests
+    public class OwnableStrategiesTests
     {
         private Player player;
         private Player renter;
-        private RealEstateHandler realEstateHandler;
+        private OwnableHandler realEstateHandler;
         private Banker banker;
 
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
-            renter = new Player("renter", strategies);
+            player = new Player("name");
+            renter = new Player("renter");
             var players = new[] { player, renter };
 
             var property = new Property("property", 1, 0, GROUPING.DARK_BLUE, 1, new[] { 1, 2, 3, 4, 5 });
@@ -31,8 +29,8 @@ namespace Monopoly.Tests.Players.Strategies.RealEstateStrategies
         [TestMethod]
         public void AlwaysBuy()
         {
-            player.RealEstateStrategy = new AlwaysBuy();
-            renter.RealEstateStrategy = new AlwaysBuy();
+            player.OwnableStrategy = new AlwaysBuyOrMortgage();
+            renter.OwnableStrategy = new AlwaysBuyOrMortgage();
 
             var money = banker.GetMoney(player);
             realEstateHandler.Land(player, 0);
@@ -49,8 +47,8 @@ namespace Monopoly.Tests.Players.Strategies.RealEstateStrategies
         [TestMethod]
         public void BuyIfAtLeast500OnHand()
         {
-            player.RealEstateStrategy = new BuyIfAtLeast500OnHand();
-            renter.RealEstateStrategy = new BuyIfAtLeast500OnHand();
+            player.OwnableStrategy = new BuyOrMortgageIf500();
+            renter.OwnableStrategy = new BuyOrMortgageIf500();
 
             banker.Pay(player, banker.GetMoney(player) - 499);
             var money = banker.GetMoney(player);
@@ -81,8 +79,8 @@ namespace Monopoly.Tests.Players.Strategies.RealEstateStrategies
         [TestMethod]
         public void NeverBuy()
         {
-            player.RealEstateStrategy = new NeverBuy();
-            renter.RealEstateStrategy = new NeverBuy();
+            player.OwnableStrategy = new NeverBuyOrMortgage();
+            renter.OwnableStrategy = new NeverBuyOrMortgage();
 
             realEstateHandler.Land(player, 0);
             realEstateHandler.DevelopProperties(player);

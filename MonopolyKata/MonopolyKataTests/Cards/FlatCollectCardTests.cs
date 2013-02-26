@@ -16,10 +16,7 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-
-            player = new Player("name", strategies);
+            player = new Player("name");
             banker = new Banker(new[] { player });
             
             card = new FlatCollectCard("collect", 10, banker);

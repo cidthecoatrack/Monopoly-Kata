@@ -19,16 +19,12 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-
             var players = new[]
                 {
-                    new Player("Player 1", strategies),
-                    new Player("Player 2", strategies),
-                    new Player("Player 3", strategies),
-                    new Player("Player 4", strategies)
+                    new Player("Player 1"),
+                    new Player("Player 2"),
+                    new Player("Player 3"),
+                    new Player("Player 4")
                 };
 
             var dice = new ControlledDice();

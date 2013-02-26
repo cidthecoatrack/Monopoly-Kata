@@ -16,11 +16,8 @@ namespace Monopoly.Tests.Handlers
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-
-            player = new Player("name", strategies);
-            collector = new Player("collector", strategies);
+            player = new Player("name");
+            collector = new Player("collector");
             banker = new Banker(new[] { player, collector });
         }
 

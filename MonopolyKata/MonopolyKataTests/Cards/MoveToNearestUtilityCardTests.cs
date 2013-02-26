@@ -27,17 +27,15 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
-            owner = new Player("owner", strategies);
+            player = new Player("name");
+            owner = new Player("owner");
             var players = new[] { player, owner };
 
             banker = new Banker(players);
             var dice = new ControlledDice();
             dice.SetPredeterminedRollValue(ROLL);
             var realEstate = BoardFactory.CreateRealEstate(dice);
-            var realEstateHandler = new RealEstateHandler(realEstate, players, banker);
+            var realEstateHandler = new OwnableHandler(realEstate, banker);
             boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
             card = new MoveToNearestUtilityCard(boardHandler, dice);

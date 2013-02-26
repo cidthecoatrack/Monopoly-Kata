@@ -11,10 +11,10 @@ namespace Monopoly.Cards
         private readonly String name; 
         private readonly Int32 houseCost;
         private readonly Int32 hotelPremium;
-        private RealEstateHandler realEstateHandler;
+        private OwnableHandler realEstateHandler;
         private Banker banker;
 
-        public HousesAndHotelsCard(String name, Int32 houseCost, Int32 hotelCost, RealEstateHandler realEstateHandler, Banker banker)
+        public HousesAndHotelsCard(String name, Int32 houseCost, Int32 hotelCost, OwnableHandler realEstateHandler, Banker banker)
         {
             this.name = name;
             this.houseCost = houseCost;

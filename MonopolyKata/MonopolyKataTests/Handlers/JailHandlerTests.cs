@@ -24,9 +24,7 @@ namespace Monopoly.Tests.Hendlers
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateNeverStrategyCollection();
-            player = new Player("name", strategies);
+            player = new Player("name");
 
             dice = new ControlledDice();
             var players = new[] { player };

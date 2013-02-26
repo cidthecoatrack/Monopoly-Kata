@@ -18,9 +18,7 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            var player = new Player("name", strategies);
+            var player = new Player("name");
 
             var dice = new ControlledDice();
             var empty = Enumerable.Empty<Player>();

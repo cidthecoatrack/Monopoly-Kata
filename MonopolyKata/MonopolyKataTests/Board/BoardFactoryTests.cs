@@ -22,12 +22,10 @@ namespace Monopoly.Tests.Board
         {
             var dice = new ControlledDice();
 
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
             var players = new[]
                 {
-                    new Player("player 1", strategies),
-                    new Player("player 2", strategies)
+                    new Player("player 1"),
+                    new Player("player 2")
                 };
 
             var banker = new Banker(players);

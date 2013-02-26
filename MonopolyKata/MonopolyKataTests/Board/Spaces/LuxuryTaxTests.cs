@@ -4,8 +4,7 @@ using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Players.Strategies;
 using Monopoly.Tests.Players.Strategies.JailStrategies;
-using Monopoly.Tests.Players.Strategies.MortgageStrategies;
-using Monopoly.Tests.Players.Strategies.RealEstateStrategies;
+using Monopoly.Tests.Players.Strategies.OwnableStrategies;
 
 namespace Monopoly.Tests.Board.Spaces
 {
@@ -15,9 +14,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestMethod]
         public void LuxuryTaxTest()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            var player = new Player("name", strategies);
+            var player = new Player("name");
 
             var banker = new Banker(new[] { player });
             var luxuryTax = new LuxuryTax(banker);

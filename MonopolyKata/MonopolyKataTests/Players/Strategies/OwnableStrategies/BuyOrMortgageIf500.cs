@@ -2,10 +2,20 @@
 using Monopoly.Board.Spaces;
 using Monopoly.Players.Strategies;
 
-namespace Monopoly.Tests.Players.Strategies.MortgageStrategies
+namespace Monopoly.Tests.Players.Strategies.OwnableStrategies
 {
-    public class MortgageIfMoneyLessThanFiveHundred : IMortgageStrategy
+    public class BuyOrMortgageIf500 : IOwnableStrategy
     {
+        public Boolean ShouldBuy(Int32 moneyOnHand)
+        {
+            return moneyOnHand >= 500;
+        }
+
+        public Boolean ShouldDevelop(Int32 moneyOnHand)
+        {
+            return moneyOnHand >= 500;
+        }
+
         public Boolean ShouldMortgage(Int32 moneyOnHand)
         {
             return moneyOnHand < 500;

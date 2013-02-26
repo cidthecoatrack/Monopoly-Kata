@@ -12,11 +12,11 @@ namespace Monopoly.Handlers
     {
         public Dictionary<Player, Int32> PositionOf { get; private set; }
 
-        private RealEstateHandler realEstateHandler;
-        private SpaceHandler spaceHandler;
+        private OwnableHandler realEstateHandler;
+        private UnownableHandler spaceHandler;
         private Banker banker;
 
-        public BoardHandler(IEnumerable<Player> players, RealEstateHandler realEstateHandler, SpaceHandler spaceHandler, Banker banker)
+        public BoardHandler(IEnumerable<Player> players, OwnableHandler realEstateHandler, UnownableHandler spaceHandler, Banker banker)
         {
             this.realEstateHandler = realEstateHandler;
             this.spaceHandler = spaceHandler;
@@ -67,6 +67,21 @@ namespace Monopoly.Handlers
         {
             PositionOf[player] = newPosition;
             Land(player);
+        }
+
+        public void MoveToRailroadAndPayDoubleRent(Player player, Int32 railroadPosition)
+        {
+            if (railroadPosition != BoardConstants.READING_RAILROAD
+                && railroadPosition != BoardConstants.PENNSYLVANIA_RAILROAD
+                && railroadPosition != BoardConstants.BandO_RAILROAD
+                && railroadPosition != BoardConstants.SHORT_LINE)
+                return;
+
+            if (PositionOf[player] > railroadPosition)
+                banker.Collect(player, GameConstants.PASS_GO_PAYMENT);
+
+            PositionOf[player] = railroadPosition;
+            realEstateHandler.LandAndPayDoubleRailroadRent(player, railroadPosition);
         }
     }
 }

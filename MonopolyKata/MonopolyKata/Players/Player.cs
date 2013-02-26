@@ -10,17 +10,13 @@ namespace Monopoly.Players
     public class Player
     {
         public IJailStrategy JailStrategy { get; set; }
-        public IMortgageStrategy MortgageStrategy { get; set; }
-        public IRealEstateStrategy RealEstateStrategy { get; set; }
+        public IOwnableStrategy OwnableStrategy { get; set; }
 
         private readonly String name;
 
-        public Player(String name, IStrategyCollection strategies)
+        public Player(String name)
         {
             this.name = name;
-            MortgageStrategy = strategies.MortgageStrategy;
-            JailStrategy = strategies.JailStrategy;
-            RealEstateStrategy = strategies.RealEstateStrategy;
         }
 
         public Boolean WillUseGetOutOfJailCard()

@@ -8,13 +8,11 @@ using Monopoly.Players;
 
 namespace Monopoly.Handlers
 {
-    public class SpaceHandler
+    public class UnownableHandler
     {
         private Dictionary<Int32, UnownableSpace> spaces;
-        private Dictionary<int, UnownableSpace> dictionary;
-        private IEnumerable<Player> players;
 
-        public SpaceHandler(Dictionary<Int32, UnownableSpace> spaces)
+        public UnownableHandler(Dictionary<Int32, UnownableSpace> spaces)
         {
             this.spaces = spaces;
         }

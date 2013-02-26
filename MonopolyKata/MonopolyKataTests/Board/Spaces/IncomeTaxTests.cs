@@ -17,9 +17,7 @@ namespace Monopoly.Tests.Board.Spaces
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
+            player = new Player("name");
             banker = new Banker(new[] { player });
             incomeTax = new IncomeTax(banker);
         }

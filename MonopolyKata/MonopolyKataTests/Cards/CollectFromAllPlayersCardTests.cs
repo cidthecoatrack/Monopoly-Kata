@@ -18,15 +18,12 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-
-            player = new Player("name", strategies);
-            loser = new Player("loser", strategies);
+            player = new Player("name");
+            loser = new Player("loser");
 
             var players = new List<Player>();
             for (var i = 0; i < 8; i++)
-                players.Add(new Player("player " + i, strategies));
+                players.Add(new Player("player " + i));
             players.Add(player);
             players.Add(loser);
 

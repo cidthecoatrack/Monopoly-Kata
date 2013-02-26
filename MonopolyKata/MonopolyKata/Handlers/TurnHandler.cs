@@ -10,10 +10,10 @@ namespace Monopoly.Handlers
         private Int32 doublesCount;
         private BoardHandler boardHandler;
         private JailHandler jailHandler;
-        private RealEstateHandler realEstateHandler;
+        private OwnableHandler realEstateHandler;
         private Banker banker;
 
-        public TurnHandler(IDice dice, BoardHandler boardHandler, JailHandler jailHandler, RealEstateHandler realEstateHandler, Banker banker)
+        public TurnHandler(IDice dice, BoardHandler boardHandler, JailHandler jailHandler, OwnableHandler realEstateHandler, Banker banker)
         {
             this.dice = dice;
             this.boardHandler = boardHandler;

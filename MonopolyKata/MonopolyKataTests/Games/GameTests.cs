@@ -8,6 +8,8 @@ using Monopoly.Tests.Board;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
+using Monopoly.Tests.Players.Strategies.JailStrategies;
+using Monopoly.Tests.Players.Strategies.OwnableStrategies;
 
 namespace Monopoly.Tests.Games
 {
@@ -39,15 +41,18 @@ namespace Monopoly.Tests.Games
             game = new Game(players, turnHandler, banker);
         }
 
-        private IEnumerable<Player> GeneratePlayerIEnumerable(Int32 NumberOfPlayers)
+        private IEnumerable<Player> GeneratePlayerIEnumerable(Int32 numberOfPlayers)
         {
             var playerList = new List<Player>();
 
-            var strategies = new StrategyCollection();
-            strategies.CreateNeverStrategyCollection();
+            while (numberOfPlayers-- > 0)
+            {
+                var player = new Player("Player " + numberOfPlayers);
+                player.JailStrategy = new RandomlyPay();
+                player.OwnableStrategy = new RandomlyBuyOrMortgage();
 
-            while (NumberOfPlayers-- > 0)
-                playerList.Add(new Player("Player " + NumberOfPlayers, strategies));
+                playerList.Add(player);
+            }
 
             return playerList;
         }

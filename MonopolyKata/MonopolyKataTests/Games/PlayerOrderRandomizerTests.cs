@@ -17,12 +17,9 @@ namespace Monopoly.Tests.Games
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            
             nonRandomizedPlayers = new List<Player>();
             for (var i = 0; i < 8; i++)
-                nonRandomizedPlayers.Add(new Player(Convert.ToString(i), strategies));
+                nonRandomizedPlayers.Add(new Player(Convert.ToString(i)));
 
             var randomizer = new PlayerOrderRandomizer();
             randomizedPlayers = randomizer.Execute(nonRandomizedPlayers);

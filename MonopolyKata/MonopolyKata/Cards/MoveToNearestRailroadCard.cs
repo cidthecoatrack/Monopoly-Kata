@@ -32,8 +32,7 @@ namespace Monopoly.Cards
 
         private void MoveTo(Player player, Int32 position)
         {
-            boardHandler.MoveTo(player, position);
-            boardHandler.MoveTo(player, position);
+            boardHandler.MoveToRailroadAndPayDoubleRent(player, position);
         }
 
         public override String ToString()

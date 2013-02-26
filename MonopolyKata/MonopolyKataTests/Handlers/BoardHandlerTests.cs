@@ -21,19 +21,17 @@ namespace Monopoly.Tests.Handlers
         [TestInitialize]
         public void Setup()
         {
-            var strategies = new StrategyCollection();
-            strategies.CreateRandomStrategyCollection();
-            player = new Player("name", strategies);
+            player = new Player("name");
             var players = new[] { player };
 
             banker = new Banker(players);
-            var realEstateHandler = new RealEstateHandler(new Dictionary<Int32, OwnableSpace>(), players, banker);
+            var realEstateHandler = new OwnableHandler(new Dictionary<Int32, OwnableSpace>(), banker);
             
             var normalSpaces = new Dictionary<Int32, UnownableSpace>();
             for(var i = 0; i < BoardConstants.BOARD_SIZE; i++)
                 normalSpaces.Add(i, new NormalSpace("space " + i));
 
-            var spaceHandler = new SpaceHandler(normalSpaces);
+            var spaceHandler = new UnownableHandler(normalSpaces);
 
             boardHandler = new BoardHandler(players, realEstateHandler, spaceHandler, banker);
         }
