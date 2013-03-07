@@ -153,7 +153,7 @@ namespace Monopoly.Tests.Games
 
             game.TakeTurn();
             var loser = game.CurrentPlayer;
-            banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
+            banker.Pay(loser, banker.GetMoney(loser) + 1);
             game.TakeTurn();
 
             Assert.AreEqual(winner, game.Winner);
@@ -164,7 +164,7 @@ namespace Monopoly.Tests.Games
         {
             SetupGameWithPlayers(3);
             var loser = game.CurrentPlayer;
-            banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
+            banker.Pay(loser, banker.GetMoney(loser) + 1);
             game.TakeTurn();
 
             Assert.IsTrue(banker.IsBankrupt(loser));
@@ -182,7 +182,7 @@ namespace Monopoly.Tests.Games
                 if (!theChosenOne.Equals(game.CurrentPlayer))
                 {
                     var loser = game.CurrentPlayer;
-                    banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
+                    banker.Pay(loser, banker.GetMoney(loser) + 1);
                 }
 
                 game.TakeTurn();

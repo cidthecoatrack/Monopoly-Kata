@@ -53,7 +53,7 @@ namespace Monopoly.Handlers
 
         private void Bail(Player player)
         {
-            banker.Pay(player, GameConstants.COST_TO_GET_OUT_OF_JAIL, "Bailing out oF jail");
+            banker.Pay(player, GameConstants.COST_TO_GET_OUT_OF_JAIL);
             turnsInJail.Remove(player);
         }
 

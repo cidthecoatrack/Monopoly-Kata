@@ -21,7 +21,7 @@ namespace Monopoly.Cards
 
         public void Execute(Player player)
         {
-            banker.Pay(player, payment, ToString());
+            banker.Pay(player, payment);
         }
 
         public override String ToString()

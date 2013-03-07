@@ -103,7 +103,7 @@ namespace Monopoly.Tests.Handlers
         public void GoesBrokeBailingOutOfJail_DoesNotGo()
         {
             player.JailStrategy = new NeverPay();
-            banker.Pay(player, banker.GetMoney(player) - 1, "forcing broke for test");
+            banker.Pay(player, banker.GetMoney(player) - 1);
             jailHandler.Imprison(player);
 
             for(var i = 0; i < 3; i++)

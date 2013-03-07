@@ -10,7 +10,6 @@ namespace Monopoly.Board.Spaces
         public Boolean Force10xRent { get; set; }
         public Boolean BothUtilitiesOwned { get; set; }
 
-        private IEnumerable<Utility> utilities;
         private IDice dice;
 
         public Utility(String name, IDice dice) : base(name, 150)

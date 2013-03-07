@@ -88,7 +88,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void BankruptWhilePaying()
         {
-            banker.Pay(player, banker.GetMoney(player) - 1, ToString());
+            banker.Pay(player, banker.GetMoney(player) - 1);
             card.Execute(player);
             Assert.IsTrue(banker.IsBankrupt(player));
         }

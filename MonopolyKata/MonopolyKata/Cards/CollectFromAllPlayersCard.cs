@@ -22,7 +22,7 @@ namespace Monopoly.Cards
         public void Execute(Player player)
         {
             foreach (var payer in players.Where(p => !banker.IsBankrupt(p)))
-                banker.Transact(payer, player, 50, ToString());
+                banker.Transact(payer, player, 50);
         }
 
         public override String ToString()

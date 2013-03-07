@@ -106,7 +106,7 @@ namespace Monopoly.Tests.Handlers
         [TestMethod]
         public void DoNotBuyUnaffordableRealEstate()
         {
-            banker.Pay(player, banker.GetMoney(player) - property.Price + 1, ToString());
+            banker.Pay(player, banker.GetMoney(player) - property.Price + 1);
             var money = banker.GetMoney(player);
             ownableHandler.Land(player, 0);
 
@@ -155,7 +155,7 @@ namespace Monopoly.Tests.Handlers
         {
             MortgagePropertyFor90PercentPurchasePrice();
             player.OwnableStrategy = new NeverBuyOrMortgage();
-            banker.Pay(player, banker.GetMoney(player) - property.Price + 1, ToString());
+            banker.Pay(player, banker.GetMoney(player) - property.Price + 1);
 
             var previousMoney = banker.GetMoney(player);
             ownableHandler.HandleMortgages(player);
@@ -181,7 +181,7 @@ namespace Monopoly.Tests.Handlers
         {
             BuyProperty();
 
-            banker.Pay(player, banker.GetMoney(player) + 1, ToString());
+            banker.Pay(player, banker.GetMoney(player) + 1);
             var renterMoney = banker.GetMoney(renter);
             ownableHandler.Land(renter, 0);
 
