@@ -10,6 +10,7 @@ using Monopoly.Players;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
+using Monopoly.Tests.Players.Strategies.OwnableStrategies;
 
 namespace Monopoly.Tests.Cards
 {
@@ -29,6 +30,8 @@ namespace Monopoly.Tests.Cards
         {
             player = new Player("name");
             owner = new Player("owner");
+            player.OwnableStrategy = new RandomlyBuyOrMortgage();
+            owner.OwnableStrategy = new RandomlyBuyOrMortgage();
             var players = new[] { player, owner };
 
             banker = new Banker(players);

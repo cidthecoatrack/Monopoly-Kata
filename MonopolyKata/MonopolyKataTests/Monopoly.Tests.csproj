@@ -78,6 +78,7 @@
     <Compile Include="Handlers\FakeHandlerFactory.cs" />
     <Compile Include="Handlers\OwnableHandlerTests.cs" />
     <Compile Include="Handlers\BankerTests.cs" />
+    <Compile Include="Handlers\UnownableHandlerTests.cs" />
     <Compile Include="Players\Strategies\JailStrategies\AlwaysPay.cs" />
     <Compile Include="Players\Strategies\JailStrategies\NeverPay.cs" />
     <Compile Include="Players\Strategies\JailStrategies\RandomlyPay.cs" />

@@ -9,6 +9,7 @@ using Monopoly.Players;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
+using Monopoly.Tests.Players.Strategies.OwnableStrategies;
 
 namespace Monopoly.Tests.Cards
 {
@@ -24,7 +25,9 @@ namespace Monopoly.Tests.Cards
         public void Setup()
         {
             player = new Player("name");
+            player.OwnableStrategy = new RandomlyBuyOrMortgage();
             var owner = new Player("owner");
+            owner.OwnableStrategy = new RandomlyBuyOrMortgage();
 
             var players = new[] { player, owner };
 
@@ -85,7 +88,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void BankruptWhilePaying()
         {
-            banker.Pay(player, banker.GetMoney(player) - 1);
+            banker.Pay(player, banker.GetMoney(player) - 1, ToString());
             card.Execute(player);
             Assert.IsTrue(banker.IsBankrupt(player));
         }

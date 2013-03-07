@@ -50,7 +50,7 @@ namespace Monopoly.Tests.Players.Strategies.OwnableStrategies
             player.OwnableStrategy = new BuyOrMortgageIf500();
             renter.OwnableStrategy = new BuyOrMortgageIf500();
 
-            banker.Pay(player, banker.GetMoney(player) - 499);
+            banker.Pay(player, banker.GetMoney(player) - 499, ToString());
             var money = banker.GetMoney(player);
             realEstateHandler.Land(player, 0);
 

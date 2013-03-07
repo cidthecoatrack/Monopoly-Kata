@@ -33,7 +33,7 @@ namespace Monopoly.Tests.Board.Spaces
 
         private void TestIncomeTaxWith(Int32 thisMuchMoney)
         {
-            banker.Pay(player, banker.GetMoney(player) - thisMuchMoney);
+            banker.Pay(player, banker.GetMoney(player) - thisMuchMoney, ToString());
             incomeTax.LandOn(player);
             var paid = Math.Min(thisMuchMoney / IncomeTax.INCOME_TAX_PERCENTAGE_DIVISOR, IncomeTax.INCOME_TAX_FLAT_RATE);
 

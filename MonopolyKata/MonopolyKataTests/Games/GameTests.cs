@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Games;
 using Monopoly.Handlers;
@@ -18,7 +19,6 @@ namespace Monopoly.Tests.Games
     {
         private Game game;
         private ControlledDice dice;
-        private BoardHandler boardHandler;
         private Banker banker;
 
         [TestInitialize]
@@ -58,9 +58,12 @@ namespace Monopoly.Tests.Games
         }
 
         [TestMethod]
-        public void GameHasEightPlayers()
+        public void Constructor()
         {
             Assert.AreEqual(8, game.NumberOfActivePlayers);
+            Assert.IsNull(game.Winner);
+            Assert.IsFalse(game.Finished);
+            Assert.AreEqual(1, game.Round);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
@@ -73,12 +76,6 @@ namespace Monopoly.Tests.Games
         public void MoreThanEightPlayers()
         {
             SetupGameWithPlayers(9);
-        }
-
-        [TestMethod]
-        public void NoWinnerAtStart()
-        {
-            Assert.IsNull(game.Winner);
         }
 
         [TestMethod]
@@ -156,7 +153,7 @@ namespace Monopoly.Tests.Games
 
             game.TakeTurn();
             var loser = game.CurrentPlayer;
-            banker.Pay(loser, banker.GetMoney(loser) + 1);
+            banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
             game.TakeTurn();
 
             Assert.AreEqual(winner, game.Winner);
@@ -167,7 +164,7 @@ namespace Monopoly.Tests.Games
         {
             SetupGameWithPlayers(3);
             var loser = game.CurrentPlayer;
-            banker.Pay(loser, banker.GetMoney(loser) + 1);
+            banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
             game.TakeTurn();
 
             Assert.IsTrue(banker.IsBankrupt(loser));
@@ -185,7 +182,7 @@ namespace Monopoly.Tests.Games
                 if (!theChosenOne.Equals(game.CurrentPlayer))
                 {
                     var loser = game.CurrentPlayer;
-                    banker.Pay(loser, banker.GetMoney(loser) + 1);
+                    banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
                 }
 
                 game.TakeTurn();
@@ -203,16 +200,6 @@ namespace Monopoly.Tests.Games
             game.Play();
 
             Assert.AreEqual(theChosenOne, game.Winner);
-        }
-
-        [TestMethod]
-        public void ExhaustiveRun()
-        {
-            for (var i = 0; i < 1000000; i++)
-            {
-                game = GameFactory.CreateGame(GeneratePlayerIEnumerable(8));
-                game.Play();
-            }
         }
     }
 }

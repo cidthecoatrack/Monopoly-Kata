@@ -6,6 +6,7 @@ using Monopoly.Cards;
 using Monopoly.Handlers;
 using Monopoly.Players;
 using Monopoly.Tests.Players.Strategies;
+using Monopoly.Tests.Players.Strategies.OwnableStrategies;
 
 namespace Monopoly.Tests.Cards
 {
@@ -29,6 +30,7 @@ namespace Monopoly.Tests.Cards
             dict.Add(1, otherProperty);
 
             player = new Player("name");
+            player.OwnableStrategy = new AlwaysBuyOrMortgage();
             var players = new[] { player };
             banker = new Banker(players);
             var realEstateHandler = new OwnableHandler(dict, banker);

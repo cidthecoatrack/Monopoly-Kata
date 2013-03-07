@@ -17,7 +17,7 @@ namespace Monopoly.Board.Spaces
 
         public override void LandOn(Player player)
         {
-            banker.Pay(player, LUXURY_TAX);
+            banker.Pay(player, LUXURY_TAX, ToString());
         }
     }
 }

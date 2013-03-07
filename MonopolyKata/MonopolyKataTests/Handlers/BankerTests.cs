@@ -38,14 +38,14 @@ namespace Monopoly.Tests.Handlers
         [TestMethod]
         public void PayOneHundred()
         {
-            banker.Pay(player, 100);
+            banker.Pay(player, 100, ToString());
             Assert.AreEqual(1400, banker.GetMoney(player));
         }
 
         [TestMethod]
         public void Bankruptcy()
         {
-            banker.Pay(player, banker.GetMoney(player) + 1);
+            banker.Pay(player, banker.GetMoney(player) + 1, ToString());
             Assert.IsTrue(banker.IsBankrupt(player));
         }
 
@@ -54,7 +54,7 @@ namespace Monopoly.Tests.Handlers
         {
             var playerMoney = banker.GetMoney(player);
             var collectorMoney = banker.GetMoney(collector);
-            banker.Transact(player, collector, 50);
+            banker.Transact(player, collector, 50, ToString());
 
             Assert.AreEqual(playerMoney - 50, banker.GetMoney(player));
             Assert.AreEqual(collectorMoney + 50, banker.GetMoney(collector));

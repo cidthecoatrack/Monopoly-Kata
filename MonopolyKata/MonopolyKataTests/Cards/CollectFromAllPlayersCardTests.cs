@@ -49,7 +49,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void LosersDontPay()
         {
-            banker.Pay(loser, banker.GetMoney(loser) + 1);
+            banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
             var playerMoney = banker.GetMoney(player);
             card.Execute(player);
 

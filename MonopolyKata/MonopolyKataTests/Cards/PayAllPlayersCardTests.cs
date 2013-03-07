@@ -49,7 +49,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void LosersDontCollect()
         {
-            banker.Pay(loser, banker.GetMoney(loser) + 1);
+            banker.Pay(loser, banker.GetMoney(loser) + 1, ToString());
             var playerMoney = banker.GetMoney(player);
             card.Execute(player);
 
@@ -60,7 +60,7 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void BankruptWhilePaying()
         {
-            banker.Pay(player, banker.GetMoney(player) - 300);
+            banker.Pay(player, banker.GetMoney(player) - 300, ToString());
             card.Execute(player);
 
             Assert.IsTrue(banker.IsBankrupt(player));

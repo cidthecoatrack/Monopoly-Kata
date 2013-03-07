@@ -29,7 +29,7 @@ namespace Monopoly.Cards
             var hotels = realEstateHandler.GetNumberOfHotels(player);
 
             var payment = houses * houseCost + hotels * hotelPremium;
-            banker.Pay(player, payment);
+            banker.Pay(player, payment, ToString());
         }
 
         public override String ToString()

@@ -25,6 +25,7 @@ namespace Monopoly.Tests.Hendlers
         public void Setup()
         {
             player = new Player("name");
+            player.JailStrategy = new NeverPay();
 
             dice = new ControlledDice();
             var players = new[] { player };

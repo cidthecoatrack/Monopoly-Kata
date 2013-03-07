@@ -43,7 +43,7 @@ namespace Monopoly.Handlers
 
             jailHandler.HandleJail(doublesCount, player);
 
-            if (!jailHandler.HasImprisoned(player))
+            if (!jailHandler.HasImprisoned(player) && !banker.IsBankrupt(player))
                 boardHandler.Move(player, dice.Value);
         }
 

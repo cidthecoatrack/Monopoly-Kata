@@ -19,7 +19,7 @@ namespace Monopoly.Board.Spaces
         public override void LandOn(Player player)
         {
             var amountToPay = Math.Min(banker.GetMoney(player) / INCOME_TAX_PERCENTAGE_DIVISOR, INCOME_TAX_FLAT_RATE);
-            banker.Pay(player, amountToPay);
+            banker.Pay(player, amountToPay, ToString());
         }
     }
 }

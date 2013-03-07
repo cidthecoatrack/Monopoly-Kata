@@ -15,7 +15,7 @@ namespace Monopoly.Games
 
         public Int16 Round { get; private set; }
         public Boolean Finished { get { return (Round > GameConstants.ROUND_LIMIT || NumberOfActivePlayers == 1); } }
-        public Int32 NumberOfActivePlayers { get { return banker.GetNumberOfActivePlayers(); } }
+        public Int32 NumberOfActivePlayers { get { return players.Count; } }
 
         public Player CurrentPlayer
         {
@@ -74,25 +74,26 @@ namespace Monopoly.Games
 
         private void ShiftToNextPlayer()
         {
-            var newPointer = currentPlayerPointer.Next ?? players.First;
-            var losers = players.Where(p => banker.IsBankrupt(p)).ToList();
+            var newPointer = currentPlayerPointer;
 
-            foreach (var player in losers)
+            do
             {
-                if (newPointer.Value == player)
-                {
-                    newPointer = newPointer.Next ?? players.First;
+                newPointer = newPointer.Next ?? players.First;
 
-                    if (newPointer == players.First)
-                        Round++;
-                }
-
-                players.Remove(player);
-            }
+                if (newPointer == players.First)
+                    Round++;
+            } while (banker.IsBankrupt(newPointer.Value));
 
             currentPlayerPointer = newPointer;
-            if (currentPlayerPointer == players.First)
-                Round++;
+            RemoveBankruptPlayers();
+        }
+
+        private void RemoveBankruptPlayers()
+        {
+            var losers = banker.GetBankrupcies(players);
+
+            foreach (var player in losers)
+                players.Remove(player);
         }
     }
 }

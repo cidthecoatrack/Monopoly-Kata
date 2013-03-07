@@ -33,10 +33,10 @@ namespace Monopoly.Handlers
 
         public void Land(Player player, Int32 position)
         {
+            CheckForBankrupcies();
+
             var ownableSpace = allOwnableSpaces[position];
             var money = banker.GetMoney(player);
-
-            CheckForBankrupcies();
 
             if (Owned(ownableSpace))
                 PayRent(player, ownableSpace);
@@ -46,7 +46,7 @@ namespace Monopoly.Handlers
 
         private void Buy(Player player, OwnableSpace ownableSpace)
         {
-            banker.Pay(player, ownableSpace.Price);
+            banker.Pay(player, ownableSpace.Price, ToString());
             ownedSpaces[ownableSpace] = player;
 
             if (ownableSpace is Property)
@@ -84,8 +84,8 @@ namespace Monopoly.Handlers
         {
             var rent = ownableSpace.GetRent();
 
-            banker.Transact(player, ownedSpaces[ownableSpace], rent);
-            CheckForBankrupcies();
+            banker.Transact(player, ownedSpaces[ownableSpace], rent, ownableSpace.ToString());
+            CheckForBankrupcies();    
         }
 
         private void CheckForBankrupcies()
@@ -161,7 +161,7 @@ namespace Monopoly.Handlers
 
         private void PayOffMortgage(OwnableSpace ownableSpace)
         {
-            banker.Pay(ownedSpaces[ownableSpace], ownableSpace.Price);
+            banker.Pay(ownedSpaces[ownableSpace], ownableSpace.Price, ToString());
             ownableSpace.Mortgaged = false;
         }
 
@@ -173,7 +173,7 @@ namespace Monopoly.Handlers
             {
                 if (banker.CanAfford(player, property.HousePrice) && player.OwnableStrategy.ShouldDevelop(money))
                 {
-                    banker.Pay(player, property.HousePrice);
+                    banker.Pay(player, property.HousePrice, ToString());
                     property.BuyHouseOrHotel();
                 }
             }

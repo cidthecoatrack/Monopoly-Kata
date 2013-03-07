@@ -24,6 +24,7 @@ namespace Monopoly.Tests.Handlers
             player = new Player("name");
             player.OwnableStrategy = new AlwaysBuyOrMortgage();
             renter = new Player("renter");
+            renter.OwnableStrategy = new RandomlyBuyOrMortgage();
             var players = new[] { player, renter };
             banker = new Banker(players);
             property = new Property("name", 10, 1, GROUPING.DARK_BLUE, 2, new[] { 4, 5, 6, 7, 8 });
@@ -105,7 +106,7 @@ namespace Monopoly.Tests.Handlers
         [TestMethod]
         public void DoNotBuyUnaffordableRealEstate()
         {
-            banker.Pay(player, banker.GetMoney(player) - property.Price + 1);
+            banker.Pay(player, banker.GetMoney(player) - property.Price + 1, ToString());
             var money = banker.GetMoney(player);
             ownableHandler.Land(player, 0);
 
@@ -154,7 +155,7 @@ namespace Monopoly.Tests.Handlers
         {
             MortgagePropertyFor90PercentPurchasePrice();
             player.OwnableStrategy = new NeverBuyOrMortgage();
-            banker.Pay(player, banker.GetMoney(player) - property.Price + 1);
+            banker.Pay(player, banker.GetMoney(player) - property.Price + 1, ToString());
 
             var previousMoney = banker.GetMoney(player);
             ownableHandler.HandleMortgages(player);
@@ -180,7 +181,7 @@ namespace Monopoly.Tests.Handlers
         {
             BuyProperty();
 
-            banker.Pay(player, banker.GetMoney(player) + 1);
+            banker.Pay(player, banker.GetMoney(player) + 1, ToString());
             var renterMoney = banker.GetMoney(renter);
             ownableHandler.Land(renter, 0);
 

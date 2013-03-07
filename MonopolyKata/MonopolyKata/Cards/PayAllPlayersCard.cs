@@ -26,7 +26,7 @@ namespace Monopoly.Cards
 
             var count = 0;
             while (count < players.Count() && !banker.IsBankrupt(player))
-                banker.Transact(player, players.ElementAt(count++), 50);
+                banker.Transact(player, players.ElementAt(count++), 50, ToString());
         }
 
         public override String ToString()

@@ -9,6 +9,7 @@ using Monopoly.Players;
 using Monopoly.Tests.Board.Spaces;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Players.Strategies;
+using Monopoly.Tests.Players.Strategies.JailStrategies;
 
 namespace Monopoly.Tests.Handlers
 {
@@ -20,10 +21,10 @@ namespace Monopoly.Tests.Handlers
         private JailHandler jailHandler;
         private Player player;
         private ControlledDice dice;
-        private IEnumerable<Player> players;
         private Dictionary<Int32, UnownableSpace> landableSpaces;
         private LandableSpace space6;
         private LandableSpace space10;
+        private Banker banker;
 
         [TestInitialize]
         public void Setup()
@@ -43,7 +44,7 @@ namespace Monopoly.Tests.Handlers
             space10 = landableSpaces[10] as LandableSpace;
 
             var spaceHandler = new UnownableHandler(landableSpaces);
-            var banker = new Banker(players);
+            banker = new Banker(players);
             boardHandler = new BoardHandler(players, realEstateHandler, spaceHandler, banker);
             jailHandler = new JailHandler(dice, boardHandler, banker);
             turnHandler = new TurnHandler(dice, boardHandler, jailHandler, realEstateHandler, banker);
@@ -96,6 +97,20 @@ namespace Monopoly.Tests.Handlers
 
             Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
             Assert.IsTrue(jailHandler.HasImprisoned(player));
+        }
+
+        [TestMethod]
+        public void GoesBrokeBailingOutOfJail_DoesNotGo()
+        {
+            player.JailStrategy = new NeverPay();
+            banker.Pay(player, banker.GetMoney(player) - 1, "forcing broke for test");
+            jailHandler.Imprison(player);
+
+            for(var i = 0; i < 3; i++)
+                turnHandler.TakeTurn(player);
+
+            Assert.IsTrue(banker.IsBankrupt(player));
+            Assert.AreEqual(BoardConstants.JAIL_OR_JUST_VISITING, boardHandler.PositionOf[player]);
         }
     }
 }
