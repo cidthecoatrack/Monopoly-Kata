@@ -9,14 +9,14 @@ namespace Monopoly.Cards
     {
         public Boolean Held { get; private set; }
 
-        private BoardHandler boardHandler;
+        private IBoardHandler boardHandler;
 
-        public MoveBackThreeCard(BoardHandler boardHandler)
+        public MoveBackThreeCard(IBoardHandler boardHandler)
         {
             this.boardHandler = boardHandler;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             var newPosition = (boardHandler.PositionOf[player] - 3 + BoardConstants.BOARD_SIZE) % BoardConstants.BOARD_SIZE;
             boardHandler.MoveToAndDontPassGo(player, newPosition);

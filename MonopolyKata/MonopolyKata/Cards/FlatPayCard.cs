@@ -8,25 +8,25 @@ namespace Monopoly.Cards
     {
         public Boolean Held { get; private set; }
 
-        private readonly String Name; 
+        private readonly String name; 
         private readonly Int32 payment;
-        private Banker banker;
+        private IBanker banker;
 
-        public FlatPayCard(String name, Int32 payment, Banker banker)
+        public FlatPayCard(String name, Int32 payment, IBanker banker)
         {
-            Name = name;
+            this.name = name;
             this.payment = payment;
             this.banker = banker;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             banker.Pay(player, payment);
         }
 
         public override String ToString()
         {
-            return Name;
+            return name;
         }
     }
 }

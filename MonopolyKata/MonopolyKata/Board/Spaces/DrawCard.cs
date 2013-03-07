@@ -16,7 +16,7 @@ namespace Monopoly.Board.Spaces
             this.deck = deck;
         }
         
-        public override void LandOn(Player player)
+        public override void LandOn(IPlayer player)
         {
             while (deck.Peek().Held)
                 deck.Enqueue(deck.Dequeue());

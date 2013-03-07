@@ -16,10 +16,10 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class MoveToNearestRailroadCardTests
     {
-        private MoveToNearestRailroadCard card;
-        private BoardHandler boardHandler;
-        private Player player;
-        private Banker banker;
+        private ICard railroadCard;
+        private IBoardHandler boardHandler;
+        private IPlayer player;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -40,28 +40,29 @@ namespace Monopoly.Tests.Cards
             foreach (var rxr in realEstate.Values.OfType<Railroad>())
                 realEstateHandler.Land(owner, realEstate.Keys.First(k => realEstate[k] == rxr));
 
-            card = new MoveToNearestRailroadCard(boardHandler);
+            railroadCard = new MoveToNearestRailroadCard(boardHandler);
         }
 
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("Advance to the nearest Railroad and pay the owner twice the normal rent", card.ToString());
+            Assert.AreEqual("Advance to the nearest Railroad and pay the owner twice the normal rent", railroadCard.ToString());
+            Assert.IsFalse(railroadCard.Held);
         }
 
         [TestMethod]
         public void Move()
         {
-            card.Execute(player);
+            railroadCard.Execute(player);
             Assert.AreEqual(BoardConstants.READING_RAILROAD, boardHandler.PositionOf[player]);
 
-            card.Execute(player);
+            railroadCard.Execute(player);
             Assert.AreEqual(BoardConstants.PENNSYLVANIA_RAILROAD, boardHandler.PositionOf[player]);
 
-            card.Execute(player);
+            railroadCard.Execute(player);
             Assert.AreEqual(BoardConstants.BandO_RAILROAD, boardHandler.PositionOf[player]);
 
-            card.Execute(player);
+            railroadCard.Execute(player);
             Assert.AreEqual(BoardConstants.SHORT_LINE, boardHandler.PositionOf[player]);
         }
 
@@ -70,26 +71,26 @@ namespace Monopoly.Tests.Cards
         {
             boardHandler.MoveTo(player, BoardConstants.SHORT_LINE + 2);
 
-            var expectedMoney = banker.GetMoney(player) + GameConstants.PASS_GO_PAYMENT - 400;
-            card.Execute(player);
+            var expectedMoney = banker.Money[player] + GameConstants.PASS_GO_PAYMENT - 400;
+            railroadCard.Execute(player);
 
             Assert.AreEqual(BoardConstants.READING_RAILROAD, boardHandler.PositionOf[player]);
-            Assert.AreEqual(expectedMoney, banker.GetMoney(player));
+            Assert.AreEqual(expectedMoney, banker.Money[player]);
         }
 
         [TestMethod]
         public void PayTwiceNormalRent()
         {
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
-            Assert.AreEqual(playerMoney - 400, banker.GetMoney(player));
+            var playerMoney = banker.Money[player];
+            railroadCard.Execute(player);
+            Assert.AreEqual(playerMoney - 400, banker.Money[player]);
         }
 
         [TestMethod]
         public void BankruptWhilePaying()
         {
-            banker.Pay(player, banker.GetMoney(player) - 1);
-            card.Execute(player);
+            banker.Pay(player, banker.Money[player] - 1);
+            railroadCard.Execute(player);
             Assert.IsTrue(banker.IsBankrupt(player));
         }
     }

@@ -11,14 +11,14 @@ namespace Monopoly.Cards
     public class DeckFactory
     {
         private Random random;
-        private JailHandler jailHandler;
-        private IEnumerable<Player> players;
-        private BoardHandler boardHandler;
-        private OwnableHandler realEstateHandler;
-        private Banker banker;
+        private IJailHandler jailHandler;
+        private IEnumerable<IPlayer> players;
+        private IBoardHandler boardHandler;
+        private IOwnableHandler realEstateHandler;
+        private IBanker banker;
 
-        public DeckFactory(IEnumerable<Player> players, 
-                           JailHandler jailHandler, BoardHandler boardHandler, OwnableHandler realEstateHandler, Banker banker)
+        public DeckFactory(IEnumerable<IPlayer> players, 
+                           IJailHandler jailHandler, IBoardHandler boardHandler, IOwnableHandler realEstateHandler, IBanker banker)
         {
             random = new Random();
             this.jailHandler = jailHandler;

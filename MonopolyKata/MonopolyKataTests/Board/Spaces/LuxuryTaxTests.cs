@@ -19,10 +19,10 @@ namespace Monopoly.Tests.Board.Spaces
             var banker = new Banker(new[] { player });
             var luxuryTax = new LuxuryTax(banker);
 
-            var playerMoney = banker.GetMoney(player);
+            var playerMoney = banker.Money[player];
             luxuryTax.LandOn(player);
 
-            Assert.AreEqual(playerMoney - LuxuryTax.LUXURY_TAX, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney - LuxuryTax.LUXURY_TAX, banker.Money[player]);
         }
     }
 }

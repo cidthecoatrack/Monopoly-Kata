@@ -9,10 +9,10 @@ namespace Monopoly.Tests.Players.Strategies.OwnableStrategies
     [TestClass]
     public class OwnableStrategiesTests
     {
-        private Player player;
-        private Player renter;
-        private OwnableHandler realEstateHandler;
-        private Banker banker;
+        private IPlayer player;
+        private IPlayer renter;
+        private IOwnableHandler realEstateHandler;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -32,16 +32,16 @@ namespace Monopoly.Tests.Players.Strategies.OwnableStrategies
             player.OwnableStrategy = new AlwaysBuyOrMortgage();
             renter.OwnableStrategy = new AlwaysBuyOrMortgage();
 
-            var money = banker.GetMoney(player);
+            var money = banker.Money[player];
             realEstateHandler.Land(player, 0);
 
-            Assert.AreEqual(money - 1, banker.GetMoney(player), "player");
+            Assert.AreEqual(money - 1, banker.Money[player], "player");
 
             realEstateHandler.DevelopProperties(player);
-            money = banker.GetMoney(renter);
+            money = banker.Money[renter];
             realEstateHandler.Land(renter, 0);
 
-            Assert.AreEqual(money - 1, banker.GetMoney(renter), "renter");
+            Assert.AreEqual(money - 1, banker.Money[player], "renter");
         }
 
         [TestMethod]
@@ -50,30 +50,30 @@ namespace Monopoly.Tests.Players.Strategies.OwnableStrategies
             player.OwnableStrategy = new BuyOrMortgageIf500();
             renter.OwnableStrategy = new BuyOrMortgageIf500();
 
-            banker.Pay(player, banker.GetMoney(player) - 499);
-            var money = banker.GetMoney(player);
+            banker.Pay(player, banker.Money[player] - 499);
+            var money = banker.Money[player];
             realEstateHandler.Land(player, 0);
 
-            Assert.AreEqual(money, banker.GetMoney(player));
+            Assert.AreEqual(money, banker.Money[player]);
 
             banker.Collect(player, 1);
-            money = banker.GetMoney(player);
+            money = banker.Money[player];
             realEstateHandler.Land(player, 0);
 
-            Assert.AreEqual(money - 1, banker.GetMoney(player));
+            Assert.AreEqual(money - 1, banker.Money[player]);
 
             realEstateHandler.DevelopProperties(player);
-            money = banker.GetMoney(renter);
+            money = banker.Money[renter];
             realEstateHandler.Land(renter, 0);
 
-            Assert.AreEqual(money, banker.GetMoney(renter));
+            Assert.AreEqual(money, banker.Money[renter]);
 
             banker.Collect(player, 1);
             realEstateHandler.DevelopProperties(player);
-            money = banker.GetMoney(renter);
+            money = banker.Money[renter];
             realEstateHandler.Land(renter, 0);
 
-            Assert.AreEqual(money - 1, banker.GetMoney(renter));
+            Assert.AreEqual(money - 1, banker.Money[renter]);
         }
 
         [TestMethod]
@@ -85,10 +85,10 @@ namespace Monopoly.Tests.Players.Strategies.OwnableStrategies
             realEstateHandler.Land(player, 0);
             realEstateHandler.DevelopProperties(player);
 
-            var money = banker.GetMoney(renter);
+            var money = banker.Money[renter];
             realEstateHandler.Land(renter, 0);
 
-            Assert.AreEqual(money, banker.GetMoney(renter));
+            Assert.AreEqual(money, banker.Money[renter]);
         }
     }
 }

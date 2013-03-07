@@ -12,9 +12,9 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class MoveBackThreeCardTests
     {
-        private MoveBackThreeCard card;
-        private Player player;
-        private BoardHandler boardHandler;
+        private ICard moveBackCard;
+        private IPlayer player;
+        private IBoardHandler boardHandler;
 
         [TestInitialize]
         public void Setup()
@@ -25,20 +25,21 @@ namespace Monopoly.Tests.Cards
             var banker = new Banker(players);
             boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
-            card = new MoveBackThreeCard(boardHandler);
+            moveBackCard = new MoveBackThreeCard(boardHandler);
         }
 
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("Go Back 3 Spaces", card.ToString());
+            Assert.AreEqual("Go Back 3 Spaces", moveBackCard.ToString());
+            Assert.IsFalse(moveBackCard.Held);
         }
 
         [TestMethod]
         public void GoBackThreeSpaces()
         {
             var expectedPosition = (boardHandler.PositionOf[player] - 3 + BoardConstants.BOARD_SIZE) % BoardConstants.BOARD_SIZE;
-            card.Execute(player);
+            moveBackCard.Execute(player);
 
             Assert.AreEqual(expectedPosition, boardHandler.PositionOf[player]);
         }

@@ -8,14 +8,14 @@ namespace Monopoly.Board.Spaces
     {
         public const Int16 LUXURY_TAX = 75;
 
-        private Banker banker;
+        private IBanker banker;
 
-        public LuxuryTax(Banker banker) : base("Luxury Tax")
+        public LuxuryTax(IBanker banker) : base("Luxury Tax")
         {
             this.banker = banker;
         }
 
-        public override void LandOn(Player player)
+        public override void LandOn(IPlayer player)
         {
             banker.Pay(player, LUXURY_TAX);
         }

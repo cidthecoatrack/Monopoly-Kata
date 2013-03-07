@@ -14,7 +14,7 @@ namespace Monopoly.Tests.Board.Spaces
 
         public LandableSpace() : base("landable space") { }
 
-        public override void LandOn(Player player)
+        public override void LandOn(IPlayer player)
         {
             LandedOn = true;
         }

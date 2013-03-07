@@ -11,13 +11,13 @@ namespace Monopoly.Tests.Games
     [TestClass]
     public class PlayerOrderRandomizerTests
     {
-        private List<Player> nonRandomizedPlayers;
-        private IEnumerable<Player> randomizedPlayers;
+        private List<IPlayer> nonRandomizedPlayers;
+        private IEnumerable<IPlayer> randomizedPlayers;
         
         [TestInitialize]
         public void Setup()
         {
-            nonRandomizedPlayers = new List<Player>();
+            nonRandomizedPlayers = new List<IPlayer>();
             for (var i = 0; i < 8; i++)
                 nonRandomizedPlayers.Add(new Player(Convert.ToString(i)));
 

@@ -21,14 +21,7 @@ namespace Monopoly.Tests.Cards
         [TestInitialize]
         public void Setup()
         {
-            var players = new[]
-                {
-                    new Player("Player 1"),
-                    new Player("Player 2"),
-                    new Player("Player 3"),
-                    new Player("Player 4")
-                };
-
+            var players = new[] { new Player("Player") };
             var banker = new Banker(players);
             var realEstateHandler = new OwnableHandler(new Dictionary<Int32, OwnableSpace>(), banker);
             var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);

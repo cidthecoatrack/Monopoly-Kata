@@ -14,10 +14,10 @@ namespace Monopoly.Tests.Players.Strategies.JailStrategies
     public class JailStrategiesTests
     {
         private ControlledDice dice;
-        private JailHandler jailHandler;
-        private BoardHandler boardHandler;
-        private Player player;
-        private Banker banker;
+        private IJailHandler jailHandler;
+        private IBoardHandler boardHandler;
+        private IPlayer player;
+        private IBanker banker;
 
         [TestInitialize]
         public void SetupPlayerWithStrategy()
@@ -38,16 +38,16 @@ namespace Monopoly.Tests.Players.Strategies.JailStrategies
         {
             player.JailStrategy = new NeverPay();
 
-            Assert.IsFalse(player.WillUseGetOutOfJailCard());
+            Assert.IsFalse(player.JailStrategy.UseCard());
 
-            var playerMoney = banker.GetMoney(player);
+            var playerMoney = banker.Money[player];
 
             dice.RollTwoDice();
             boardHandler.MoveTo(player, BoardConstants.GO_TO_JAIL);
             jailHandler.HandleJail(0, player);
             jailHandler.HandleJail(0, player);
 
-            Assert.AreEqual(playerMoney, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney, banker.Money[player]);
             Assert.IsTrue(jailHandler.HasImprisoned(player));
         }
 
@@ -56,16 +56,16 @@ namespace Monopoly.Tests.Players.Strategies.JailStrategies
         {
             player.JailStrategy = new AlwaysPay();
 
-            Assert.IsTrue(player.WillUseGetOutOfJailCard());
+            Assert.IsTrue(player.JailStrategy.UseCard());
 
-            var playerMoney = banker.GetMoney(player);
+            var playerMoney = banker.Money[player];
 
             dice.RollTwoDice();
             boardHandler.MoveTo(player, BoardConstants.GO_TO_JAIL);
             jailHandler.HandleJail(0, player);
             jailHandler.HandleJail(0, player);
 
-            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney - GameConstants.COST_TO_GET_OUT_OF_JAIL, banker.Money[player]);
             Assert.IsFalse(jailHandler.HasImprisoned(player));
         }
     }

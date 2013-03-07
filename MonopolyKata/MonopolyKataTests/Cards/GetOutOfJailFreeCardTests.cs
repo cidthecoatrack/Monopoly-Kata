@@ -7,40 +7,67 @@ using Monopoly.Players;
 using Monopoly.Tests.Dice;
 using Monopoly.Tests.Handlers;
 using Monopoly.Tests.Players.Strategies;
+using Monopoly.Tests.Players.Strategies.JailStrategies;
 
 namespace Monopoly.Tests.Cards
 {
     [TestClass]
     public class GetOutOfJailFreeCardTests
     {
-        GetOutOfJailFreeCard card;
+        private ICard getOutOfJailCard;
+        private IJailHandler jailHandler;
+        private IPlayer player;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
         {
-            var player = new Player("name");
+            player = new Player("name");
+            var players = new[] { player };
 
             var dice = new ControlledDice();
-            var empty = Enumerable.Empty<Player>();
-            var banker = new Banker(empty);
-            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(empty);
-            var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(empty, realEstateHandler, banker);
-            var jailHandler = new JailHandler(dice, boardHandler, banker);
-            card = new GetOutOfJailFreeCard(jailHandler);
-
-            card.Execute(player);
+            banker = new Banker(players);
+            var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
+            var boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
+            jailHandler = new JailHandler(dice, boardHandler, banker);
+            getOutOfJailCard = new GetOutOfJailFreeCard(jailHandler);
         }
 
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("Get Out Of Jail, Free", card.ToString());
+            Assert.AreEqual("Get Out Of Jail, Free", getOutOfJailCard.ToString());
+            Assert.IsFalse(getOutOfJailCard.Held);
         }
 
         [TestMethod]
         public void GetOutOfJail()
         {
-            Assert.IsTrue(card.Held);
+            getOutOfJailCard.Execute(player);
+
+            Assert.IsTrue(getOutOfJailCard.Held);
+        }
+
+        [TestMethod]
+        public void GetOutOfJailFree()
+        {
+            player.JailStrategy = new AlwaysPay();
+            var money = banker.Money[player];
+
+            jailHandler.Imprison(player);
+            jailHandler.HandleJail(0, player);
+
+            Assert.IsFalse(getOutOfJailCard.Held);
+        }
+
+        [TestMethod]
+        public void CardAvailableAfterUse()
+        {
+            player.JailStrategy = new AlwaysPay();
+            jailHandler.Imprison(player);
+            jailHandler.HandleJail(0, player);
+
+            Assert.IsFalse(getOutOfJailCard.Held);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Monopoly.Games
 {
     public class GameFactory
     {
-        public static Game CreateGame(IEnumerable<Player> players)
+        public static Game CreateGame(IEnumerable<IPlayer> players)
         {
             var dice = new MonopolyDice();
 

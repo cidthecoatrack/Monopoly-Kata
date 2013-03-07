@@ -57,6 +57,12 @@
     <Compile Include="Games\GameFactory.cs" />
     <Compile Include="Handlers\Banker.cs" />
     <Compile Include="Handlers\BoardHandler.cs" />
+    <Compile Include="Handlers\IBanker.cs" />
+    <Compile Include="Handlers\IBoardHandler.cs" />
+    <Compile Include="Handlers\IJailHandler.cs" />
+    <Compile Include="Handlers\IOwnableHandler.cs" />
+    <Compile Include="Handlers\ITurnHandler.cs" />
+    <Compile Include="Handlers\IUnownableHandler.cs" />
     <Compile Include="Handlers\JailHandler.cs" />
     <Compile Include="Board\BoardConstants.cs" />
     <Compile Include="Board\Spaces\IncomeTax.cs" />
@@ -66,6 +72,7 @@
     <Compile Include="Dice\IDice.cs" />
     <Compile Include="Handlers\OwnableHandler.cs" />
     <Compile Include="Handlers\UnownableHandler.cs" />
+    <Compile Include="Players\IPlayer.cs" />
     <Compile Include="Players\Strategies\IJailStrategy.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Board\BoardFactory.cs" />

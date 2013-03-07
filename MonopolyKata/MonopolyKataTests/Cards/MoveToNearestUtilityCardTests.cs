@@ -17,13 +17,13 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class MoveToNearestUtilityCardTests
     {
-        private MoveToNearestUtilityCard card;
-        private Player player;
-        private Player owner;
-        private BoardHandler boardHandler;
+        private ICard utilityCard;
+        private IPlayer player;
+        private IPlayer owner;
+        private IBoardHandler boardHandler;
         private const Int32 ROLL = 10;
         private const Int32 UTILITY_PRICE = 150;
-        private Banker banker;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -41,23 +41,24 @@ namespace Monopoly.Tests.Cards
             var realEstateHandler = new OwnableHandler(realEstate, banker);
             boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
-            card = new MoveToNearestUtilityCard(boardHandler, dice);
+            utilityCard = new MoveToNearestUtilityCard(boardHandler, dice);
         }
 
         [TestMethod]
-        public void Name()
+        public void Constructor()
         {
-            Assert.AreEqual("Advance to Nearest Utility and pay 10x a die roll", card.ToString());
+            Assert.AreEqual("Advance to Nearest Utility and pay 10x a die roll", utilityCard.ToString());
+            Assert.IsFalse(utilityCard.Held);
         }
 
         [TestMethod]
         public void Move()
         {
-            card.Execute(player);
+            utilityCard.Execute(player);
             Assert.AreEqual(BoardConstants.ELECTRIC_COMPANY, boardHandler.PositionOf[player]);
 
             boardHandler.Move(player, 1);
-            card.Execute(player);
+            utilityCard.Execute(player);
             Assert.AreEqual(BoardConstants.WATER_WORKS, boardHandler.PositionOf[player]);
         }
 
@@ -66,20 +67,20 @@ namespace Monopoly.Tests.Cards
         {
             boardHandler.MoveTo(player, BoardConstants.WATER_WORKS + 1);
 
-            var expectedMoney = banker.GetMoney(player) + GameConstants.PASS_GO_PAYMENT - UTILITY_PRICE;
-            card.Execute(player);
+            var expectedMoney = banker.Money[player] + GameConstants.PASS_GO_PAYMENT - UTILITY_PRICE;
+            utilityCard.Execute(player);
 
             Assert.AreEqual(BoardConstants.ELECTRIC_COMPANY, boardHandler.PositionOf[player]);
-            Assert.AreEqual(expectedMoney, banker.GetMoney(player));
+            Assert.AreEqual(expectedMoney, banker.Money[player]);
         }
 
         [TestMethod]
         public void Buy()
         {
-            var ownerMoney = banker.GetMoney(owner);
-            card.Execute(owner);
+            var ownerMoney = banker.Money[owner];
+            utilityCard.Execute(owner);
 
-            Assert.AreEqual(ownerMoney - UTILITY_PRICE, banker.GetMoney(owner));
+            Assert.AreEqual(ownerMoney - UTILITY_PRICE, banker.Money[owner]);
         }
 
         [TestMethod]
@@ -87,10 +88,10 @@ namespace Monopoly.Tests.Cards
         {
             Buy();
 
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
+            var playerMoney = banker.Money[player];
+            utilityCard.Execute(player);
 
-            Assert.AreEqual(playerMoney - ROLL * 10, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney - ROLL * 10, banker.Money[player]);
         }
     }
 }

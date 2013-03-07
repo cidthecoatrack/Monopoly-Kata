@@ -13,11 +13,11 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class HousesAndHotelsCardTests
     {
-        private HousesAndHotelsCard card;
-        private Player player;
+        private ICard housesAndHotelsCard;
+        private IPlayer player;
         private Property property;
         private Property otherProperty;
-        private Banker banker;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -34,7 +34,7 @@ namespace Monopoly.Tests.Cards
             var players = new[] { player };
             banker = new Banker(players);
             var realEstateHandler = new OwnableHandler(dict, banker);
-            card = new HousesAndHotelsCard("card", 40, 115, realEstateHandler, banker);
+            housesAndHotelsCard = new HousesAndHotelsCard("card", 40, 115, realEstateHandler, banker);
 
             realEstateHandler.Land(player, 0);
             realEstateHandler.Land(player, 1);
@@ -43,7 +43,8 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("card", card.ToString());
+            Assert.AreEqual("card", housesAndHotelsCard.ToString());
+            Assert.IsFalse(housesAndHotelsCard.Held);
         }
 
         [TestMethod]
@@ -51,10 +52,10 @@ namespace Monopoly.Tests.Cards
         {
             BuyHousesAndHotel();
 
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
+            var playerMoney = banker.Money[player];
+            housesAndHotelsCard.Execute(player);
 
-            Assert.AreEqual(playerMoney - 435, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney - 435, banker.Money[player]);
         }
 
         private void BuyHousesAndHotel()
@@ -71,10 +72,10 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void NoHousesPays0()
         {
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
+            var playerMoney = banker.Money[player];
+            housesAndHotelsCard.Execute(player);
 
-            Assert.AreEqual(playerMoney, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney, banker.Money[player]);
         }
     }
 }

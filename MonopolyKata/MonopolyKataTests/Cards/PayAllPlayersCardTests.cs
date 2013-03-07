@@ -10,10 +10,10 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class PayAllPlayersCardTests
     {
-        private PayAllPlayersCard card;
-        private Player player;
-        private Player loser;
-        private Banker banker;
+        private ICard payCard;
+        private IPlayer player;
+        private IPlayer loser;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -21,7 +21,7 @@ namespace Monopoly.Tests.Cards
             player = new Player("name");
             loser = new Player("loser");
 
-            var players = new List<Player>();
+            var players = new List<IPlayer>();
             for (var i = 0; i < 8; i++)
                 players.Add(new Player("player " + i));
             players.Add(player);
@@ -29,39 +29,40 @@ namespace Monopoly.Tests.Cards
 
             banker = new Banker(players);
 
-            card = new PayAllPlayersCard(players, banker);
+            payCard = new PayAllPlayersCard(players, banker);
         }
 
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("You Have Been Elected Chairman Of The Board", card.ToString());
+            Assert.AreEqual("You Have Been Elected Chairman Of The Board", payCard.ToString());
+            Assert.IsFalse(payCard.Held);
         }
 
         [TestMethod]
         public void Pay()
         {
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
-            Assert.AreEqual(playerMoney - 450, banker.GetMoney(player));
+            var playerMoney = banker.Money[player];
+            payCard.Execute(player);
+            Assert.AreEqual(playerMoney - 450, banker.Money[player]);
         }
 
         [TestMethod]
         public void LosersDontCollect()
         {
-            banker.Pay(loser, banker.GetMoney(loser) + 1);
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
+            banker.Pay(loser, banker.Money[loser] + 1);
+            var playerMoney = banker.Money[player];
+            payCard.Execute(player);
 
             Assert.IsTrue(banker.IsBankrupt(loser));
-            Assert.AreEqual(playerMoney - 400, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney - 400, banker.Money[player]);
         }
 
         [TestMethod]
         public void BankruptWhilePaying()
         {
-            banker.Pay(player, banker.GetMoney(player) - 300);
-            card.Execute(player);
+            banker.Pay(player, banker.Money[player] - 300);
+            payCard.Execute(player);
 
             Assert.IsTrue(banker.IsBankrupt(player));
         }

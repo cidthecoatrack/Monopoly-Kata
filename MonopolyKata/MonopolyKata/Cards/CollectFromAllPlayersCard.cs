@@ -10,16 +10,16 @@ namespace Monopoly.Cards
     {
         public Boolean Held { get; private set; }
 
-        private IEnumerable<Player> players;
-        private Banker banker;
+        private IEnumerable<IPlayer> players;
+        private IBanker banker;
 
-        public CollectFromAllPlayersCard(IEnumerable<Player> players, Banker banker)
+        public CollectFromAllPlayersCard(IEnumerable<IPlayer> players, IBanker banker)
         {
             this.players = players;
             this.banker = banker;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             foreach (var payer in players.Where(p => !banker.IsBankrupt(p)))
                 banker.Transact(payer, player, 50);

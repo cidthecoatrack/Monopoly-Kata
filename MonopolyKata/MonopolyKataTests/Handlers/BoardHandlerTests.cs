@@ -14,9 +14,9 @@ namespace Monopoly.Tests.Handlers
     [TestClass]
     public class BoardHandlerTests
     {
-        private Player player;
-        private BoardHandler boardHandler;
-        private Banker banker;
+        private IPlayer player;
+        private IBoardHandler boardHandler;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -53,28 +53,28 @@ namespace Monopoly.Tests.Handlers
         [TestMethod]
         public void PassGo()
         {
-            var money = banker.GetMoney(player);
+            var money = banker.Money[player];
             boardHandler.MoveTo(player, 39);
             boardHandler.Move(player, 1);
-            Assert.AreEqual(money + GameConstants.PASS_GO_PAYMENT, banker.GetMoney(player));
+            Assert.AreEqual(money + GameConstants.PASS_GO_PAYMENT, banker.Money[player]);
         }
 
         [TestMethod]
         public void MoveToAndDontPassGo()
         {
-            var money = banker.GetMoney(player);
+            var money = banker.Money[player];
             boardHandler.MoveTo(player, 2);
             boardHandler.MoveToAndDontPassGo(player, 1);
-            Assert.AreEqual(money, banker.GetMoney(player));
+            Assert.AreEqual(money, banker.Money[player]);
         }
 
         [TestMethod]
         public void MoveToAndPassGo()
         {
-            var money = banker.GetMoney(player);
+            var money = banker.Money[player];
             boardHandler.MoveTo(player, 39);
             boardHandler.MoveTo(player, 0);
-            Assert.AreEqual(money + GameConstants.PASS_GO_PAYMENT, banker.GetMoney(player));
+            Assert.AreEqual(money + GameConstants.PASS_GO_PAYMENT, banker.Money[player]);
         }
 
         [TestMethod]

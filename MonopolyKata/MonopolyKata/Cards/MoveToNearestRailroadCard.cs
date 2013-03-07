@@ -9,14 +9,14 @@ namespace Monopoly.Cards
     {
         public Boolean Held { get; private set; }
 
-        private BoardHandler boardHandler;
+        private IBoardHandler boardHandler;
 
-        public MoveToNearestRailroadCard(BoardHandler boardHandler)
+        public MoveToNearestRailroadCard(IBoardHandler boardHandler)
         {
             this.boardHandler = boardHandler;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             var location = boardHandler.PositionOf[player];
 
@@ -30,7 +30,7 @@ namespace Monopoly.Cards
                 MoveTo(player, BoardConstants.SHORT_LINE);
         }
 
-        private void MoveTo(Player player, Int32 position)
+        private void MoveTo(IPlayer player, Int32 position)
         {
             boardHandler.MoveToRailroadAndPayDoubleRent(player, position);
         }

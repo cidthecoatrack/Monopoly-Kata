@@ -7,57 +7,52 @@ using Monopoly.Players;
 
 namespace Monopoly.Handlers
 {
-    public class Banker
+    public class Banker : IBanker
     {
-        private Dictionary<Player, Int32> money;
+        public Dictionary<IPlayer, Int32> Money { get; private set; }
 
-        public Banker(IEnumerable<Player> players)
+        public Banker(IEnumerable<IPlayer> players)
         {
-            money = new Dictionary<Player, Int32>();
+            Money = new Dictionary<IPlayer, Int32>();
             foreach (var player in players)
-                money.Add(player, 1500);
+                Money.Add(player, 1500);
         }
 
-        public Player GetWinner()
+        public IPlayer GetWinner()
         {
-            var ordered = money.OrderByDescending(p => p.Value);
+            var ordered = Money.OrderByDescending(p => p.Value);
             return ordered.First().Key;
         }
 
-        public Int32 GetMoney(Player player)
+        public Boolean IsBankrupt(IPlayer player)
         {
-            return money[player];
+            return !Money.ContainsKey(player);
         }
 
-        public Boolean IsBankrupt(Player player)
-        {
-            return !money.ContainsKey(player);
-        }
-
-        public IEnumerable<Player> GetBankrupcies(IEnumerable<Player> players)
+        public IEnumerable<IPlayer> GetBankrupcies(IEnumerable<IPlayer> players)
         {
             return players.Where(p => IsBankrupt(p)).ToList();
         }
 
-        public Boolean CanAfford(Player player, Int32 amount)
+        public Boolean CanAfford(IPlayer player, Int32 amount)
         {
-            return money[player] >= amount;
+            return Money[player] >= amount;
         }
 
-        public void Pay(Player player, Int32 amountToPay)
+        public void Pay(IPlayer player, Int32 amountToPay)
         {
-            money[player] -= amountToPay;
+            Money[player] -= amountToPay;
 
-            if (money[player] < 0)
-                money.Remove(player);
+            if (Money[player] < 0)
+                Money.Remove(player);
         }
 
-        public void Collect(Player player, Int32 amountToCollect)
+        public void Collect(IPlayer player, Int32 amountToCollect)
         {
-            money[player] += amountToCollect;
+            Money[player] += amountToCollect;
         }
 
-        public void Transact(Player payer, Player collector, Int32 amount)
+        public void Transact(IPlayer payer, IPlayer collector, Int32 amount)
         {
             Collect(collector, amount);
             Pay(payer, amount);

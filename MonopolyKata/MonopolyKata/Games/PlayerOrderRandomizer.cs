@@ -9,7 +9,7 @@ namespace Monopoly.Games
     {
         Random random = new Random();
 
-        public IEnumerable<Player> Execute(IEnumerable<Player> newPlayers)
+        public IEnumerable<IPlayer> Execute(IEnumerable<IPlayer> newPlayers)
         {
             return newPlayers.OrderBy(player => random.Next());
         }

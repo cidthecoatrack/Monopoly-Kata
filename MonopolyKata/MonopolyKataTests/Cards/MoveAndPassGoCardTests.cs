@@ -13,10 +13,10 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class MoveAndPassGoCardTests
     {
-        private MoveAndPassGoCard card;
-        private Player player;
-        private BoardHandler boardHandler;
-        private Banker banker;
+        private ICard passGoCard;
+        private IPlayer player;
+        private IBoardHandler boardHandler;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -27,19 +27,20 @@ namespace Monopoly.Tests.Cards
             var realEstateHandler = FakeHandlerFactory.CreateEmptyRealEstateHandler(players);
             boardHandler = FakeHandlerFactory.CreateBoardHandlerForFakeBoard(players, realEstateHandler, banker);
 
-            card = new MoveAndPassGoCard("move", BoardConstants.ATLANTIC_AVENUE, boardHandler);
+            passGoCard = new MoveAndPassGoCard("move", BoardConstants.ATLANTIC_AVENUE, boardHandler);
         }
 
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("move", card.ToString());
+            Assert.AreEqual("move", passGoCard.ToString());
+            Assert.IsFalse(passGoCard.Held);
         }
 
         [TestMethod]
         public void Move()
         {
-            card.Execute(player);
+            passGoCard.Execute(player);
 
             Assert.AreEqual(BoardConstants.ATLANTIC_AVENUE, boardHandler.PositionOf[player]);
         }
@@ -47,12 +48,12 @@ namespace Monopoly.Tests.Cards
         [TestMethod]
         public void MoveAndPassGo()
         {
-            var playerMoney = banker.GetMoney(player);
+            var playerMoney = banker.Money[player];
             boardHandler.MoveTo(player, BoardConstants.ATLANTIC_AVENUE + 1);
-            card.Execute(player);
+            passGoCard.Execute(player);
 
             Assert.AreEqual(BoardConstants.ATLANTIC_AVENUE, boardHandler.PositionOf[player]);
-            Assert.AreEqual(playerMoney + GameConstants.PASS_GO_PAYMENT, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney + GameConstants.PASS_GO_PAYMENT, banker.Money[player]);
         }
     }
 }

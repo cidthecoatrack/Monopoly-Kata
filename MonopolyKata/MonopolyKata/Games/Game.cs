@@ -8,22 +8,22 @@ namespace Monopoly.Games
 {
     public class Game
     {
-        private LinkedListNode<Player> currentPlayerPointer;
-        private LinkedList<Player> players;
-        private TurnHandler turnHandler;
-        private Banker banker;
+        private LinkedListNode<IPlayer> currentPlayerPointer;
+        private LinkedList<IPlayer> players;
+        private ITurnHandler turnHandler;
+        private IBanker banker;
 
         public Int16 Round { get; private set; }
         public Boolean Finished { get { return (Round > GameConstants.ROUND_LIMIT || NumberOfActivePlayers == 1); } }
         public Int32 NumberOfActivePlayers { get { return players.Count; } }
 
-        public Player CurrentPlayer
+        public IPlayer CurrentPlayer
         {
             get { return currentPlayerPointer.Value; }
             private set { currentPlayerPointer.Value = value; }
         }
 
-        public Player Winner
+        public IPlayer Winner
         {
             get
             {
@@ -33,13 +33,13 @@ namespace Monopoly.Games
             }
         }
 
-        public Game(IEnumerable<Player> newPlayers, TurnHandler turnHandler, Banker banker)
+        public Game(IEnumerable<IPlayer> newPlayers, ITurnHandler turnHandler, IBanker banker)
         {
             CheckNumberOfPlayers(newPlayers);
 
             var randomizer = new PlayerOrderRandomizer();
             var randomizedPlayers = randomizer.Execute(newPlayers);
-            players = new LinkedList<Player>(randomizedPlayers);
+            players = new LinkedList<IPlayer>(randomizedPlayers);
 
             this.turnHandler = turnHandler;
             this.banker = banker;
@@ -47,7 +47,7 @@ namespace Monopoly.Games
             Round = 1;
         }
 
-        private void CheckNumberOfPlayers(IEnumerable<Player> newPlayers)
+        private void CheckNumberOfPlayers(IEnumerable<IPlayer> newPlayers)
         {
             if (newPlayers.Count() < GameConstants.MINIMUM_NUMBER_OF_PLAYERS || newPlayers.Count() > GameConstants.MAXIMUM_NUMBER_OF_PLAYERS)
                 throw new ArgumentOutOfRangeException();

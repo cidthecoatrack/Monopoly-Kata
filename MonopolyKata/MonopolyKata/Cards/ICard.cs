@@ -7,6 +7,6 @@ namespace Monopoly.Cards
     {
         Boolean Held { get; }
 
-        void Execute(Player player);
+        void Execute(IPlayer player);
     }
 }

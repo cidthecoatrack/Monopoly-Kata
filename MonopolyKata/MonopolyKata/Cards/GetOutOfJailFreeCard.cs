@@ -6,17 +6,16 @@ namespace Monopoly.Cards
 {
     public class GetOutOfJailFreeCard : ICard
     {
-        public Player Owner { get; private set; }
         public Boolean Held { get; private set; }
 
-        private JailHandler jailHandler;
+        private IJailHandler jailHandler;
 
-        public GetOutOfJailFreeCard(JailHandler jailHandler)
+        public GetOutOfJailFreeCard(IJailHandler jailHandler)
         {
             this.jailHandler = jailHandler;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             Held = true;
             jailHandler.AddCardHolder(player, this);

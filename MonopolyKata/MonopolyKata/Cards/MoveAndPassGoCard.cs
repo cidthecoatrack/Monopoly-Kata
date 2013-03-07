@@ -10,16 +10,16 @@ namespace Monopoly.Cards
 
         private readonly String name;
         private readonly Int32 position;
-        private BoardHandler boardHandler;
+        private IBoardHandler boardHandler;
 
-        public MoveAndPassGoCard(String name, Int32 position, BoardHandler boardHandler)
+        public MoveAndPassGoCard(String name, Int32 position, IBoardHandler boardHandler)
         {
             this.name = name;
             this.position = position;
             this.boardHandler = boardHandler;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             boardHandler.MoveTo(player, position);
         }

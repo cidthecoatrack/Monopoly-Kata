@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Monopoly.Dice;
 
 namespace Monopoly.Tests.Dice
@@ -7,15 +10,22 @@ namespace Monopoly.Tests.Dice
     public class DiceTests
     {
         [TestMethod]
-        public void RollTwoDice_ResultBetweenOneAndTwelve()
+        public void RollBetweenOneAndTwelve()
         {
             var dice = new MonopolyDice();
-            for (var i = 0; i < 1000; i++)
+            var rolls = new List<Int32>();
+
+            for (var i = 0; i < 1000000; i++)
             {
                 dice.RollTwoDice();
-                Assert.IsTrue(0 < dice.Value);
-                Assert.IsTrue(dice.Value <= 12);
+                rolls.Add(dice.Value);
             }
+
+            var max = rolls.Max();
+            var min = rolls.Min();
+
+            Assert.IsTrue(min > 0);
+            Assert.IsTrue(max <= 12);
         }
 
         [TestMethod]

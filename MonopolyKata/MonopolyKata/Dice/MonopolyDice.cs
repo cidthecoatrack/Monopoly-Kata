@@ -15,16 +15,16 @@ namespace Monopoly.Dice
         {
             random = new Random();
         }
-        
-        private Int32 RollSingleDie()
-        {
-            return random.Next(1, 7);
-        }
 
         public void RollTwoDice()
         {
             firstDie = RollSingleDie();
             secondDie = RollSingleDie();
+        }
+
+        private Int32 RollSingleDie()
+        {
+            return random.Next(1, 7);
         }
     }
 }

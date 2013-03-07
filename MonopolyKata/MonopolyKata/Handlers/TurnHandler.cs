@@ -4,16 +4,16 @@ using Monopoly.Players;
 
 namespace Monopoly.Handlers
 {
-    public class TurnHandler
+    public class TurnHandler : ITurnHandler
     {
         private IDice dice;
         private Int32 doublesCount;
-        private BoardHandler boardHandler;
-        private JailHandler jailHandler;
-        private OwnableHandler realEstateHandler;
-        private Banker banker;
+        private IBoardHandler boardHandler;
+        private IJailHandler jailHandler;
+        private IOwnableHandler realEstateHandler;
+        private IBanker banker;
 
-        public TurnHandler(IDice dice, BoardHandler boardHandler, JailHandler jailHandler, OwnableHandler realEstateHandler, Banker banker)
+        public TurnHandler(IDice dice, IBoardHandler boardHandler, IJailHandler jailHandler, IOwnableHandler realEstateHandler, IBanker banker)
         {
             this.dice = dice;
             this.boardHandler = boardHandler;
@@ -22,7 +22,7 @@ namespace Monopoly.Handlers
             this.banker = banker;
         }
 
-        public void TakeTurn(Player player)
+        public void TakeTurn(IPlayer player)
         {
             doublesCount = 0;
 
@@ -35,7 +35,7 @@ namespace Monopoly.Handlers
                 realEstateHandler.HandleMortgages(player);
         }
 
-        private void RollAndMove(Player player)
+        private void RollAndMove(IPlayer player)
         {
             dice.RollTwoDice();
             if (dice.Doubles)
@@ -47,7 +47,7 @@ namespace Monopoly.Handlers
                 boardHandler.Move(player, dice.Value);
         }
 
-        private Boolean CanGoAgain(Player player)
+        private Boolean CanGoAgain(IPlayer player)
         {
             return dice.Doubles && !banker.IsBankrupt(player) && !jailHandler.HasImprisoned(player);
         }

@@ -16,8 +16,8 @@ namespace Monopoly.Tests.Board.Spaces
     {
         private Queue<ICard> deck;
         private DrawCard drawCard;
-        private Player player;
-        private Banker banker;
+        private IPlayer player;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -48,9 +48,9 @@ namespace Monopoly.Tests.Board.Spaces
             while (!(deck.Peek() is FlatPayCard))
                 deck.Enqueue(deck.Dequeue());
 
-            var money = banker.GetMoney(player);
+            var money = banker.Money[player];
             drawCard.LandOn(player);
-            Assert.IsTrue(money > banker.GetMoney(player));
+            Assert.IsTrue(money > banker.Money[player]);
         }
 
         [TestMethod]

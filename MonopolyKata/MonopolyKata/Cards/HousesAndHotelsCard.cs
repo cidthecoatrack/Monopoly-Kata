@@ -11,10 +11,10 @@ namespace Monopoly.Cards
         private readonly String name; 
         private readonly Int32 houseCost;
         private readonly Int32 hotelPremium;
-        private OwnableHandler realEstateHandler;
-        private Banker banker;
+        private IOwnableHandler realEstateHandler;
+        private IBanker banker;
 
-        public HousesAndHotelsCard(String name, Int32 houseCost, Int32 hotelCost, OwnableHandler realEstateHandler, Banker banker)
+        public HousesAndHotelsCard(String name, Int32 houseCost, Int32 hotelCost, IOwnableHandler realEstateHandler, IBanker banker)
         {
             this.name = name;
             this.houseCost = houseCost;
@@ -23,12 +23,12 @@ namespace Monopoly.Cards
             this.banker = banker;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             var houses = realEstateHandler.GetNumberOfHouses(player);
             var hotels = realEstateHandler.GetNumberOfHotels(player);
-
             var payment = houses * houseCost + hotels * hotelPremium;
+
             banker.Pay(player, payment);
         }
 

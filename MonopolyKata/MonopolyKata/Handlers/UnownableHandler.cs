@@ -8,7 +8,7 @@ using Monopoly.Players;
 
 namespace Monopoly.Handlers
 {
-    public class UnownableHandler
+    public class UnownableHandler : IUnownableHandler
     {
         private Dictionary<Int32, UnownableSpace> spaces;
 
@@ -17,7 +17,7 @@ namespace Monopoly.Handlers
             this.spaces = spaces;
         }
 
-        public void Land(Player player, Int32 position)
+        public void Land(IPlayer player, Int32 position)
         {
             spaces[position].LandOn(player);
         }

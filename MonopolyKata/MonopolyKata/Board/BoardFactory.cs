@@ -45,7 +45,7 @@ namespace Monopoly.Board
             return realEstate;
         }
 
-        public static Dictionary<Int32, UnownableSpace> CreateNonRealEstateSpaces(Banker banker)
+        public static Dictionary<Int32, UnownableSpace> CreateNonRealEstateSpaces(IBanker banker)
         {
             var spaces = new Dictionary<Int32, UnownableSpace>();
             

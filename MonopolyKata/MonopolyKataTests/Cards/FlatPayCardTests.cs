@@ -9,9 +9,9 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class FlatPayCardTests
     {
-        private FlatPayCard card;
-        private Player player;
-        private Banker banker;
+        private ICard payCard;
+        private IPlayer player;
+        private IBanker banker;
         
         [TestInitialize]
         public void Setup()
@@ -19,21 +19,22 @@ namespace Monopoly.Tests.Cards
             player = new Player("name");
             banker = new Banker(new[] { player });
 
-            card = new FlatPayCard("pay", 10, banker);
+            payCard = new FlatPayCard("pay", 10, banker);
         }
         
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("pay", card.ToString());
+            Assert.AreEqual("pay", payCard.ToString());
+            Assert.IsFalse(payCard.Held);
         }
         
         [TestMethod]
         public void Pay()
         {
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
-            Assert.AreEqual(playerMoney - 10, banker.GetMoney(player));
+            var playerMoney = banker.Money[player];
+            payCard.Execute(player);
+            Assert.AreEqual(playerMoney - 10, banker.Money[player]);
         }
     }
 }

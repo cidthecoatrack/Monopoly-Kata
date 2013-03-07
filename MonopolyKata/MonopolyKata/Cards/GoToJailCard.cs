@@ -8,14 +8,14 @@ namespace Monopoly.Cards
     {
         public Boolean Held { get; private set; }
 
-        private JailHandler jailHandler;
+        private IJailHandler jailHandler;
 
-        public GoToJailCard(JailHandler jailHandler)
+        public GoToJailCard(IJailHandler jailHandler)
         {
             this.jailHandler = jailHandler;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             jailHandler.Imprison(player);
         }

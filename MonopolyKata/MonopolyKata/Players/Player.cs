@@ -7,7 +7,7 @@ using Monopoly.Players.Strategies;
 
 namespace Monopoly.Players
 {
-    public class Player
+    public class Player : IPlayer
     {
         public IJailStrategy JailStrategy { get; set; }
         public IOwnableStrategy OwnableStrategy { get; set; }
@@ -17,11 +17,6 @@ namespace Monopoly.Players
         public Player(String name)
         {
             this.name = name;
-        }
-
-        public Boolean WillUseGetOutOfJailCard()
-        {
-            return JailStrategy.UseCard();
         }
 
         public override String ToString()

@@ -10,9 +10,9 @@ namespace Monopoly.Tests.Board.Spaces
     [TestClass]
     public class IncomeTaxTests
     {
-        private Player player;
-        private Banker banker;
-        private IncomeTax incomeTax;
+        private IPlayer player;
+        private IBanker banker;
+        private UnownableSpace incomeTax;
 
         [TestInitialize]
         public void Setup()
@@ -33,11 +33,11 @@ namespace Monopoly.Tests.Board.Spaces
 
         private void TestIncomeTaxWith(Int32 thisMuchMoney)
         {
-            banker.Pay(player, banker.GetMoney(player) - thisMuchMoney);
+            banker.Pay(player, banker.Money[player] - thisMuchMoney);
             incomeTax.LandOn(player);
             var paid = Math.Min(thisMuchMoney / IncomeTax.INCOME_TAX_PERCENTAGE_DIVISOR, IncomeTax.INCOME_TAX_FLAT_RATE);
 
-            Assert.AreEqual(thisMuchMoney - paid, banker.GetMoney(player), Convert.ToString(thisMuchMoney));
+            Assert.AreEqual(thisMuchMoney - paid, banker.Money[player], Convert.ToString(thisMuchMoney));
         }
     }
 }

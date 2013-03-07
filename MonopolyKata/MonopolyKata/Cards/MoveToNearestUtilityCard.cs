@@ -10,16 +10,16 @@ namespace Monopoly.Cards
     {
         public Boolean Held { get; private set; }
 
-        private BoardHandler boardHandler;
+        private IBoardHandler boardHandler;
         private IDice dice;
 
-        public MoveToNearestUtilityCard(BoardHandler boardHandler, IDice dice)
+        public MoveToNearestUtilityCard(IBoardHandler boardHandler, IDice dice)
         {
             this.boardHandler = boardHandler;
             this.dice = dice;
         }
 
-        public void Execute(Player player)
+        public void Execute(IPlayer player)
         {
             var location = boardHandler.PositionOf[player];
 
@@ -29,7 +29,7 @@ namespace Monopoly.Cards
                 MoveTo(player, BoardConstants.WATER_WORKS);
         }
 
-        private void MoveTo(Player player, Int32 position)
+        private void MoveTo(IPlayer player, Int32 position)
         {
             dice.RollTwoDice();
             boardHandler.MoveToUtilityAndForce10xRent(player, position);

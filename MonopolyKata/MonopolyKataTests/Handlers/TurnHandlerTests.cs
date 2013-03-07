@@ -16,15 +16,15 @@ namespace Monopoly.Tests.Handlers
     [TestClass]
     public class TurnHandlerTests
     {
-        private TurnHandler turnHandler;
-        private BoardHandler boardHandler;
-        private JailHandler jailHandler;
-        private Player player;
+        private ITurnHandler turnHandler;
+        private IBoardHandler boardHandler;
+        private IJailHandler jailHandler;
+        private IPlayer player;
         private ControlledDice dice;
         private Dictionary<Int32, UnownableSpace> landableSpaces;
         private LandableSpace space6;
         private LandableSpace space10;
-        private Banker banker;
+        private IBanker banker;
 
         [TestInitialize]
         public void Setup()
@@ -103,7 +103,7 @@ namespace Monopoly.Tests.Handlers
         public void GoesBrokeBailingOutOfJail_DoesNotGo()
         {
             player.JailStrategy = new NeverPay();
-            banker.Pay(player, banker.GetMoney(player) - 1);
+            banker.Pay(player, banker.Money[player] - 1);
             jailHandler.Imprison(player);
 
             for(var i = 0; i < 3; i++)

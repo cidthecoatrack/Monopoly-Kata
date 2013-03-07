@@ -8,20 +8,20 @@ using Monopoly.Players;
 
 namespace Monopoly.Handlers
 {
-    public class OwnableHandler
+    public class OwnableHandler : IOwnableHandler
     {
         private Dictionary<Int32, OwnableSpace> allOwnableSpaces;
-        private Dictionary<OwnableSpace, Player> ownedSpaces;
-        private readonly Player NO_OWNER;
-        private Banker banker;
+        private Dictionary<OwnableSpace, IPlayer> ownedSpaces;
+        private readonly IPlayer NO_OWNER;
+        private IBanker banker;
 
-        public OwnableHandler(Dictionary<Int32, OwnableSpace> ownableSpaces, Banker banker)
+        public OwnableHandler(Dictionary<Int32, OwnableSpace> ownableSpaces, IBanker banker)
         {
             allOwnableSpaces = ownableSpaces;
             this.banker = banker;
             NO_OWNER = new Player("NOT AN OWNER");
 
-            ownedSpaces = new Dictionary<OwnableSpace, Player>();
+            ownedSpaces = new Dictionary<OwnableSpace, IPlayer>();
             foreach (var ownableSpace in ownableSpaces.Values)
                 ownedSpaces.Add(ownableSpace, NO_OWNER);
         }
@@ -31,12 +31,12 @@ namespace Monopoly.Handlers
             return allOwnableSpaces.ContainsKey(position);
         }
 
-        public void Land(Player player, Int32 position)
+        public void Land(IPlayer player, Int32 position)
         {
             CheckForBankrupcies();
 
             var ownableSpace = allOwnableSpaces[position];
-            var money = banker.GetMoney(player);
+            var money = banker.Money[player];
 
             if (Owned(ownableSpace))
                 PayRent(player, ownableSpace);
@@ -44,7 +44,7 @@ namespace Monopoly.Handlers
                 Buy(player, ownableSpace);
         }
 
-        private void Buy(Player player, OwnableSpace ownableSpace)
+        private void Buy(IPlayer player, OwnableSpace ownableSpace)
         {
             banker.Pay(player, ownableSpace.Price);
             ownedSpaces[ownableSpace] = player;
@@ -65,14 +65,14 @@ namespace Monopoly.Handlers
                     utility.BothUtilitiesOwned = true;
         }
 
-        private void SetRailroadCount(Player player)
+        private void SetRailroadCount(IPlayer player)
         {
             var ownedRailroads = ownedSpaces.Keys.Where(o => Owned(o)).OfType<Railroad>();
             foreach (var RxR in ownedRailroads)
                 RxR.RailroadCount = ownedSpaces.Count(kvp => kvp.Value == ownedSpaces[RxR]);
         }
 
-        private void SetMonopolyFlags(Player player, Property property)
+        private void SetMonopolyFlags(IPlayer player, Property property)
         {
             var groupProperties = allOwnableSpaces.Values.OfType<Property>().Where(prop => prop.Grouping == property.Grouping);
             if (groupProperties.All(prop => ownedSpaces[prop] == player))
@@ -80,7 +80,7 @@ namespace Monopoly.Handlers
                     groupProperty.PartOfMonopoly = true;
         }
 
-        private void PayRent(Player player, OwnableSpace ownableSpace)
+        private void PayRent(IPlayer player, OwnableSpace ownableSpace)
         {
             var rent = ownableSpace.GetRent();
 
@@ -100,21 +100,21 @@ namespace Monopoly.Handlers
             return ownedSpaces[ownableSpace] != NO_OWNER;
         }
 
-        private IEnumerable<OwnableSpace> GetOwnedSpaces(Player player)
+        private IEnumerable<OwnableSpace> GetOwnedSpaces(IPlayer player)
         {
             return ownedSpaces.Keys.Where(k => ownedSpaces[k] == player);
         }
 
-        public void HandleMortgages(Player player)
+        public void HandleMortgages(IPlayer player)
         {
             var realEstateToMortgage = GetOwnedSpaces(player).Where(r => !r.Mortgaged);
             foreach (var realEstate in realEstateToMortgage)
-                if (player.OwnableStrategy.ShouldMortgage(banker.GetMoney(player)))
+                if (player.OwnableStrategy.ShouldMortgage(banker.Money[player]))
                     CheckMortgage(realEstate);
 
             var realEstateToPayOff = GetOwnedSpaces(player).Where(r => r.Mortgaged);
             foreach (var realEstate in realEstateToPayOff)
-                if (banker.CanAfford(player, realEstate.Price) && player.OwnableStrategy.ShouldPayOffMortgage(banker.GetMoney(player), realEstate))
+                if (banker.CanAfford(player, realEstate.Price) && player.OwnableStrategy.ShouldPayOffMortgage(banker.Money[player], realEstate))
                     PayOffMortgage(realEstate);
         }
 
@@ -165,9 +165,9 @@ namespace Monopoly.Handlers
             ownableSpace.Mortgaged = false;
         }
 
-        public void DevelopProperties(Player player)
+        public void DevelopProperties(IPlayer player)
         {
-            var money = banker.GetMoney(player);
+            var money = banker.Money[player];
             var propertiesToDevelop = GetOwnedSpaces(player).OfType<Property>().Where(p => CanBuyHouseOrHotel(p));
             foreach (var property in propertiesToDevelop)
             {
@@ -196,17 +196,17 @@ namespace Monopoly.Handlers
             return property.Houses == groupProperties.Min(p => p.Houses);
         }
 
-        public Int32 GetNumberOfHouses(Player player)
+        public Int32 GetNumberOfHouses(IPlayer player)
         {
             return GetOwnedSpaces(player).OfType<Property>().Sum(x => x.Houses);
         }
 
-        public Int32 GetNumberOfHotels(Player player)
+        public Int32 GetNumberOfHotels(IPlayer player)
         {
             return GetOwnedSpaces(player).OfType<Property>().Where(x => x.Houses == 5).Count();
         }
 
-        public void LandAndForce10xUtilityRent(Player player, Int32 utilityPosition)
+        public void LandAndForce10xUtilityRent(IPlayer player, Int32 utilityPosition)
         {
             var utility = allOwnableSpaces[utilityPosition] as Utility;
 
@@ -215,7 +215,7 @@ namespace Monopoly.Handlers
             utility.Force10xRent = false;
         }
 
-        public void LandAndPayDoubleRailroadRent(Player player, Int32 railroadPosition)
+        public void LandAndPayDoubleRailroadRent(IPlayer player, Int32 railroadPosition)
         {
             var rxr = allOwnableSpaces[railroadPosition] as Railroad;
 

@@ -10,10 +10,10 @@ namespace Monopoly.Tests.Cards
     [TestClass]
     public class CollectFromAllPlayersCardTests
     {
-        private CollectFromAllPlayersCard card;
-        private Player player;
-        private Banker banker;
-        private Player loser;
+        private ICard collectCard;
+        private IPlayer player;
+        private IBanker banker;
+        private IPlayer loser;
 
         [TestInitialize]
         public void Setup()
@@ -21,7 +21,7 @@ namespace Monopoly.Tests.Cards
             player = new Player("name");
             loser = new Player("loser");
 
-            var players = new List<Player>();
+            var players = new List<IPlayer>();
             for (var i = 0; i < 8; i++)
                 players.Add(new Player("player " + i));
             players.Add(player);
@@ -29,31 +29,32 @@ namespace Monopoly.Tests.Cards
 
             banker = new Banker(players);
 
-            card = new CollectFromAllPlayersCard(players, banker);
+            collectCard = new CollectFromAllPlayersCard(players, banker);
         }
 
         [TestMethod]
         public void Constructor()
         {
-            Assert.AreEqual("Grand Opera Opening: Every Player Pays For Opening Night Seats", card.ToString());
+            Assert.AreEqual("Grand Opera Opening: Every Player Pays For Opening Night Seats", collectCard.ToString());
+            Assert.IsFalse(collectCard.Held);
         }
 
         [TestMethod]
         public void Pay()
         {
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
-            Assert.AreEqual(playerMoney + 450, banker.GetMoney(player));
+            var playerMoney = banker.Money[player];
+            collectCard.Execute(player);
+            Assert.AreEqual(playerMoney + 450, banker.Money[player]);
         }
 
         [TestMethod]
         public void LosersDontPay()
         {
-            banker.Pay(loser, banker.GetMoney(loser) + 1);
-            var playerMoney = banker.GetMoney(player);
-            card.Execute(player);
+            banker.Pay(loser, banker.Money[loser] + 1);
+            var playerMoney = banker.Money[player];
+            collectCard.Execute(player);
 
-            Assert.AreEqual(playerMoney + 400, banker.GetMoney(player));
+            Assert.AreEqual(playerMoney + 400, banker.Money[player]);
         }
     }
 }

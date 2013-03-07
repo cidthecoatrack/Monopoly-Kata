@@ -12,7 +12,7 @@ namespace Monopoly.Tests.Handlers
 {
     public class FakeHandlerFactory
     {
-        public static BoardHandler CreateBoardHandlerForFakeBoard(IEnumerable<Player> players, OwnableHandler realEstateHandler, Banker banker)
+        public static IBoardHandler CreateBoardHandlerForFakeBoard(IEnumerable<IPlayer> players, IOwnableHandler realEstateHandler, IBanker banker)
         {
             var normalSpaces = new Dictionary<Int32, UnownableSpace>();
             for (var i = 0; i < BoardConstants.BOARD_SIZE; i++)
@@ -23,12 +23,12 @@ namespace Monopoly.Tests.Handlers
             return new BoardHandler(players, realEstateHandler, spaceHandler, banker);
         }
 
-        public static OwnableHandler CreateEmptyRealEstateHandler(IEnumerable<Player> players)
+        public static IOwnableHandler CreateEmptyRealEstateHandler(IEnumerable<IPlayer> players)
         {
             return new OwnableHandler(new Dictionary<Int32, OwnableSpace>(), new Banker(players));
         }
 
-        public static OwnableHandler CreateRealEstateHandler(IEnumerable<OwnableSpace> realEstate, IEnumerable<Player> players, Banker banker)
+        public static IOwnableHandler CreateRealEstateHandler(IEnumerable<OwnableSpace> realEstate, IEnumerable<IPlayer> players, IBanker banker)
         {
             var dict = new Dictionary<Int32, OwnableSpace>();
             for (var i = 0; i < realEstate.Count(); i++)

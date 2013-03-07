@@ -7,6 +7,6 @@ namespace Monopoly.Board.Spaces
     {
         public NormalSpace(String name) : base(name) { }
 
-        public override void LandOn(Player player) { }
+        public override void LandOn(IPlayer player) { }
     }
 }
